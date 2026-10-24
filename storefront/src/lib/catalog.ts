@@ -28,7 +28,14 @@ export type Offer = {
   vendor_handle: string
   price: number
   currency_code: string
+  condition: string
+  delivery_days_min: number | null
+  delivery_days_max: number | null
+  return_window_days: number | null
+  available: number | null
 }
+export type Shipping = { name: string; price: number; currency_code: string }
+export type ProductDetail = { product: CatalogDetail; shipping: Shipping | null }
 export type CatalogDetail = {
   id: string
   handle: string
@@ -57,10 +64,9 @@ export async function fetchCatalog(params: CatalogParams) {
   return sdk.client.fetch<CatalogResponse>(`/store/catalog?${toQuery(params)}`)
 }
 
-export async function fetchProduct(handle: string): Promise<CatalogDetail | null> {
+export async function fetchProduct(handle: string): Promise<ProductDetail | null> {
   try {
-    const r = await sdk.client.fetch<{ product: CatalogDetail }>(`/store/catalog/${encodeURIComponent(handle)}`)
-    return r.product
+    return await sdk.client.fetch<ProductDetail>(`/store/catalog/${encodeURIComponent(handle)}`)
   } catch (e) {
     if ((e as { status?: number }).status === 404) return null
     throw e

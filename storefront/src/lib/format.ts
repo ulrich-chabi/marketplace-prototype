@@ -2,6 +2,21 @@ export function money(amount: number, currency = "usd") {
   return new Intl.NumberFormat("en-US", { style: "currency", currency: currency.toUpperCase() }).format(amount)
 }
 
+export function deliveryText(min: number | null, max: number | null) {
+  if (min == null || max == null) return "Not specified"
+  return min === max ? `${min} business days` : `${min}–${max} business days`
+}
+
+export function returnsText(days: number | null) {
+  return days == null ? "Not specified" : days === 0 ? "No returns" : `${days}-day returns`
+}
+
+export function availabilityText(available: number | null) {
+  if (available === null) return "In stock"
+  if (available <= 0) return "Out of stock"
+  return available <= 5 ? `Only ${available} left` : "In stock"
+}
+
 export function plural(n: number, one: string, many: string) {
   return `${n} ${n === 1 ? one : many}`
 }

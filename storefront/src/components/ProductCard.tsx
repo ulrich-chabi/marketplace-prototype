@@ -1,6 +1,7 @@
 import Link from "next/link"
 import type { CatalogCard } from "@/lib/catalog"
 import { money, plural } from "@/lib/format"
+import { CompareToggle } from "./CompareToggle"
 import { ProductImage } from "./ProductImage"
 
 export function ProductCard({ card }: { card: CatalogCard }) {
@@ -20,6 +21,7 @@ export function ProductCard({ card }: { card: CatalogCard }) {
         </p>
         <p className="text-sm text-muted">{offers} from {sellers}</p>
       </div>
+      <CompareToggle handle={card.handle} title={card.title} />
     </article>
   )
 }

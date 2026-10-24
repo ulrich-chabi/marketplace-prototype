@@ -82,6 +82,21 @@ npm run dev
 
 Ouvrir http://localhost:8000. Vérifications : `npm run typecheck` puis `npm run build` dans `storefront`.
 
+Si le catalogue a été créé avec une version précédente (avant les délais de livraison et retours des vendeurs), lancer
+une fois, depuis `backend` : `npx medusa db:migrate` puis `npx medusa exec ./src/scripts/set-demo-vendor-policies.ts`.
+
+### Tests de bout en bout du site
+
+Le backend (port 9000) ET le site (port 8000) doivent tourner, sur la base alimentée par le script de démonstration.
+
+```powershell
+cd storefront
+npx playwright install chromium    # une seule fois (téléchargement d'environ 150 Mo)
+npm run test:e2e
+```
+
+Résultat attendu : `13 passed`.
+
 ## Tests
 
 ```powershell

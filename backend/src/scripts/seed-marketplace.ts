@@ -159,7 +159,10 @@ export default async function seedMarketplace({ container }: ExecArgs) {
   logger.info(`Vendeurs : ${VENDORS.length}…`)
   const vendors: { id: string; name: string; locationId: string }[] = []
   for (const v of VENDORS) {
-    const created = await marketplace.createVendors({ name: v.name, handle: v.handle, status: "pending" })
+    const created = await marketplace.createVendors({
+      name: v.name, handle: v.handle, status: "pending",
+      delivery_days_min: v.deliveryMin, delivery_days_max: v.deliveryMax, return_window_days: v.returnDays,
+    })
     await setVendorStatusWorkflow(container).run({ input: { vendor_id: created.id, status: "active" } })
     const {
       data: [withLoc],

@@ -1,10 +1,12 @@
 import Link from "next/link"
 import { fetchCategories } from "@/lib/catalog"
+import { cartCount, getCart } from "@/lib/cart"
 import { Logo } from "./Logo"
 
 export async function SiteHeader() {
   // Si le backend est indisponible, l'en-tête reste affiché sans les rayons.
   const categories = await fetchCategories().catch(() => [])
+  const count = cartCount(await getCart().catch(() => null))
   return (
     <header>
       <div className="flex flex-wrap items-center gap-4 border-b border-sand bg-white px-6 py-4 lg:px-10">
@@ -22,7 +24,7 @@ export async function SiteHeader() {
         </form>
         <nav aria-label="Account and cart" className="flex gap-5">
           <Link href="/account">Account</Link>
-          <Link href="/cart">Cart</Link>
+          <Link href="/cart" aria-label={`Cart, ${count} ${count === 1 ? "item" : "items"}`}>Cart ({count})</Link>
         </nav>
       </div>
       <nav aria-label="Departments" className="flex gap-6 overflow-x-auto bg-sand-soft px-6 py-3 lg:px-10">

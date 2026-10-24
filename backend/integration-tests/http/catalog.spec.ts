@@ -144,6 +144,39 @@ medusaIntegrationTestRunner({
       expect(detail.data.product.title).toBe("Zephyr Headset")
     })
 
+    it("détaille chaque offre : état, politique du vendeur, stock disponible, et le tarif de livraison", async () => {
+      const service: any = getContainer().resolve("marketplace")
+      await service.updateVendors({ id: vendors.a.id, delivery_days_min: 3, delivery_days_max: 5, return_window_days: 30 })
+
+      const managed = await call(
+        "post", "/vendors/products",
+        { ...productBody("Sensor (A)", 12, true), metadata: { condition: "renewed" } },
+        bearer(vendors.a.token)
+      )
+      expect(managed.status).toBe(201)
+      const stock = await call(
+        "post", "/vendors/stock",
+        { variant_id: managed.data.product.variants[0].id, stocked_quantity: 7 },
+        bearer(vendors.a.token)
+      )
+      expect(stock.status).toBe(200)
+      const unmanaged = await listing("b", "Sensor (B)", 15)
+      await catalogProduct({ handle: "sensor", title: "Sensor", brand: "Brisa", category_handle: "electronics" }, [managed.data.product.id, unmanaged])
+
+      const r = await call("get", "/store/catalog/sensor", undefined, sh)
+      expect(r.status).toBe(200)
+      const [offerA, offerB] = r.data.product.offers
+      expect(offerA).toMatchObject({
+        vendor_name: "Vendor a", price: 12, condition: "renewed",
+        delivery_days_min: 3, delivery_days_max: 5, return_window_days: 30, available: 7,
+      })
+      expect(offerB).toMatchObject({
+        vendor_name: "Vendor b", price: 15, condition: "new",
+        delivery_days_min: null, delivery_days_max: null, return_window_days: null, available: null,
+      })
+      expect(r.data.shipping).toEqual({ name: "Standard", price: 5, currency_code: "usd" })
+    })
+
     it("refuse l'accès sans clé publique et les paramètres invalides, et résiste aux caractères spéciaux", async () => {
       expect((await call("get", "/store/catalog")).status).toBeGreaterThanOrEqual(400)
       expect((await catalog("?sort=hack")).status).toBe(400)

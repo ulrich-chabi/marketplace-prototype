@@ -40,14 +40,15 @@ export const BRANDS = [
 
 export const COLORS = ["Black", "White", "Sand", "Teal", "Terracotta", "Slate", "Forest", "Navy"]
 
+// Délais de livraison (jours ouvrés) et durée de retour : valeurs FICTIVES de démonstration.
 export const VENDORS = [
-  { name: "Marketplace Direct", handle: "marketplace-direct" }, // ventes directes de la plateforme
-  { name: "Harbor & Pine", handle: "harbor-pine" },
-  { name: "Lumen Supply Co", handle: "lumen-supply" },
-  { name: "Northfield Goods", handle: "northfield-goods" },
-  { name: "Cobalt Market", handle: "cobalt-market" },
-  { name: "Juniper Lane", handle: "juniper-lane" },
-  { name: "Saffron Street", handle: "saffron-street" },
+  { name: "Marketplace Direct", handle: "marketplace-direct", deliveryMin: 2, deliveryMax: 3, returnDays: 30 }, // ventes directes de la plateforme
+  { name: "Harbor & Pine", handle: "harbor-pine", deliveryMin: 3, deliveryMax: 5, returnDays: 30 },
+  { name: "Lumen Supply Co", handle: "lumen-supply", deliveryMin: 4, deliveryMax: 7, returnDays: 14 },
+  { name: "Northfield Goods", handle: "northfield-goods", deliveryMin: 5, deliveryMax: 8, returnDays: 30 },
+  { name: "Cobalt Market", handle: "cobalt-market", deliveryMin: 2, deliveryMax: 4, returnDays: 15 },
+  { name: "Juniper Lane", handle: "juniper-lane", deliveryMin: 6, deliveryMax: 9, returnDays: 30 },
+  { name: "Saffron Street", handle: "saffron-street", deliveryMin: 3, deliveryMax: 6, returnDays: 7 },
 ]
 
 // Générateur pseudo-aléatoire déterministe : même graine, mêmes données.

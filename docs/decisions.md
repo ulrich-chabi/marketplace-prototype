@@ -41,4 +41,10 @@ Statuts : validée / proposée / à confirmer / rejetée. Dernière mise à jour
 | 35 | Catalogue fictif : 20 rayons, 20 fiches par rayon (réglable), 7 vendeurs dont « Marketplace Direct » pour les ventes directes | validée (ajustable) | F |
 | 36 | Terracotta assombri (#A33F22) : le précédent (#B4492A) était sous le seuil de contraste sur le fond sable des menus | proposée | F |
 | 37 | Site non indexé par les moteurs de recherche (prototype) | proposée | F |
+| 38 | Fiche produit : offres triées par prix, aucune offre mise en avant, mention « Lowest price » sur la moins chère | proposée | F2 |
+| 39 | Livraison et retours : délais (jours ouvrés) et durée de retour propres à chaque vendeur, valeurs FICTIVES ; livraison forfaitaire de 5 USD par colis vendeur | proposée (valeurs fictives) | F2 |
+| 40 | Stock affiché par offre (stocké moins réservé) : « In stock », « Only N left » jusqu'à 5, « Out of stock » | proposée | F2 |
+| 41 | Panier : identifiant gardé dans un cookie essentiel (httpOnly, sans traceur), lignes regroupées par vendeur, l'offre est relue côté serveur à l'ajout | proposée | F2 |
+| 42 | Comparateur : 2 à 4 produits, sélection gardée dans le navigateur (localStorage), comparaison sur l'offre la moins chère | proposée | F2 |
+| 43 | Tests de bout en bout du site avec Playwright (nécessitent l'installation d'un navigateur de test) | proposée | F2 |
 

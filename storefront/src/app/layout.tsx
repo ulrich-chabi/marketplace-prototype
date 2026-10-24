@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import "./globals.css"
+import { CompareBar } from "@/components/CompareBar"
 import { SiteFooter } from "@/components/SiteFooter"
 import { SiteHeader } from "@/components/SiteHeader"
 import { PUBLISHABLE_KEY } from "@/lib/medusa"
@@ -36,6 +37,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </main>
         )}
         <SiteFooter />
+        <div className="h-20" aria-hidden="true" />
+        <CompareBar />
       </body>
     </html>
   )

@@ -9,6 +9,10 @@ const Vendor = model.define("vendor", {
   handle: model.text().unique(),
   name: model.text(),
   logo: model.text().nullable(),
+  // Politique du vendeur affichée sur les offres (valeurs FICTIVES dans ce prototype).
+  delivery_days_min: model.number().nullable(),
+  delivery_days_max: model.number().nullable(),
+  return_window_days: model.number().nullable(),
   // pending → active ⇄ suspended. Seule la plateforme change le statut.
   status: model.enum([...VENDOR_STATUSES]).default("pending"),
   admins: model.hasMany(() => VendorAdmin, { mappedBy: "vendor" }),

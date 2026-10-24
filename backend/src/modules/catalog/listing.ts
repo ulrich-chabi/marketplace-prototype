@@ -9,6 +9,12 @@ export type Offer = {
   vendor_handle: string
   price: number
   currency_code: string
+  condition: string
+  delivery_days_min: number | null
+  delivery_days_max: number | null
+  return_window_days: number | null
+  // Stock disponible (détail uniquement) ; null = stock non géré.
+  available?: number | null
 }
 
 export type CatalogCard = {
@@ -67,13 +73,18 @@ function toOffers(products: any[]): Offer[] {
       vendor_handle: p.vendor.handle,
       price: best.amount,
       currency_code: best.v.calculated_price.currency_code,
+      condition: (p.metadata?.condition as string) ?? "new",
+      delivery_days_min: p.vendor.delivery_days_min ?? null,
+      delivery_days_max: p.vendor.delivery_days_max ?? null,
+      return_window_days: p.vendor.return_window_days ?? null,
     })
   }
   return offers.sort((a, b) => a.price - b.price)
 }
 
 const PRODUCT_FIELDS = [
-  "id", "status", "vendor.id", "vendor.name", "vendor.handle", "vendor.status",
+  "id", "status", "metadata", "vendor.id", "vendor.name", "vendor.handle", "vendor.status",
+  "vendor.delivery_days_min", "vendor.delivery_days_max", "vendor.return_window_days",
   "variants.id", "variants.calculated_price.*",
 ]
 
