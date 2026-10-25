@@ -187,6 +187,8 @@ test.describe("Panier", () => {
     await page.getByRole("link", { name: "View order status" }).click()
     await expect(page.getByRole("heading", { name: /^Your demo order #/ })).toBeVisible()
     await expect(page.getByText("Shipping status")).toBeVisible()
+    await page.getByRole("button", { name: "Request return" }).click()
+    await expect(page.getByRole("status")).toContainText("sent to the platform for review")
   })
 })
 

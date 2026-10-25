@@ -2,6 +2,8 @@ import { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
 import { ContainerRegistrationKeys, MedusaError } from "@medusajs/framework/utils"
 import { createHash, timingSafeEqual } from "node:crypto"
 import { z } from "zod"
+import { MARKETPLACE_MODULE } from "../../../modules/marketplace"
+import MarketplaceModuleService from "../../../modules/marketplace/service"
 
 export const PostOrderTrackingSchema = z.object({
   order_id: z.string().min(7).max(100).startsWith("order_"),
@@ -17,7 +19,7 @@ export async function POST(
     entity: "order",
     fields: [
       "id", "display_id", "created_at", "status", "fulfillment_status",
-      "payment_status", "total", "items.title", "items.quantity", "metadata",
+      "payment_status", "total", "items.id", "items.title", "items.quantity", "metadata",
     ],
     filters: { id: req.validatedBody.order_id },
   })
@@ -34,6 +36,9 @@ export async function POST(
     throw new MedusaError(MedusaError.Types.NOT_FOUND, "Order not found")
   }
 
+  const marketplace: MarketplaceModuleService = req.scope.resolve(MARKETPLACE_MODULE)
+  const returnRequests = await marketplace.listReturnRequests({ parent_order_id: order.id })
+
   // Ne renvoie aucune coordonnée client ni adresse.
   res.json({
     order: {
@@ -43,7 +48,8 @@ export async function POST(
       fulfillment_status: order.fulfillment_status,
       payment_status: order.payment_status,
       total: order.total,
-      items: (order.items ?? []).map((item: any) => ({ title: item.title, quantity: item.quantity })),
+      items: (order.items ?? []).map((item: any) => ({ id: item.id, title: item.title, quantity: item.quantity })),
+      return_requests: returnRequests.map((request) => ({ order_item_id: request.order_item_id, status: request.status })),
     },
   })
 }

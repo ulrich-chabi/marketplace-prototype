@@ -10,7 +10,7 @@ export const LEGAL_PAGES: Record<string, { title: string; placeholder: string }>
   delivery: { title: "Delivery rates and times", placeholder: "Delivery policy (simulated in this prototype)." },
   payments: { title: "Payment methods", placeholder: "Payments are simulated in this prototype: no real charge is made." },
   currency: { title: "Currency", placeholder: "Prices are shown in US dollars (USD)." },
-  returns: { title: "Returns and refunds", placeholder: "Returns policy, to be defined by the owner." },
+  returns: { title: "Returns and refunds", placeholder: "This prototype uses fictional return windows shown on each seller offer. A window of 0 days means the offer is not eligible for returns. For an eligible demo order, open Account and submit a request with the private order access code. The platform reviews each request. Approval does not automatically issue a refund; refunds are simulated and handled separately by the platform. No item is shipped to a real carrier." },
   safety: { title: "Product safety notices", placeholder: "Product safety notices, to be defined." },
   help: { title: "Help center", placeholder: "Help articles, to be written." },
   terms: { title: "Terms of use", placeholder: "Legal text to be written and reviewed by a professional." },

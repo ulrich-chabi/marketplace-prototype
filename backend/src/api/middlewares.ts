@@ -11,6 +11,8 @@ import { ensureActiveVendor, ensureReadableVendor } from "./vendors/guard"
 import { PostVendorCreateSchema } from "./vendors/route"
 import { PostVendorStockSchema } from "./vendors/stock/route"
 import { PostOrderTrackingSchema } from "./store/order-tracking/route"
+import { PostReturnRequestSchema } from "./store/returns/route"
+import { PostReturnDecisionSchema } from "./admin/return-requests/[id]/route"
 
 export default defineMiddlewares({
   routes: [
@@ -67,6 +69,16 @@ export default defineMiddlewares({
       matcher: "/store/order-tracking",
       method: ["POST"],
       middlewares: [validateAndTransformBody(PostOrderTrackingSchema)],
+    },
+    {
+      matcher: "/store/returns",
+      method: ["POST"],
+      middlewares: [validateAndTransformBody(PostReturnRequestSchema)],
+    },
+    {
+      matcher: "/admin/return-requests/:id",
+      method: ["POST"],
+      middlewares: [validateAndTransformBody(PostReturnDecisionSchema)],
     },
   ],
 })

@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import { cookies } from "next/headers"
-import { forgetTrackedOrder, loginCustomer, lookupOrder, logoutCustomer, registerCustomer, updateCustomerProfile } from "@/lib/actions"
+import { forgetTrackedOrder, loginCustomer, lookupOrder, logoutCustomer, registerCustomer, requestReturn, updateCustomerProfile } from "@/lib/actions"
 import { money } from "@/lib/format"
 import { sdk } from "@/lib/medusa"
 
@@ -14,7 +14,8 @@ type DemoOrder = {
   fulfillment_status: string
   payment_status: string
   total: number
-  items: { title: string; quantity: number }[]
+  items: { id: string; title: string; quantity: number }[]
+  return_requests?: { order_item_id: string; status: string }[]
 }
 
 function label(value: string) {
@@ -65,6 +66,7 @@ export default async function AccountPage({
 
       {params.error && <p role="alert" className="mt-4 rounded-xl border border-terracotta bg-white p-4">We could not complete that account request. Check your details and try again.</p>}
       {params.saved === "1" && <p role="status" className="mt-4 rounded-xl border border-sand bg-white p-4">Your profile was updated.</p>}
+      {params.return === "sent" && <p role="status" className="mt-4 rounded-xl border border-sand bg-white p-4">Your return request was sent to the platform for review. Approval does not issue an automatic refund.</p>}
 
       {customer ? (
         <section className="mt-6 rounded-2xl border border-sand bg-white p-5">
@@ -116,8 +118,12 @@ export default async function AccountPage({
             <div className="rounded-xl bg-sand-soft p-3"><dt className="text-sm text-muted">Payment status</dt><dd className="font-semibold">Simulated · {label(order.payment_status)}</dd></div>
           </dl>
           <h3 className="mt-5 font-semibold">Items</h3>
-          <ul className="mt-2 space-y-2">
-            {order.items.map((item, index) => <li key={`${item.title}-${index}`} className="flex justify-between gap-4 border-b border-sand py-2"><span>{item.title} × {item.quantity}</span></li>)}
+          <ul className="mt-2 space-y-3">
+            {order.items.map((item, index) => {
+              const requests = order.return_requests?.filter((request) => request.order_item_id === item.id) ?? []
+              const active = requests.some((request) => request.status === "pending" || request.status === "approved")
+              return <li key={`${item.id}-${index}`} className="border-b border-sand py-3"><div>{item.title} × {item.quantity}</div>{requests.map((request, requestIndex) => <p key={`${request.status}-${requestIndex}`} className="mt-2 text-sm text-muted">Return request: {label(request.status)}{request.status === "approved" && " · Refunds are handled separately by the platform."}</p>)}{!active && <form action={requestReturn} className="mt-2 flex flex-wrap items-end gap-2"><input type="hidden" name="line_item_id" value={item.id} /><label className="text-sm">Qty<input name="quantity" type="number" min={1} max={Math.min(item.quantity, 10)} defaultValue={1} required className="ml-2 min-h-10 w-20 rounded-lg border border-muted px-2" /></label><label className="text-sm">Reason<select name="reason" defaultValue="damaged" className="ml-2 min-h-10 rounded-lg border border-muted px-2"><option value="damaged">Damaged</option><option value="wrong_item">Wrong item</option><option value="not_as_described">Not as described</option><option value="no_longer_needed">No longer needed</option></select></label><button type="submit" className="min-h-10 rounded-lg border border-muted px-3">Request return</button></form>}</li>
+            })}
           </ul>
           <p className="mt-4 flex justify-between text-lg"><span>Total</span><strong>{money(order.total)}</strong></p>
           <p className="mt-3 text-sm text-muted">Fulfillment is simulated. This page does not show a live carrier location.</p>

@@ -278,3 +278,26 @@ export async function updateCustomerProfile(formData: FormData) {
   revalidatePath("/account")
   redirect("/account?saved=1")
 }
+
+export async function requestReturn(formData: FormData) {
+  const lineItemId = String(formData.get("line_item_id") ?? "")
+  const quantity = Math.trunc(Number(formData.get("quantity") ?? 0))
+  const reason = String(formData.get("reason") ?? "")
+  if (!lineItemId || quantity < 1 || quantity > MAX_QTY || !["damaged", "wrong_item", "not_as_described", "no_longer_needed"].includes(reason)) {
+    redirect("/account?error=return")
+  }
+  const tracked = (await cookies()).get("tracked_order")?.value
+  let access: { order_id?: string; access_code?: string } = {}
+  try { access = tracked ? JSON.parse(tracked) : {} } catch { /* malformed cookie */ }
+  if (!access.order_id || !access.access_code) redirect("/account?error=return")
+  try {
+    await sdk.client.fetch("/store/returns", {
+      method: "POST",
+      body: { order_id: access.order_id, access_code: access.access_code, line_item_id: lineItemId, quantity, reason },
+    })
+  } catch {
+    redirect("/account?error=return")
+  }
+  revalidatePath("/account")
+  redirect("/account?return=sent")
+}

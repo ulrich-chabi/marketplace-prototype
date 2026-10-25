@@ -1,6 +1,7 @@
 import { medusaIntegrationTestRunner } from "@medusajs/test-utils"
 import { Modules } from "@medusajs/framework/utils"
 import { setupCommerce } from "../helpers/commerce-setup"
+import { MARKETPLACE_MODULE } from "../../src/modules/marketplace"
 
 jest.setTimeout(10 * 60 * 1000)
 
@@ -132,6 +133,9 @@ medusaIntegrationTestRunner({
       await createVendor("pending", false)
       await createVendorProduct("a", 10) // 2 x 10 = 20
       await createVendorProduct("b", 30) // 1 x 30 = 30
+      const marketplace: any = container.resolve(MARKETPLACE_MODULE)
+      await marketplace.updateVendors({ id: vendors.a.id, return_window_days: 30 })
+      await marketplace.updateVendors({ id: vendors.b.id, return_window_days: 30 })
 
       const cartId = await buildCart([
         { variantId: vendors.a.variantId!, quantity: 2 },
@@ -183,6 +187,47 @@ medusaIntegrationTestRunner({
           storeHeaders
         )
         expect(tracked.status).toBe(404)
+      })
+    })
+
+    describe("Demandes de retour", () => {
+      it("accepte une demande autorisée et la transmet à la plateforme", async () => {
+        const tracked = await call("post", "/store/order-tracking", {
+          order_id: order.id, access_code: trackingCode,
+        }, storeHeaders)
+        const item = tracked.data.order.items[0]
+        const requested = await call("post", "/store/returns", {
+          order_id: order.id, access_code: trackingCode, line_item_id: item.id,
+          quantity: 1, reason: "damaged",
+        }, storeHeaders)
+        expect(requested.status).toBe(201)
+        expect(requested.data.return_request.status).toBe("pending")
+
+        const queue = await call("get", "/admin/return-requests?status=pending", undefined, bearer(adminToken))
+        expect(queue.status).toBe(200)
+        expect(queue.data.return_requests.some((r: any) => r.id === requested.data.return_request.id)).toBe(true)
+        const decision = await call("post", `/admin/return-requests/${requested.data.return_request.id}`, {
+          status: "approved", decision_note: "request_approved",
+        }, bearer(adminToken))
+        expect(decision.status).toBe(200)
+        expect(decision.data.return_request.status).toBe("approved")
+      })
+
+      it("refuse un code invalide et empêche les quantités en double", async () => {
+        const tracked = await call("post", "/store/order-tracking", {
+          order_id: order.id, access_code: trackingCode,
+        }, storeHeaders)
+        const item = tracked.data.order.items[0]
+        const invalid = await call("post", "/store/returns", {
+          order_id: order.id, access_code: "x".repeat(43), line_item_id: item.id,
+          quantity: 1, reason: "damaged",
+        }, storeHeaders)
+        expect(invalid.status).toBe(404)
+        const overflow = await call("post", "/store/returns", {
+          order_id: order.id, access_code: trackingCode, line_item_id: item.id,
+          quantity: Number(item.quantity), reason: "wrong_item",
+        }, storeHeaders)
+        expect(overflow.status).toBe(403)
       })
     })
 
