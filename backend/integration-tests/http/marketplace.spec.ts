@@ -18,6 +18,7 @@ medusaIntegrationTestRunner({
     let adminToken: string
     const vendors: Record<string, { id: string; token: string; productId?: string; variantId?: string }> = {}
     let order: any
+    let trackingCode: string
     let vendorOrders: { id: string; vendor_id: string }[]
     let storeHeaders: Record<string, string>
 
@@ -142,6 +143,7 @@ medusaIntegrationTestRunner({
       const done = await call("post", `/store/carts/${cartId}/complete-vendor`, {}, storeHeaders)
       expect(done.status).toBe(200)
       order = done.data.order
+      trackingCode = done.data.tracking_code
       vendorOrders = done.data.vendor_orders
 
       // Paiement capturé, nécessaire pour pouvoir rembourser.
@@ -157,6 +159,32 @@ medusaIntegrationTestRunner({
     })
 
     const vendorOrderOf = (key: string) => vendorOrders.find((o) => o.vendor_id === vendors[key].id)!
+
+    describe("Suivi d'une commande démo", () => {
+      it("renvoie uniquement les informations de commande avec le code privé", async () => {
+        const tracked = await call(
+          "post",
+          "/store/order-tracking",
+          { order_id: order.id, access_code: trackingCode },
+          storeHeaders
+        )
+        expect(tracked.status).toBe(200)
+        expect(tracked.data.order.display_id).toBe(order.display_id)
+        expect(tracked.data.order.items).toHaveLength(2)
+        expect(tracked.data.order).not.toHaveProperty("email")
+        expect(tracked.data.order).not.toHaveProperty("shipping_address")
+      })
+
+      it("refuse un code privé invalide sans révéler la commande", async () => {
+        const tracked = await call(
+          "post",
+          "/store/order-tracking",
+          { order_id: order.id, access_code: "x".repeat(43) },
+          storeHeaders
+        )
+        expect(tracked.status).toBe(404)
+      })
+    })
 
     describe("Accès et permissions", () => {
       it("refuse les routes vendeur sans authentification", async () => {

@@ -127,20 +127,33 @@ export async function placeOrder(formData: FormData) {
     await sdk.store.payment.initiatePaymentSession(addressedCart, { provider_id: "pp_system_default" })
     const completed = await sdk.client.fetch<{
       order?: { id: string; display_id?: number; total?: number }
+      tracking_code?: string
       type?: string
       error?: { message?: string }
     }>(`/store/carts/${cartId}/complete-vendor`, { method: "POST", body: {} })
-    if (!completed.order) throw new Error(completed.error?.message ?? "The order could not be completed")
+    if (!completed.order || !completed.tracking_code) throw new Error(completed.error?.message ?? "The order could not be completed")
 
     const cookieStore = await cookies()
     cookieStore.set("checkout_receipt", JSON.stringify({
-      order: completed.order.display_id ?? completed.order.id,
+      order: completed.order.id,
+      orderNumber: completed.order.display_id,
       total: completed.order.total ?? null,
+      trackingCode: completed.tracking_code,
     }), {
       httpOnly: true,
       sameSite: "lax",
       path: "/checkout/confirmation",
       maxAge: 60 * 10,
+      secure: process.env.COOKIE_SECURE === "true",
+    })
+    cookieStore.set("tracked_order", JSON.stringify({
+      order_id: completed.order.id,
+      access_code: completed.tracking_code,
+    }), {
+      httpOnly: true,
+      sameSite: "lax",
+      path: "/account",
+      maxAge: 60 * 60 * 24 * 90,
       secure: process.env.COOKIE_SECURE === "true",
     })
     cookieStore.delete(CART_COOKIE)
@@ -150,4 +163,37 @@ export async function placeOrder(formData: FormData) {
     if (error && typeof error === "object" && "digest" in error) throw error
     redirect("/checkout?error=order")
   }
+}
+
+export async function lookupOrder(formData: FormData) {
+  const orderId = String(formData.get("order_id") ?? "").trim()
+  const accessCode = String(formData.get("access_code") ?? "").trim()
+  if (!/^order_[a-zA-Z0-9_]+$/.test(orderId) || accessCode.length < 40 || accessCode.length > 50) {
+    redirect("/account?error=lookup")
+  }
+
+  try {
+    await sdk.client.fetch("/store/order-tracking", {
+      method: "POST",
+      body: { order_id: orderId, access_code: accessCode },
+    })
+  } catch {
+    redirect("/account?error=lookup")
+  }
+
+  const cookieStore = await cookies()
+  cookieStore.set("tracked_order", JSON.stringify({ order_id: orderId, access_code: accessCode }), {
+    httpOnly: true,
+    sameSite: "lax",
+    path: "/account",
+    maxAge: 60 * 60 * 24 * 90,
+    secure: process.env.COOKIE_SECURE === "true",
+  })
+  redirect("/account")
+}
+
+export async function forgetTrackedOrder() {
+  const cookieStore = await cookies()
+  cookieStore.set("tracked_order", "", { httpOnly: true, sameSite: "lax", path: "/account", maxAge: 0 })
+  redirect("/account")
 }

@@ -10,6 +10,7 @@ import { loginRateLimit, enforcePasswordPolicy } from "./auth-security"
 import { ensureActiveVendor, ensureReadableVendor } from "./vendors/guard"
 import { PostVendorCreateSchema } from "./vendors/route"
 import { PostVendorStockSchema } from "./vendors/stock/route"
+import { PostOrderTrackingSchema } from "./store/order-tracking/route"
 
 export default defineMiddlewares({
   routes: [
@@ -61,6 +62,11 @@ export default defineMiddlewares({
       matcher: "/admin/vendor-orders/:id/refund",
       method: ["POST"],
       middlewares: [validateAndTransformBody(PostVendorOrderRefundSchema)],
+    },
+    {
+      matcher: "/store/order-tracking",
+      method: ["POST"],
+      middlewares: [validateAndTransformBody(PostOrderTrackingSchema)],
     },
   ],
 })

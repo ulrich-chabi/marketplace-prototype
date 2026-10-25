@@ -171,7 +171,11 @@ test.describe("Panier", () => {
     await page.getByLabel("ZIP code").fill("78701")
     await page.getByRole("button", { name: "Place demo order" }).click()
     await expect(page.getByRole("heading", { name: "Demo order placed" })).toBeVisible({ timeout: 30_000 })
+    await expect(page.getByText("Save this private order access code")).toBeVisible()
     await expect(cartLink(page)).toHaveAccessibleName("Cart, 0 items")
+    await page.getByRole("link", { name: "View order status" }).click()
+    await expect(page.getByRole("heading", { name: /^Your demo order #/ })).toBeVisible()
+    await expect(page.getByText("Shipping status")).toBeVisible()
   })
 })
 
