@@ -82,6 +82,13 @@ npm run dev
 
 Ouvrir http://localhost:8000. Vérifications : `npm run typecheck` puis `npm run build` dans `storefront`.
 
+Espaces du prototype :
+
+- Client : `http://localhost:8000/account` (compte et suivi de commande).
+- Vendeur : `http://localhost:8000/sell` (candidature, produits, stock et commandes).
+- Opérations plateforme : `http://localhost:8000/platform` (connexion avec le compte créé par `npx medusa user`).
+- Administration Medusa : `http://localhost:9000/app`.
+
 Si le catalogue a été créé avec une version précédente (avant les délais de livraison et retours des vendeurs), lancer
 une fois, depuis `backend` : `npx medusa db:migrate` puis `npx medusa exec ./src/scripts/set-demo-vendor-policies.ts`.
 
@@ -95,7 +102,7 @@ npx playwright install chromium    # une seule fois (téléchargement d'environ 
 npm run test:e2e
 ```
 
-Résultat attendu : `14 passed`. Le navigateur Chromium Playwright doit être installé une fois.
+Résultat attendu : `17 passed`. Le navigateur Chromium Playwright doit être installé une fois.
 
 Le parcours F3 de commande de démonstration se trouve au panier via **Continue to checkout**. Il utilise uniquement
 des informations fictives et un paiement simulé; aucun paiement réel n'est effectué.

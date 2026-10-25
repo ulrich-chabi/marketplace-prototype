@@ -203,6 +203,7 @@ export async function forgetTrackedOrder() {
 
 const CUSTOMER_TOKEN_COOKIE = "customer_token"
 const VENDOR_TOKEN_COOKIE = "vendor_token"
+const PLATFORM_TOKEN_COOKIE = "platform_token"
 
 function validCustomerForm(email: string, password: string) {
   return /^\S+@\S+\.\S+$/.test(email) && password.length >= 4 && password.length <= 128
@@ -408,4 +409,98 @@ export async function updateVendorStock(formData: FormData) {
   }
   revalidatePath("/sell")
   redirect("/sell?stock=updated")
+}
+
+export async function loginPlatformAdmin(formData: FormData) {
+  const email = String(formData.get("email") ?? "").trim().toLowerCase()
+  const password = String(formData.get("password") ?? "")
+  if (!validCustomerForm(email, password)) redirect("/platform?error=login")
+  try {
+    const { token } = await sdk.client.fetch<{ token: string }>("/auth/user/emailpass", {
+      method: "POST", body: { email, password },
+    })
+    await sdk.client.fetch("/admin/vendors", { headers: { Authorization: `Bearer ${token}` } })
+    ;(await cookies()).set(PLATFORM_TOKEN_COOKIE, token, {
+      httpOnly: true, sameSite: "lax", path: "/", maxAge: 60 * 60 * 8,
+      secure: process.env.COOKIE_SECURE === "true",
+    })
+  } catch {
+    redirect("/platform?error=login")
+  }
+  revalidatePath("/platform")
+  redirect("/platform")
+}
+
+export async function logoutPlatformAdmin() {
+  const cookieStore = await cookies()
+  cookieStore.set(PLATFORM_TOKEN_COOKIE, "", { httpOnly: true, sameSite: "lax", path: "/", maxAge: 0 })
+  revalidatePath("/platform")
+  redirect("/platform")
+}
+
+export async function setVendorStatus(formData: FormData) {
+  const vendorId = String(formData.get("vendor_id") ?? "")
+  const status = String(formData.get("status") ?? "")
+  const token = (await cookies()).get(PLATFORM_TOKEN_COOKIE)?.value
+  if (!token || !vendorId || !["active", "suspended"].includes(status)) redirect("/platform?error=status")
+  try {
+    await sdk.client.fetch(`/admin/vendors/${encodeURIComponent(vendorId)}/status`, {
+      method: "POST", body: { status }, headers: { Authorization: `Bearer ${token}` },
+    })
+  } catch {
+    redirect("/platform?error=status")
+  }
+  revalidatePath("/platform")
+  redirect("/platform?status=updated")
+}
+
+export async function decideReturnRequest(formData: FormData) {
+  const requestId = String(formData.get("request_id") ?? "")
+  const status = String(formData.get("status") ?? "")
+  const note = String(formData.get("decision_note") ?? "")
+  const token = (await cookies()).get(PLATFORM_TOKEN_COOKIE)?.value
+  const allowedNotes = ["request_approved", "outside_return_policy", "insufficient_information"]
+  if (!token || !requestId || !["approved", "rejected"].includes(status) || !allowedNotes.includes(note)) redirect("/platform?error=return")
+  try {
+    await sdk.client.fetch(`/admin/return-requests/${encodeURIComponent(requestId)}`, {
+      method: "POST", body: { status, decision_note: note }, headers: { Authorization: `Bearer ${token}` },
+    })
+  } catch {
+    redirect("/platform?error=return")
+  }
+  revalidatePath("/platform")
+  redirect("/platform?return=updated")
+}
+
+export async function refundVendorOrder(formData: FormData) {
+  const orderId = String(formData.get("vendor_order_id") ?? "")
+  const amount = Number(formData.get("amount"))
+  const reason = String(formData.get("reason") ?? "")
+  const token = (await cookies()).get(PLATFORM_TOKEN_COOKIE)?.value
+  if (!token || !orderId || !Number.isFinite(amount) || amount <= 0 || amount > 100000 || !["approved_return", "order_issue", "demo_adjustment"].includes(reason)) redirect("/platform?error=refund")
+  try {
+    await sdk.client.fetch(`/admin/vendor-orders/${encodeURIComponent(orderId)}/refund`, {
+      method: "POST", body: { amount: Math.round(amount * 100) / 100, reason: reason.slice(0, 100) },
+      headers: { Authorization: `Bearer ${token}` },
+    })
+  } catch {
+    redirect("/platform?error=refund")
+  }
+  revalidatePath("/platform")
+  redirect("/platform?refund=sent")
+}
+
+export async function captureDemoPayment(formData: FormData) {
+  const paymentId = String(formData.get("payment_id") ?? "")
+  const token = (await cookies()).get(PLATFORM_TOKEN_COOKIE)?.value
+  if (!token || !paymentId) redirect("/platform?error=capture")
+  try {
+    await sdk.client.fetch(`/admin/payments/${encodeURIComponent(paymentId)}/capture`, {
+      method: "POST", body: {}, headers: { Authorization: `Bearer ${token}` },
+    })
+  } catch {
+    redirect("/platform?error=capture")
+  }
+  revalidatePath("/platform")
+  redirect("/platform?capture=sent")
 }

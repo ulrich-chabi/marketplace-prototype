@@ -112,6 +112,15 @@ test.describe("Espace vendeur", () => {
   })
 })
 
+test.describe("Administration de plateforme", () => {
+  test("présente un formulaire de connexion sans exposer le tableau de bord", async ({ page }) => {
+    await page.goto("/platform")
+    await expect(page.getByRole("heading", { name: "Platform operations" })).toBeVisible()
+    await expect(page.getByRole("heading", { name: "Administrator sign in" })).toBeVisible()
+    await expect(page.getByRole("heading", { name: "Seller applications and access" })).toHaveCount(0)
+  })
+})
+
 test.describe("Fiche produit", () => {
   test("les offres sont triées par prix, sans offre mise en avant, avec livraison, retours et stock", async ({ page }) => {
     await page.goto((await productWithOffers(page))!)
@@ -243,7 +252,7 @@ test.describe("Comparateur", () => {
 test.describe("Accessibilité (WCAG 2.2 A et AA, contrôle automatique)", () => {
   test("pages principales", async ({ page }) => {
     const product = (await productWithOffers(page))!
-    for (const url of ["/", "/departments", "/categories/books", "/search?q=guide", "/search?q=zzzzqq", product, "/legal/terms", "/legal/returns", "/sell", "/cart", "/nope"]) {
+    for (const url of ["/", "/departments", "/categories/books", "/search?q=guide", "/search?q=zzzzqq", product, "/legal/terms", "/legal/returns", "/sell", "/platform", "/cart", "/nope"]) {
       await page.goto(url)
       await expectNoA11yViolations(page)
     }

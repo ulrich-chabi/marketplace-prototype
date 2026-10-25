@@ -261,6 +261,7 @@ medusaIntegrationTestRunner({
       })
 
       it("un jeton vendeur n'ouvre pas les routes d'administration", async () => {
+        expect((await call("get", "/admin/vendors", undefined, bearer(vendors.a.token))).status).toBe(401)
         const r = await call(
           "post",
           `/admin/vendor-orders/${vendorOrderOf("a").id}/refund`,
@@ -268,6 +269,13 @@ medusaIntegrationTestRunner({
           bearer(vendors.a.token)
         )
         expect(r.status).toBe(401)
+      })
+
+      it("la plateforme peut consulter les vendeurs et commandes vendeur", async () => {
+        expect((await call("get", "/admin/vendors", undefined, bearer(adminToken))).status).toBe(200)
+        const orders = await call("get", "/admin/vendor-orders", undefined, bearer(adminToken))
+        expect(orders.status).toBe(200)
+        expect(orders.data.orders.some((entry: any) => entry.id === vendorOrderOf("a").id)).toBe(true)
       })
     })
 
