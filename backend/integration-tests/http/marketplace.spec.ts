@@ -136,6 +136,9 @@ medusaIntegrationTestRunner({
         { variantId: vendors.a.variantId!, quantity: 2 },
         { variantId: vendors.b.variantId!, quantity: 1 },
       ])
+      const checkoutDetails = await call("get", `/store/carts/${cartId}/vendor-count`, undefined, storeHeaders)
+      expect(checkoutDetails.status).toBe(200)
+      expect(checkoutDetails.data.vendor_count).toBe(2)
       const done = await call("post", `/store/carts/${cartId}/complete-vendor`, {}, storeHeaders)
       expect(done.status).toBe(200)
       order = done.data.order

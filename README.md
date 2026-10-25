@@ -62,9 +62,9 @@ cd backend
 npx medusa exec ./src/scripts/seed-marketplace.ts
 ```
 
-Le script crée la boutique américaine (USD), 20 rayons, 7 vendeurs et 400 fiches catalogue (20 par rayon, réglable
-avec la variable `SEED_PRODUCTS_PER_CATEGORY`), puis affiche une **clé publique** (`pk_...`). Il refuse de s'exécuter
-si le catalogue contient déjà des fiches.
+Le script configure la boutique américaine (USD), la taxe fictive de 1 %, la livraison et la clé publique (`pk_...`).
+Sur une base vide, il crée aussi 20 rayons, 7 vendeurs et 400 fiches catalogue (20 par rayon, réglable avec
+`SEED_PRODUCTS_PER_CATEGORY`). Sur une base déjà alimentée, il met à jour les réglages de commande sans recréer le catalogue.
 
 Ensuite, deux terminaux :
 
@@ -95,7 +95,10 @@ npx playwright install chromium    # une seule fois (téléchargement d'environ 
 npm run test:e2e
 ```
 
-Résultat attendu : `13 passed`.
+Résultat attendu : `14 passed`. Le navigateur Chromium Playwright doit être installé une fois.
+
+Le parcours F3 de commande de démonstration se trouve au panier via **Continue to checkout**. Il utilise uniquement
+des informations fictives et un paiement simulé; aucun paiement réel n'est effectué.
 
 ## Tests
 

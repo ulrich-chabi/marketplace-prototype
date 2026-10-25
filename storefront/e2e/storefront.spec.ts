@@ -152,6 +152,27 @@ test.describe("Panier", () => {
     await page.goto("/cart")
     await expect(page.getByText("Your cart is empty.")).toBeVisible()
   })
+
+  test("affiche les frais avant commande et termine le paiement simulé", async ({ page }) => {
+    await page.goto((await productWithOffers(page, 1))!)
+    await page.locator("tbody tr").first().getByRole("button", { name: /^Add to cart from/ }).click()
+    await page.getByRole("link", { name: "Continue to checkout" }).click()
+    await expect(page.getByRole("heading", { name: "Checkout" })).toBeVisible()
+    await expect(page.getByText(/Payment is simulated/)).toBeVisible()
+    await expect(page.getByText("Shipping (1 package)")).toBeVisible()
+    await expectNoA11yViolations(page)
+
+    await page.getByLabel("Email address").fill("demo-buyer@example.test")
+    await page.getByLabel("First name").fill("Demo")
+    await page.getByLabel("Last name").fill("Buyer")
+    await page.getByLabel("Street address").fill("1 Fictional Street")
+    await page.getByLabel("City").fill("Austin")
+    await page.getByLabel("State").fill("TX")
+    await page.getByLabel("ZIP code").fill("78701")
+    await page.getByRole("button", { name: "Place demo order" }).click()
+    await expect(page.getByRole("heading", { name: "Demo order placed" })).toBeVisible({ timeout: 30_000 })
+    await expect(cartLink(page)).toHaveAccessibleName("Cart, 0 items")
+  })
 })
 
 test.describe("Comparateur", () => {

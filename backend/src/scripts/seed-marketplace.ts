@@ -20,8 +20,8 @@ import { CATALOG_MODULE } from "../modules/catalog"
 import setVendorStatusWorkflow from "../workflows/marketplace/set-vendor-status"
 import { BRANDS, COLORS, DEPARTMENTS, rng, VENDORS } from "./seed-data"
 
-// Alimente une base VIDE avec une boutique américaine (USD), des rayons, des
-// vendeurs fictifs et un catalogue fictif. À lancer une seule fois :
+// Configure la boutique américaine (USD), la taxe et la livraison. Si le catalogue
+// est vide, ajoute aussi les rayons, vendeurs et produits fictifs. Peut être relancé :
 //   npx medusa exec ./src/scripts/seed-marketplace.ts
 // Variable : SEED_PRODUCTS_PER_CATEGORY (20 par défaut).
 export default async function seedMarketplace({ container }: ExecArgs) {
@@ -32,10 +32,7 @@ export default async function seedMarketplace({ container }: ExecArgs) {
   const marketplace: any = container.resolve(MARKETPLACE_MODULE)
   const perCategory = Math.max(1, Number(process.env.SEED_PRODUCTS_PER_CATEGORY ?? 20))
 
-  if ((await catalogService.listCatalogProducts({}, { take: 1 })).length > 0) {
-    logger.info("Le catalogue contient déjà des fiches : rien à faire.")
-    return
-  }
+  const hasCatalog = (await catalogService.listCatalogProducts({}, { take: 1 })).length > 0
 
   // ---------- Boutique : devise, canal de vente, région, livraison ----------
   logger.info("Boutique : devise USD, région États-Unis, livraison forfaitaire…")
@@ -72,9 +69,22 @@ export default async function seedMarketplace({ container }: ExecArgs) {
     regionId = result[0].id
   }
   const taxRegions = await container.resolve(Modules.TAX).listTaxRegions({ country_code: "us" })
-  if (!taxRegions[0]) {
-    await createTaxRegionsWorkflow(container).run({
+  let taxRegion = taxRegions[0]
+  if (!taxRegion) {
+    const { result } = await createTaxRegionsWorkflow(container).run({
       input: [{ country_code: "us", provider_id: "tp_system" }],
+    })
+    taxRegion = result[0]
+  }
+  const taxModule = container.resolve(Modules.TAX)
+  const existingTaxRates = await taxModule.listTaxRates({ tax_region_id: taxRegion.id })
+  if (!existingTaxRates.length) {
+    await taxModule.createTaxRates({
+      tax_region_id: taxRegion.id,
+      name: "Demo tax (1%)",
+      code: "demo-tax-1-percent",
+      rate: 1,
+      is_default: true,
     })
   }
 
@@ -139,6 +149,12 @@ export default async function seedMarketplace({ container }: ExecArgs) {
     await linkSalesChannelsToApiKeyWorkflow(container).run({
       input: { id: key.id, add: [salesChannelId] },
     })
+  }
+
+  // Les réglages de commande restent idempotents même si le catalogue existe déjà.
+  if (hasCatalog) {
+    logger.info("Les réglages de boutique sont à jour; le catalogue existe déjà.")
+    return
   }
 
   // ---------- Rayons ----------

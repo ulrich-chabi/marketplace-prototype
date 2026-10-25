@@ -4,8 +4,8 @@ import { cookies } from "next/headers"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 import { fetchProduct } from "./catalog"
-import { CART_COOKIE, getCartId } from "./cart"
-import { sdk } from "./medusa"
+import { CART_COOKIE, getCart, getCartId } from "./cart"
+import { BACKEND_URL, PUBLISHABLE_KEY, sdk } from "./medusa"
 
 const MAX_QTY = 10
 
@@ -67,4 +67,87 @@ export async function removeLine(formData: FormData) {
   }
   revalidatePath("/", "layout")
   redirect("/cart")
+}
+
+export async function placeOrder(formData: FormData) {
+  const email = String(formData.get("email") ?? "").trim()
+  const firstName = String(formData.get("first_name") ?? "").trim()
+  const lastName = String(formData.get("last_name") ?? "").trim()
+  const address = String(formData.get("address_1") ?? "").trim()
+  const city = String(formData.get("city") ?? "").trim()
+  const state = String(formData.get("province") ?? "").trim()
+  const postal = String(formData.get("postal_code") ?? "").trim()
+  const phone = String(formData.get("phone") ?? "").trim()
+  if (!/^\S+@\S+\.\S+$/.test(email) || !firstName || !lastName || !address || !city || !state || !postal) {
+    redirect("/checkout?error=details")
+  }
+
+  const cartId = await getCartId()
+  const cart = await getCart()
+  if (!cartId || !cart?.items.length) redirect("/cart?error=empty")
+
+  try {
+    const headers = { "x-publishable-api-key": PUBLISHABLE_KEY }
+    const vendorResult = await fetch(`${BACKEND_URL}/store/carts/${cartId}/vendor-count`, { headers, cache: "no-store" })
+    if (!vendorResult.ok) throw new Error("A seller is unavailable")
+    const { vendor_count: vendorCount } = (await vendorResult.json()) as { vendor_count: number }
+    if (!vendorCount) throw new Error("The cart has no available items")
+
+    const { cart: addressedCart } = await sdk.store.cart.update(cartId, {
+      email,
+      shipping_address: {
+        first_name: firstName,
+        last_name: lastName,
+        address_1: address,
+        city,
+        province: state,
+        postal_code: postal,
+        country_code: "us",
+        phone: phone || undefined,
+      },
+      billing_address: {
+        first_name: firstName,
+        last_name: lastName,
+        address_1: address,
+        city,
+        province: state,
+        postal_code: postal,
+        country_code: "us",
+        phone: phone || undefined,
+      },
+    })
+
+    const { shipping_options: options } = await sdk.store.fulfillment.listCartOptions({ cart_id: cartId })
+    const standard = options.find((option: { id: string; name: string }) => option.name === "Standard") ?? options[0]
+    if (!standard) throw new Error("No shipping option is available for this address")
+    for (let i = 0; i < vendorCount; i++) {
+      await sdk.store.cart.addShippingMethod(cartId, { option_id: standard.id })
+    }
+
+    await sdk.store.payment.initiatePaymentSession(addressedCart, { provider_id: "pp_system_default" })
+    const completed = await sdk.client.fetch<{
+      order?: { id: string; display_id?: number; total?: number }
+      type?: string
+      error?: { message?: string }
+    }>(`/store/carts/${cartId}/complete-vendor`, { method: "POST", body: {} })
+    if (!completed.order) throw new Error(completed.error?.message ?? "The order could not be completed")
+
+    const cookieStore = await cookies()
+    cookieStore.set("checkout_receipt", JSON.stringify({
+      order: completed.order.display_id ?? completed.order.id,
+      total: completed.order.total ?? null,
+    }), {
+      httpOnly: true,
+      sameSite: "lax",
+      path: "/checkout/confirmation",
+      maxAge: 60 * 10,
+      secure: process.env.COOKIE_SECURE === "true",
+    })
+    cookieStore.delete(CART_COOKIE)
+    revalidatePath("/", "layout")
+    redirect("/checkout/confirmation")
+  } catch (error) {
+    if (error && typeof error === "object" && "digest" in error) throw error
+    redirect("/checkout?error=order")
+  }
 }

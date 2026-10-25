@@ -46,8 +46,15 @@ export async function setupCommerce(container: MedusaContainer) {
       ],
     },
   })
-  await createTaxRegionsWorkflow(container).run({
+  const { result: taxRegions } = await createTaxRegionsWorkflow(container).run({
     input: [{ country_code: "us", provider_id: "tp_system" }],
+  })
+  await container.resolve(Modules.TAX).createTaxRates({
+    tax_region_id: taxRegions[0].id,
+    name: "Demo tax (1%)",
+    code: "demo-tax-1-percent",
+    rate: 1,
+    is_default: true,
   })
 
   const { result: locations } = await createStockLocationsWorkflow(container).run({
