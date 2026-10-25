@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import { cookies } from "next/headers"
-import { forgetTrackedOrder, lookupOrder } from "@/lib/actions"
+import { forgetTrackedOrder, loginCustomer, lookupOrder, logoutCustomer, registerCustomer, updateCustomerProfile } from "@/lib/actions"
 import { money } from "@/lib/format"
 import { sdk } from "@/lib/medusa"
 
@@ -27,7 +27,9 @@ export default async function AccountPage({
   searchParams: Promise<Record<string, string | string[] | undefined>>
 }) {
   const params = await searchParams
-  const cookieValue = (await cookies()).get("tracked_order")?.value
+  const cookieStore = await cookies()
+  const cookieValue = cookieStore.get("tracked_order")?.value
+  const customerToken = cookieStore.get("customer_token")?.value
   let saved: { order_id?: string; access_code?: string } = {}
   try { saved = cookieValue ? JSON.parse(cookieValue) : {} } catch { /* ignore invalid saved value */ }
 
@@ -42,13 +44,63 @@ export default async function AccountPage({
     } catch { /* deleted or unavailable order */ }
   }
 
+  let customer: { email: string; first_name?: string | null; last_name?: string | null } | null = null
+  let orders: DemoOrder[] = []
+  if (customerToken) {
+    const headers = { Authorization: `Bearer ${customerToken}` }
+    try {
+      const response = await sdk.store.customer.retrieve({}, headers)
+      customer = response.customer
+      const orderResponse = await sdk.store.order.list({ fields: "id,display_id,created_at,status,fulfillment_status,payment_status,total,*items", limit: 50 }, headers)
+      orders = orderResponse.orders as unknown as DemoOrder[]
+    } catch {
+      customer = null
+    }
+  }
+
   return (
     <div className="mx-auto max-w-3xl px-6 py-10">
-      <h1 className="font-serif text-3xl">Account and demo orders</h1>
-      <p className="mt-3 text-muted">Look up a demo order with its reference and private access code. No account or real personal information is used.</p>
+      <h1 className="font-serif text-3xl">Your account</h1>
+      <p className="mt-3 text-muted">Manage your demo customer profile and orders. Payments and fulfillment remain simulated.</p>
+
+      {params.error && <p role="alert" className="mt-4 rounded-xl border border-terracotta bg-white p-4">We could not complete that account request. Check your details and try again.</p>}
+      {params.saved === "1" && <p role="status" className="mt-4 rounded-xl border border-sand bg-white p-4">Your profile was updated.</p>}
+
+      {customer ? (
+        <section className="mt-6 rounded-2xl border border-sand bg-white p-5">
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div><h2 className="text-xl font-semibold">Welcome, {customer.first_name || customer.email}</h2><p className="mt-1 text-sm text-muted">{customer.email}</p></div>
+            <form action={logoutCustomer}><button type="submit" className="min-h-11 rounded-xl border border-muted px-4">Sign out</button></form>
+          </div>
+          <form action={updateCustomerProfile} className="mt-5 grid gap-3 sm:grid-cols-2">
+            <label>First name<input name="first_name" required defaultValue={customer.first_name ?? ""} autoComplete="given-name" className="mt-1 min-h-11 w-full rounded-xl border border-muted px-3" /></label>
+            <label>Last name<input name="last_name" required defaultValue={customer.last_name ?? ""} autoComplete="family-name" className="mt-1 min-h-11 w-full rounded-xl border border-muted px-3" /></label>
+            <button type="submit" className="min-h-11 rounded-xl bg-terracotta px-5 text-white sm:col-span-2">Save profile</button>
+          </form>
+          <h2 className="mt-8 text-xl font-semibold">Order history</h2>
+          {orders.length ? <ul className="mt-3 divide-y divide-sand">{orders.map((item) => <li key={item.display_id} className="flex flex-wrap justify-between gap-2 py-3"><span>Order #{item.display_id} · {label(item.status)}</span><span>{new Date(item.created_at).toLocaleDateString("en-US")} · {money(item.total)}</span></li>)}</ul> : <p className="mt-2 text-muted">No account orders yet. Orders placed after sign-in will appear here.</p>}
+        </section>
+      ) : (
+        <section className="mt-6 grid gap-5 rounded-2xl border border-sand bg-white p-5 md:grid-cols-2">
+          <form action={loginCustomer} className="space-y-3">
+            <h2 className="text-xl font-semibold">Sign in</h2>
+            <label className="block">Email<input name="email" type="email" required autoComplete="email" className="mt-1 min-h-11 w-full rounded-xl border border-muted px-3" /></label>
+            <label className="block">Password<input name="password" type="password" required minLength={4} maxLength={128} autoComplete="current-password" className="mt-1 min-h-11 w-full rounded-xl border border-muted px-3" /></label>
+            <button type="submit" className="min-h-11 rounded-xl bg-terracotta px-5 text-white">Sign in</button>
+          </form>
+          <form action={registerCustomer} className="space-y-3">
+            <h2 className="text-xl font-semibold">Create an account</h2>
+            <div className="grid grid-cols-2 gap-3"><label>First name<input name="first_name" required autoComplete="given-name" className="mt-1 min-h-11 w-full rounded-xl border border-muted px-3" /></label><label>Last name<input name="last_name" required autoComplete="family-name" className="mt-1 min-h-11 w-full rounded-xl border border-muted px-3" /></label></div>
+            <label className="block">Email<input name="email" type="email" required autoComplete="email" className="mt-1 min-h-11 w-full rounded-xl border border-muted px-3" /></label>
+            <label className="block">Password<input name="password" type="password" required minLength={4} maxLength={128} autoComplete="new-password" className="mt-1 min-h-11 w-full rounded-xl border border-muted px-3" /></label>
+            <button type="submit" className="min-h-11 rounded-xl border border-muted px-5">Create account</button>
+          </form>
+        </section>
+      )}
 
       {params.error === "lookup" && <p role="alert" className="mt-4 rounded-xl border border-terracotta bg-white p-4">We could not find that order. Check the reference and private access code.</p>}
 
+      <h2 className="mt-8 text-2xl font-semibold">Guest order tracking</h2>
       {order ? (
         <section className="mt-6 rounded-2xl border border-sand bg-white p-5" aria-labelledby="order-heading">
           <div className="flex flex-wrap items-start justify-between gap-3">

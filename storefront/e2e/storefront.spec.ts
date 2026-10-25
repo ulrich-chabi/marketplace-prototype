@@ -89,6 +89,17 @@ test.describe("Parcourir", () => {
   })
 })
 
+test.describe("Compte client", () => {
+  test("propose inscription, connexion et suivi invité", async ({ page }) => {
+    await page.goto("/account")
+    await expect(page.getByRole("heading", { name: "Your account" })).toBeVisible()
+    await expect(page.getByRole("heading", { name: "Sign in" })).toBeVisible()
+    await expect(page.getByRole("heading", { name: "Create an account" })).toBeVisible()
+    await expect(page.getByRole("heading", { name: "Guest order tracking" })).toBeVisible()
+    await expect(page.getByLabel("Private access code")).toHaveAttribute("type", "password")
+  })
+})
+
 test.describe("Fiche produit", () => {
   test("les offres sont triées par prix, sans offre mise en avant, avec livraison, retours et stock", async ({ page }) => {
     await page.goto((await productWithOffers(page))!)

@@ -87,6 +87,9 @@ export async function placeOrder(formData: FormData) {
   if (!cartId || !cart?.items.length) redirect("/cart?error=empty")
 
   try {
+    const customerToken = (await cookies()).get(CUSTOMER_TOKEN_COOKIE)?.value
+    const customerHeaders = customerToken ? { Authorization: `Bearer ${customerToken}` } : undefined
+    if (customerHeaders) await sdk.store.cart.transferCart(cartId, {}, customerHeaders)
     const headers = { "x-publishable-api-key": PUBLISHABLE_KEY }
     const vendorResult = await fetch(`${BACKEND_URL}/store/carts/${cartId}/vendor-count`, { headers, cache: "no-store" })
     if (!vendorResult.ok) throw new Error("A seller is unavailable")
@@ -196,4 +199,82 @@ export async function forgetTrackedOrder() {
   const cookieStore = await cookies()
   cookieStore.set("tracked_order", "", { httpOnly: true, sameSite: "lax", path: "/account", maxAge: 0 })
   redirect("/account")
+}
+
+const CUSTOMER_TOKEN_COOKIE = "customer_token"
+
+function validCustomerForm(email: string, password: string) {
+  return /^\S+@\S+\.\S+$/.test(email) && password.length >= 4 && password.length <= 128
+}
+
+export async function registerCustomer(formData: FormData) {
+  const email = String(formData.get("email") ?? "").trim().toLowerCase()
+  const password = String(formData.get("password") ?? "")
+  const firstName = String(formData.get("first_name") ?? "").trim()
+  const lastName = String(formData.get("last_name") ?? "").trim()
+  if (!validCustomerForm(email, password) || !firstName || !lastName) redirect("/account?error=register")
+
+  try {
+    const { token } = await sdk.client.fetch<{ token: string }>("/auth/customer/emailpass/register", {
+      method: "POST", body: { email, password },
+    })
+    await sdk.client.fetch("/store/customers", {
+      method: "POST", body: { email, password, first_name: firstName, last_name: lastName },
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    const authenticated = await sdk.client.fetch<{ token: string }>("/auth/customer/emailpass", {
+      method: "POST", body: { email, password },
+    })
+    if (!authenticated.token) throw new Error("Missing customer token")
+    ;(await cookies()).set(CUSTOMER_TOKEN_COOKIE, authenticated.token, {
+      httpOnly: true, sameSite: "lax", path: "/", maxAge: 60 * 60 * 24 * 30,
+      secure: process.env.COOKIE_SECURE === "true",
+    })
+  } catch {
+    redirect("/account?error=register")
+  }
+  revalidatePath("/", "layout")
+  redirect("/account")
+}
+
+export async function loginCustomer(formData: FormData) {
+  const email = String(formData.get("email") ?? "").trim().toLowerCase()
+  const password = String(formData.get("password") ?? "")
+  if (!validCustomerForm(email, password)) redirect("/account?error=login")
+  try {
+    const { token } = await sdk.client.fetch<{ token: string }>("/auth/customer/emailpass", {
+      method: "POST", body: { email, password },
+    })
+    if (!token) throw new Error("Missing customer token")
+    await sdk.store.customer.retrieve({}, { Authorization: `Bearer ${token}` })
+    ;(await cookies()).set(CUSTOMER_TOKEN_COOKIE, token, {
+      httpOnly: true, sameSite: "lax", path: "/", maxAge: 60 * 60 * 24 * 30,
+      secure: process.env.COOKIE_SECURE === "true",
+    })
+  } catch {
+    redirect("/account?error=login")
+  }
+  revalidatePath("/", "layout")
+  redirect("/account")
+}
+
+export async function logoutCustomer() {
+  const cookieStore = await cookies()
+  cookieStore.set(CUSTOMER_TOKEN_COOKIE, "", { httpOnly: true, sameSite: "lax", path: "/", maxAge: 0 })
+  revalidatePath("/", "layout")
+  redirect("/account")
+}
+
+export async function updateCustomerProfile(formData: FormData) {
+  const firstName = String(formData.get("first_name") ?? "").trim()
+  const lastName = String(formData.get("last_name") ?? "").trim()
+  const token = (await cookies()).get(CUSTOMER_TOKEN_COOKIE)?.value
+  if (!token || !firstName || !lastName) redirect("/account?error=profile")
+  try {
+    await sdk.store.customer.update({ first_name: firstName, last_name: lastName }, {}, { Authorization: `Bearer ${token}` })
+  } catch {
+    redirect("/account?error=profile")
+  }
+  revalidatePath("/account")
+  redirect("/account?saved=1")
 }
