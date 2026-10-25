@@ -100,6 +100,18 @@ test.describe("Compte client", () => {
   })
 })
 
+test.describe("Espace vendeur", () => {
+  test("présente la connexion et le formulaire de candidature", async ({ page }) => {
+    await page.goto("/sell")
+    await expect(page.getByRole("heading", { name: "Seller space" })).toBeVisible()
+    await expect(page.getByRole("heading", { name: "Seller sign in" })).toBeVisible()
+    await expect(page.getByRole("heading", { name: "Apply to sell" })).toBeVisible()
+    await expect(page.getByLabel("Store name")).toBeVisible()
+    await page.getByRole("link", { name: "Become a seller" }).click()
+    await expect(page).toHaveURL(/\/sell$/)
+  })
+})
+
 test.describe("Fiche produit", () => {
   test("les offres sont triées par prix, sans offre mise en avant, avec livraison, retours et stock", async ({ page }) => {
     await page.goto((await productWithOffers(page))!)
@@ -231,7 +243,7 @@ test.describe("Comparateur", () => {
 test.describe("Accessibilité (WCAG 2.2 A et AA, contrôle automatique)", () => {
   test("pages principales", async ({ page }) => {
     const product = (await productWithOffers(page))!
-    for (const url of ["/", "/departments", "/categories/books", "/search?q=guide", "/search?q=zzzzqq", product, "/legal/terms", "/cart", "/nope"]) {
+    for (const url of ["/", "/departments", "/categories/books", "/search?q=guide", "/search?q=zzzzqq", product, "/legal/terms", "/legal/returns", "/sell", "/cart", "/nope"]) {
       await page.goto(url)
       await expectNoA11yViolations(page)
     }

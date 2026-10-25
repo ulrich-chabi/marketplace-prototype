@@ -233,8 +233,19 @@ medusaIntegrationTestRunner({
 
     describe("Accès et permissions", () => {
       it("refuse les routes vendeur sans authentification", async () => {
+        expect((await call("get", "/vendors")).status).toBe(401)
         expect((await call("get", "/vendors/products")).status).toBe(401)
         expect((await call("get", "/vendors/orders")).status).toBe(401)
+      })
+
+      it("expose uniquement le profil du vendeur authentifié, même en attente", async () => {
+        const active = await call("get", "/vendors", undefined, bearer(vendors.a.token))
+        expect(active.status).toBe(200)
+        expect(active.data.vendor.id).toBe(vendors.a.id)
+        expect(active.data.vendor.status).toBe("active")
+        const pending = await call("get", "/vendors", undefined, bearer(vendors.pending.token))
+        expect(pending.status).toBe(200)
+        expect(pending.data.vendor.status).toBe("pending")
       })
 
       it("refuse un vendeur en attente de validation", async () => {

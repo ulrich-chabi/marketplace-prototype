@@ -1,10 +1,11 @@
 import { AuthenticatedMedusaRequest, MedusaResponse } from "@medusajs/framework/http"
-import { MedusaError } from "@medusajs/framework/utils"
+import { ContainerRegistrationKeys, MedusaError } from "@medusajs/framework/utils"
 import { z } from "@medusajs/framework/zod"
 import { recordAudit } from "../../modules/security/audit"
 import createVendorWorkflow, {
   CreateVendorWorkflowInput,
 } from "../../workflows/marketplace/create-vendor"
+import { getVendorContext } from "./guard"
 
 export const PostVendorCreateSchema = z
   .object({
@@ -22,6 +23,17 @@ export const PostVendorCreateSchema = z
   .strict()
 
 type RequestBody = z.infer<typeof PostVendorCreateSchema>
+
+export const GET = async (req: AuthenticatedMedusaRequest, res: MedusaResponse) => {
+  const query = req.scope.resolve(ContainerRegistrationKeys.QUERY)
+  const { data: [admin] } = await query.graph({
+    entity: "vendor",
+    fields: ["id", "name", "handle", "status", "return_window_days", "delivery_days_min", "delivery_days_max"],
+    filters: { id: getVendorContext(req).vendorId },
+  })
+  if (!admin) throw new MedusaError(MedusaError.Types.UNAUTHORIZED, "Compte vendeur introuvable.")
+  res.json({ vendor: admin })
+}
 
 // Inscription d'un vendeur : le vendeur est créé "pending" et ne peut rien
 // faire tant que la plateforme ne l'a pas activé.

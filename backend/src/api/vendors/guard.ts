@@ -52,6 +52,8 @@ export const ensureVendor =
 export const ensureActiveVendor = ensureVendor(["active"])
 // Lecture des commandes : un vendeur suspendu peut encore voir ce qu'il doit honorer.
 export const ensureReadableVendor = ensureVendor(["active", "suspended"])
+// Le tableau de bord de base permet à un vendeur en attente de consulter son statut.
+export const ensureRegisteredVendor = ensureVendor(["pending", "active", "suspended"])
 
 export const getVendorContext = (req: AuthenticatedMedusaRequest): VendorContext =>
   (req as any).vendorContext

@@ -202,6 +202,7 @@ export async function forgetTrackedOrder() {
 }
 
 const CUSTOMER_TOKEN_COOKIE = "customer_token"
+const VENDOR_TOKEN_COOKIE = "vendor_token"
 
 function validCustomerForm(email: string, password: string) {
   return /^\S+@\S+\.\S+$/.test(email) && password.length >= 4 && password.length <= 128
@@ -300,4 +301,111 @@ export async function requestReturn(formData: FormData) {
   }
   revalidatePath("/account")
   redirect("/account?return=sent")
+}
+
+export async function registerVendor(formData: FormData) {
+  const name = String(formData.get("name") ?? "").trim()
+  const firstName = String(formData.get("first_name") ?? "").trim()
+  const lastName = String(formData.get("last_name") ?? "").trim()
+  const email = String(formData.get("email") ?? "").trim().toLowerCase()
+  const password = String(formData.get("password") ?? "")
+  if (!name || !firstName || !lastName || !validCustomerForm(email, password)) redirect("/sell?error=register")
+  try {
+    const { token: registrationToken } = await sdk.client.fetch<{ token: string }>("/auth/vendor/emailpass/register", {
+      method: "POST", body: { email, password },
+    })
+    await sdk.client.fetch("/vendors", {
+      method: "POST",
+      body: { name, admin: { email, first_name: firstName, last_name: lastName } },
+      headers: { Authorization: `Bearer ${registrationToken}` },
+    })
+    const { token } = await sdk.client.fetch<{ token: string }>("/auth/vendor/emailpass", {
+      method: "POST", body: { email, password },
+    })
+    ;(await cookies()).set(VENDOR_TOKEN_COOKIE, token, {
+      httpOnly: true, sameSite: "lax", path: "/", maxAge: 60 * 60 * 24 * 30,
+      secure: process.env.COOKIE_SECURE === "true",
+    })
+  } catch {
+    redirect("/sell?error=register")
+  }
+  revalidatePath("/sell")
+  redirect("/sell?registered=1")
+}
+
+export async function loginVendor(formData: FormData) {
+  const email = String(formData.get("email") ?? "").trim().toLowerCase()
+  const password = String(formData.get("password") ?? "")
+  if (!validCustomerForm(email, password)) redirect("/sell?error=login")
+  try {
+    const { token } = await sdk.client.fetch<{ token: string }>("/auth/vendor/emailpass", {
+      method: "POST", body: { email, password },
+    })
+    await sdk.client.fetch("/vendors", { headers: { Authorization: `Bearer ${token}` } })
+    ;(await cookies()).set(VENDOR_TOKEN_COOKIE, token, {
+      httpOnly: true, sameSite: "lax", path: "/", maxAge: 60 * 60 * 24 * 30,
+      secure: process.env.COOKIE_SECURE === "true",
+    })
+  } catch {
+    redirect("/sell?error=login")
+  }
+  revalidatePath("/sell")
+  redirect("/sell")
+}
+
+export async function logoutVendor() {
+  const cookieStore = await cookies()
+  cookieStore.set(VENDOR_TOKEN_COOKIE, "", { httpOnly: true, sameSite: "lax", path: "/", maxAge: 0 })
+  revalidatePath("/sell")
+  redirect("/sell")
+}
+
+export async function createVendorProduct(formData: FormData) {
+  const title = String(formData.get("title") ?? "").trim()
+  const description = String(formData.get("description") ?? "").trim()
+  const price = Number(formData.get("price"))
+  const stock = Math.trunc(Number(formData.get("stock")))
+  const token = (await cookies()).get(VENDOR_TOKEN_COOKIE)?.value
+  if (!token || title.length < 3 || title.length > 120 || !Number.isFinite(price) || price < 0.01 || price > 100000 || !Number.isInteger(stock) || stock < 0 || stock > 100000) {
+    redirect("/sell?error=product")
+  }
+  try {
+    const { product } = await sdk.client.fetch<{ product: { variants: { id: string }[] } }>("/vendors/products", {
+      method: "POST",
+      body: {
+        title, description: description.slice(0, 2000), status: "published",
+        options: [{ title: "Size", values: ["Standard"] }],
+        variants: [{ title: "Standard", options: { Size: "Standard" }, manage_inventory: true, prices: [{ amount: Math.round(price * 100) / 100, currency_code: "usd" }] }],
+      },
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    const variantId = product.variants?.[0]?.id
+    if (!variantId) throw new Error("Product variant missing")
+    await sdk.client.fetch("/vendors/stock", {
+      method: "POST", body: { variant_id: variantId, stocked_quantity: stock },
+      headers: { Authorization: `Bearer ${token}` },
+    })
+  } catch {
+    revalidatePath("/sell")
+    redirect("/sell?error=product-created")
+  }
+  revalidatePath("/sell")
+  redirect("/sell?product=created")
+}
+
+export async function updateVendorStock(formData: FormData) {
+  const variantId = String(formData.get("variant_id") ?? "")
+  const stock = Math.trunc(Number(formData.get("stocked_quantity")))
+  const token = (await cookies()).get(VENDOR_TOKEN_COOKIE)?.value
+  if (!token || !variantId || !Number.isInteger(stock) || stock < 0 || stock > 100000) redirect("/sell?error=stock")
+  try {
+    await sdk.client.fetch("/vendors/stock", {
+      method: "POST", body: { variant_id: variantId, stocked_quantity: stock },
+      headers: { Authorization: `Bearer ${token}` },
+    })
+  } catch {
+    redirect("/sell?error=stock")
+  }
+  revalidatePath("/sell")
+  redirect("/sell?stock=updated")
 }

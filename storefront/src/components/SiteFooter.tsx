@@ -10,7 +10,7 @@ export function SiteFooter() {
             <h2 className="mb-2 text-base font-semibold">{col.title}</h2>
             <ul className="space-y-2">
               {col.links.map(([slug, label]) => (
-                <li key={slug}><Link href={`/legal/${slug}`} className="text-cream">{label}</Link></li>
+                <li key={slug}><Link href={slug === "sell" || slug === "seller-sign-in" ? "/sell" : `/legal/${slug}`} className="text-cream">{label}</Link></li>
               ))}
             </ul>
           </section>

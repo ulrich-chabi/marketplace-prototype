@@ -7,7 +7,7 @@ import { AdminCreateProduct } from "@medusajs/medusa/api/admin/products/validato
 import { PostVendorStatusSchema } from "./admin/vendors/[id]/status/route"
 import { PostVendorOrderRefundSchema } from "./admin/vendor-orders/[id]/refund/route"
 import { loginRateLimit, enforcePasswordPolicy } from "./auth-security"
-import { ensureActiveVendor, ensureReadableVendor } from "./vendors/guard"
+import { ensureActiveVendor, ensureReadableVendor, ensureRegisteredVendor } from "./vendors/guard"
 import { PostVendorCreateSchema } from "./vendors/route"
 import { PostVendorStockSchema } from "./vendors/stock/route"
 import { PostOrderTrackingSchema } from "./store/order-tracking/route"
@@ -24,6 +24,11 @@ export default defineMiddlewares({
         authenticate("vendor", ["session", "bearer"], { allowUnregistered: true }),
         validateAndTransformBody(PostVendorCreateSchema),
       ],
+    },
+    {
+      matcher: "/vendors",
+      method: ["GET"],
+      middlewares: [authenticate("vendor", ["session", "bearer"]), ensureRegisteredVendor],
     },
     // Authentification : limitation des tentatives et longueur minimale du mot de passe.
     { matcher: "/auth/:actor_type/:auth_provider", method: ["POST"], middlewares: [loginRateLimit] },

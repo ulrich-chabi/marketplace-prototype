@@ -7,7 +7,7 @@ Ce parcours traduit les décisions validées dans `decisions.md` en étapes de l
 | F1–F4 | Catalogue, navigation, comparaison, panier, commande simulée et suivi invité | Livré; voir les comptes rendus F1–F4 |
 | F5 | Compte client : inscription, connexion, profil, historique et rattachement des nouvelles commandes | Implémenté; parcours avec backend réel à exécuter |
 | F6 | Demandes de retour cohérentes avec les politiques fictives du vendeur; décision et suivi plateforme | Implémenté; tests d'intégration et navigateur à exécuter dans un environnement complet |
-| F7 | Espace vendeur : état du compte, offres, stock et commandes; actions autorisées selon le rôle et l'état du vendeur | À faire |
+| F7 | Espace vendeur : état du compte, offres, stock et commandes; actions autorisées selon le rôle et l'état du vendeur | Implémenté; parcours réel à vérifier avec backend et navigateur |
 | F8 | Interface opérateur : activation/suspension, remboursements plafonnés et journal des actions | À faire |
 | F9 | Parcours mobile/tablette, accessibilité, pages légales, états d'erreur et cohérence UI | À faire |
 | F10 | Revue de sécurité/données, documentation d'installation et de vérification, suite complète de tests | À faire |
