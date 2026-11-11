@@ -8,7 +8,6 @@ jest.setTimeout(10 * 60 * 1000)
 type V = { id: string; token: string; productId?: string; variantId?: string; itemId?: string }
 
 medusaIntegrationTestRunner({
-  inApp: true,
   env: {},
   testSuite: ({ api, getContainer }) => {
     const call = makeCall(api)

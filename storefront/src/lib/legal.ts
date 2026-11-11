@@ -1,22 +1,21 @@
-// Pages d'information du pied de page. Les textes sont des EMPLACEMENTS : aucun
-// texte juridique n'est inventé, il sera rédigé par le propriétaire du projet.
-export const LEGAL_PAGES: Record<string, { title: string; placeholder: string }> = {
-  about: { title: "About this concept", placeholder: "Description of the project, to be written by the owner." },
-  accessibility: { title: "Accessibility", placeholder: "Accessibility statement, to be written after accessibility testing." },
-  contact: { title: "Contact us", placeholder: "Contact details, to be provided by the owner." },
-  sell: { title: "Become a seller", placeholder: "Seller onboarding (planned for the seller area)." },
-  "seller-sign-in": { title: "Seller sign in", placeholder: "Seller sign in (planned for the seller area)." },
-  advertise: { title: "Advertise your products", placeholder: "Sponsored listings program, to be defined." },
-  delivery: { title: "Delivery rates and times", placeholder: "Delivery policy (simulated in this prototype)." },
-  payments: { title: "Payment methods", placeholder: "Payments are simulated in this prototype: no real charge is made." },
-  currency: { title: "Currency", placeholder: "Prices are shown in US dollars (USD)." },
-  returns: { title: "Returns and refunds", placeholder: "This prototype uses fictional return windows shown on each seller offer. A window of 0 days means the offer is not eligible for returns. For an eligible demo order, open Account and submit a request with the private order access code. The platform reviews each request. Approval does not automatically issue a refund; refunds are simulated and handled separately by the platform. No item is shipped to a real carrier." },
-  safety: { title: "Product safety notices", placeholder: "Product safety notices, to be defined." },
-  help: { title: "Help center", placeholder: "Help articles, to be written." },
-  terms: { title: "Terms of use", placeholder: "Legal text to be written and reviewed by a professional." },
-  privacy: { title: "Privacy notice", placeholder: "Legal text to be written and reviewed by a professional." },
-  "ad-choices": { title: "Your ad choices", placeholder: "Advertising choices, to be defined." },
-  "sponsored-results": { title: "How sponsored results work", placeholder: "Explanation of sponsored results, to be written when the sponsored program exists." },
+// Information for the independent local prototype; this is not a production legal pack.
+export const LEGAL_PAGES: Record<string, { title: string; content: string }> = {
+  about: { title: "About this concept", content: "An independent multi-vendor marketplace prototype inspired by familiar online shopping patterns. It is not affiliated with Amazon. All brands, sellers, products and order data are fictional." },
+  accessibility: { title: "Accessibility", content: "The prototype includes keyboard navigation, a skip link, semantic page landmarks, visible focus styles and reduced-motion support. Automated WCAG checks are included in the browser test suite. No formal conformance certification is claimed." },
+  contact: { title: "Contact us", content: "This local prototype has no public customer-support address. During development, contact the project owner through the channel they provided." },
+  sell: { title: "Become a seller", content: "Apply to sell or sign in through the seller portal." },
+  "seller-sign-in": { title: "Seller sign in", content: "Sign in through the seller portal." },
+  advertise: { title: "Advertise your products", content: "Sponsored listings are not included in this prototype. Search results are not paid placements." },
+  delivery: { title: "Delivery rates and times", content: "Delivery dates are estimates for the demo. The fictional delivery window is shown on each seller offer. Checkout adds a simulated $5 shipping charge per seller package. No carrier is connected and no shipment is created." },
+  payments: { title: "Payment methods", content: "Payments are simulated. The prototype does not charge a card or send payment details to a payment provider." },
+  currency: { title: "Currency", content: "Prices and checkout totals are displayed in US dollars (USD). The 1% tax rate is fictional and is used only for this demo." },
+  returns: { title: "Returns and refunds", content: "This prototype uses fictional return windows shown on each seller offer. A window of 0 days means the offer is not eligible for returns. For an eligible demo order, open Account and submit a request with the private order access code. The platform reviews each request. Approval does not automatically issue a refund; refunds are simulated and handled separately by the platform. No item is shipped to a real carrier." },
+  safety: { title: "Product safety notices", content: "The catalog contains fictional demo products and has no real product safety notices. Do not use this prototype to make a real purchasing or safety decision." },
+  help: { title: "Help center", content: "Use Account to review orders and request an eligible return. Sellers can review their demo orders in Seller space. Platform operators manage applications, returns and simulated payments in Platform operations." },
+  terms: { title: "Terms of use", content: "This site is a local concept prototype for demonstration and development. Listings, sellers, delivery estimates, taxes, orders and payments are fictional or simulated. Do not rely on them for a real purchase or enter sensitive real-world information. A production service would need owner-approved terms before public launch." },
+  privacy: { title: "Privacy notice", content: "This local prototype may store account names and email addresses, checkout delivery details, seller applications, orders and security audit events in its PostgreSQL database. Guest order access codes are shown to the customer and only their SHA-256 hashes are stored with orders. Security audit emails and IP addresses are configured for removal after 90 days; failed-login records after 24 hours. Other customer and order data remains in the local database until the project owner removes it. Use fictional data during development. This summary describes the prototype and is not a production privacy notice." },
+  "ad-choices": { title: "Your ad choices", content: "This prototype has no advertising, ad personalization or sponsored product placements." },
+  "sponsored-results": { title: "How sponsored results work", content: "There are no sponsored results in this prototype. Products are not promoted through paid placement." },
 }
 
 export const FOOTER_COLUMNS: { title: string; links: [slug: string, label: string][] }[] = [

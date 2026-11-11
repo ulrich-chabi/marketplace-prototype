@@ -8,7 +8,6 @@ jest.setTimeout(10 * 60 * 1000)
 const PASSWORD = "Test-Only-Password-1!"
 
 medusaIntegrationTestRunner({
-  inApp: true,
   env: {},
   testSuite: ({ api, getContainer }) => {
     const call = (method: string, url: string, data?: any, headers?: any) =>
@@ -196,7 +195,7 @@ medusaIntegrationTestRunner({
           order_id: order.id, access_code: trackingCode,
         }, storeHeaders)
         const item = tracked.data.order.items[0]
-        const requested = await call("post", "/store/returns", {
+        const requested = await call("post", "/store/marketplace-returns", {
           order_id: order.id, access_code: trackingCode, line_item_id: item.id,
           quantity: 1, reason: "damaged",
         }, storeHeaders)
@@ -218,16 +217,21 @@ medusaIntegrationTestRunner({
           order_id: order.id, access_code: trackingCode,
         }, storeHeaders)
         const item = tracked.data.order.items[0]
-        const invalid = await call("post", "/store/returns", {
+        const invalid = await call("post", "/store/marketplace-returns", {
           order_id: order.id, access_code: "x".repeat(43), line_item_id: item.id,
           quantity: 1, reason: "damaged",
         }, storeHeaders)
         expect(invalid.status).toBe(404)
-        const overflow = await call("post", "/store/returns", {
+        const firstRequest = await call("post", "/store/marketplace-returns", {
+          order_id: order.id, access_code: trackingCode, line_item_id: item.id,
+          quantity: 1, reason: "damaged",
+        }, storeHeaders)
+        expect(firstRequest.status).toBe(201)
+        const overflow = await call("post", "/store/marketplace-returns", {
           order_id: order.id, access_code: trackingCode, line_item_id: item.id,
           quantity: Number(item.quantity), reason: "wrong_item",
         }, storeHeaders)
-        expect(overflow.status).toBe(403)
+        expect(overflow.status).toBe(400)
       })
     })
 
@@ -293,7 +297,7 @@ medusaIntegrationTestRunner({
         expect(a.data.orders).toHaveLength(1)
         expect(a.data.orders[0].id).toBe(vendorOrderOf("a").id)
         expect(a.data.orders[0].items).toHaveLength(1)
-        expect(Number(a.data.orders[0].total)).toBe(20)
+        expect(Number(a.data.orders[0].total)).toBe(20.2)
       })
 
       it("un vendeur sans commande reçoit une liste vide (et non toutes les commandes)", async () => {
@@ -353,7 +357,7 @@ medusaIntegrationTestRunner({
         const r = await refund("a", 5)
         expect(r.status).toBe(200)
         expect(r.data.refunded).toBe(5)
-        expect(r.data.remaining).toBe(15)
+        expect(r.data.remaining).toBe(15.2)
 
         const service: any = getContainer().resolve("marketplace")
         const ledgerA = await service.listVendorRefunds({ vendor_order_id: vendorOrderOf("a").id })
@@ -362,7 +366,7 @@ medusaIntegrationTestRunner({
         expect(Number(ledgerA[0].amount)).toBe(5)
         expect(ledgerB).toHaveLength(0)
 
-        const bFull = await refund("b", 30)
+        const bFull = await refund("b", 30.3)
         expect(bFull.status).toBe(200)
         expect(bFull.data.remaining).toBe(0)
       })

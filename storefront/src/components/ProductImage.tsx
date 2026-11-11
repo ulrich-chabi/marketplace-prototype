@@ -11,14 +11,14 @@ export function ProductImage({ title, category, className = "" }: { title: strin
   return (
     <svg
       role="img"
-      aria-label={`Placeholder illustration for ${title}`}
+      aria-label={`Demo illustration for ${title}`}
       viewBox="0 0 200 140"
       className={`block h-auto w-full rounded-xl ${className}`}
     >
       <rect width="200" height="140" fill={tintFor(category)} />
       <circle cx="100" cy="64" r="34" fill="#ffffff" opacity="0.6" />
       <text x="100" y="74" textAnchor="middle" fontSize="28" fontFamily="Georgia, serif" fill="#2b2420">{initials}</text>
-      <text x="100" y="124" textAnchor="middle" fontSize="10" fill="#5e524a">Placeholder image</text>
+      <text x="100" y="124" textAnchor="middle" fontSize="10" fill="#5e524a">Demo illustration</text>
     </svg>
   )
 }

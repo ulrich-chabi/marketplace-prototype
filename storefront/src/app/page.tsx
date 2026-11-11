@@ -18,7 +18,10 @@ export default async function HomePage() {
           <p className="mt-3 text-lg">Prices, fees and delivery shown before you commit.</p>
           <Link href="/search" className="mt-5 inline-block rounded-xl bg-white px-5 py-3 text-ink no-underline">Start searching</Link>
         </div>
-        <div aria-hidden="true" className="flex h-48 w-full items-center justify-center rounded-xl bg-sand text-muted lg:w-96">Hero image</div>
+        <div aria-hidden="true" className="grid h-48 w-full grid-cols-[1fr_auto] items-center gap-4 rounded-xl bg-sand-soft p-5 text-ink lg:w-96">
+          <div className="rounded-xl bg-white p-4 shadow-sm"><p className="text-xs uppercase tracking-wider text-muted">Marketplace concept</p><p className="mt-1 font-serif text-xl">Compare the details.</p><div className="mt-3 flex gap-2"><span className="h-2 w-16 rounded-full bg-terracotta" /><span className="h-2 w-10 rounded-full bg-teal" /><span className="h-2 w-7 rounded-full bg-sand" /></div></div>
+          <div className="flex h-14 w-14 items-center justify-center rounded-full bg-teal text-3xl text-white">✓</div>
+        </div>
       </section>
 
       <ul className="mt-5 grid gap-5 md:grid-cols-3">
@@ -56,7 +59,7 @@ export default async function HomePage() {
           <h2 id="sell" className="text-2xl font-semibold">Sell with us</h2>
           <p>Open a seller account and manage offers, stock and orders in one place.</p>
         </div>
-        <Link href="/legal/sell" className="rounded-xl bg-terracotta px-5 py-3 text-white no-underline">Become a seller</Link>
+        <Link href="/sell" className="rounded-xl bg-terracotta px-5 py-3 text-white no-underline">Become a seller</Link>
       </section>
     </div>
   )

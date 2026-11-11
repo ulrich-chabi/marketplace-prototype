@@ -23,7 +23,7 @@ marketplace-prototype/
 
 ## Prérequis (Windows)
 
-- Node.js 22 LTS (version testée : 22.22.2) — https://nodejs.org
+- Node.js 22.22+ requis par Medusa (version testée : 22.22.2) — https://nodejs.org
 - PostgreSQL 16 ou plus récent (version testée : 16) — https://www.postgresql.org/download/windows/
 - Git
 
@@ -98,16 +98,25 @@ Le backend (port 9000) ET le site (port 8000) doivent tourner, sur la base alime
 
 ```powershell
 cd storefront
+$env:PLAYWRIGHT_BROWSERS_PATH = Join-Path (Get-Location) ".playwright-browsers"
 npx playwright install chromium    # une seule fois (téléchargement d'environ 150 Mo)
 npm run test:e2e
 ```
 
-Résultat attendu : `17 passed`. Le navigateur Chromium Playwright doit être installé une fois.
+Résultat attendu : `19 passed`. Le navigateur Chromium Playwright doit être installé une fois.
 
 Le parcours F3 de commande de démonstration se trouve au panier via **Continue to checkout**. Il utilise uniquement
 des informations fictives et un paiement simulé; aucun paiement réel n'est effectué.
 
 ## Tests
+
+Après avoir configuré les deux fichiers `.env`, installé Chromium et lancé PostgreSQL, le backend et le storefront, la vérification complète se lance depuis la racine du dépôt :
+
+```powershell
+.\scripts\verify-prototype.ps1
+```
+
+Le script applique les migrations, utilise `DATABASE_URL` de `backend/.env` pour préparer les tests sans afficher le mot de passe, puis lance intégration, build backend, typecheck, build storefront et navigateur. `-SkipIntegration` et `-SkipBrowser` permettent de lancer les contrôles disponibles lorsqu'une dépendance locale manque.
 
 ```powershell
 cd backend

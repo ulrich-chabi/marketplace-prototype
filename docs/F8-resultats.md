@@ -15,6 +15,5 @@
 - Tests ajoutés pour vérifier que l'accès vendeur n'ouvre pas l'administration et que la plateforme consulte ses vues dédiées.
 - `backend`: `npx tsc --noEmit` réussi.
 - `storefront`: `npm run typecheck` réussi et `npx next build --webpack` réussi.
-- `npx playwright test --list` reconnaît les 17 tests du projet.
-- Le test navigateur plateforme échoue avant le lancement du test car le binaire Chromium manque. Le téléchargement Chromium échoue sur la résolution DNS `cdn.playwright.dev`.
-- La suite d'intégration ciblée échoue avant le chargement des tests à cause du module natif SWC absent (`@swc/core`).
+- Suite d'intégration HTTP complète : 6 suites, 49 tests réussis, dont les contrôles d'accès et d'opérations admin.
+- Suite Playwright complète : 19 tests réussis, dont l'accès admin et l'absence de tableau de bord avant connexion.

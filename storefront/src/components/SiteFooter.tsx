@@ -2,6 +2,7 @@ import Link from "next/link"
 import { FOOTER_COLUMNS } from "@/lib/legal"
 
 export function SiteFooter() {
+  const year = new Date().getFullYear()
   return (
     <footer className="mt-12 bg-ink px-6 py-8 text-cream lg:px-10">
       <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
@@ -22,7 +23,7 @@ export function SiteFooter() {
           <li key={slug}><Link href={`/legal/${slug}`} className="text-cream">{label}</Link></li>
         ))}
       </ul>
-      <p className="mt-4 text-sm">&copy; [year] [owner]. Independent concept prototype, not affiliated with Amazon. All products and sellers are fictional.</p>
+      <p className="mt-4 text-sm">&copy; {year} Marketplace concept. Independent prototype, not affiliated with Amazon. All products and sellers are fictional.</p>
     </footer>
   )
 }

@@ -121,6 +121,28 @@ test.describe("Administration de plateforme", () => {
   })
 })
 
+test.describe("Responsive", () => {
+  test("les parcours principaux ne débordent pas sur téléphone et tablette", async ({ page }) => {
+    for (const viewport of [{ width: 360, height: 800 }, { width: 768, height: 1024 }]) {
+      await page.setViewportSize(viewport)
+      for (const url of ["/", "/account", "/sell", "/platform", "/legal/privacy", "/compare"]) {
+        await page.goto(url)
+        const width = await page.evaluate(() => ({ client: document.documentElement.clientWidth, scroll: document.documentElement.scrollWidth }))
+        expect(width.scroll, `${url} at ${viewport.width}px`).toBeLessThanOrEqual(width.client + 1)
+      }
+    }
+  })
+})
+
+test.describe("Accessibilité des portails", () => {
+  test("les écrans de compte et d'information respectent les contrôles automatisés", async ({ page }) => {
+    for (const url of ["/account", "/sell", "/platform", "/legal/privacy", "/legal/returns"]) {
+      await page.goto(url)
+      await expectNoA11yViolations(page)
+    }
+  })
+})
+
 test.describe("Fiche produit", () => {
   test("les offres sont triées par prix, sans offre mise en avant, avec livraison, retours et stock", async ({ page }) => {
     await page.goto((await productWithOffers(page))!)
@@ -252,7 +274,7 @@ test.describe("Comparateur", () => {
 test.describe("Accessibilité (WCAG 2.2 A et AA, contrôle automatique)", () => {
   test("pages principales", async ({ page }) => {
     const product = (await productWithOffers(page))!
-    for (const url of ["/", "/departments", "/categories/books", "/search?q=guide", "/search?q=zzzzqq", product, "/legal/terms", "/legal/returns", "/sell", "/platform", "/cart", "/nope"]) {
+    for (const url of ["/", "/departments", "/categories/books", "/search?q=guide", "/search?q=zzzzqq", product, "/legal/terms", "/legal/returns", "/legal/privacy", "/sell", "/platform", "/cart", "/nope"]) {
       await page.goto(url)
       await expectNoA11yViolations(page)
     }

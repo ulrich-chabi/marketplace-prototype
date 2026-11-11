@@ -7,7 +7,6 @@ import { bearer, createAdminToken, createVendor, makeCall, productBody } from ".
 jest.setTimeout(10 * 60 * 1000)
 
 medusaIntegrationTestRunner({
-  inApp: true,
   env: {},
   testSuite: ({ api, getContainer }) => {
     const call = makeCall(api)

@@ -15,7 +15,7 @@ export default async function LegalPage({ params }: Props) {
   return (
     <div className="mx-auto max-w-3xl px-6 py-10">
       <h1 className="font-serif text-3xl">{page.title}</h1>
-      <p className="mt-4 rounded-2xl border border-sand bg-white p-5">{page.placeholder}</p>
+      <p className="mt-4 whitespace-pre-line rounded-2xl border border-sand bg-white p-5">{page.content}</p>
     </div>
   )
 }

@@ -293,7 +293,7 @@ export async function requestReturn(formData: FormData) {
   try { access = tracked ? JSON.parse(tracked) : {} } catch { /* malformed cookie */ }
   if (!access.order_id || !access.access_code) redirect("/account?error=return")
   try {
-    await sdk.client.fetch("/store/returns", {
+    await sdk.client.fetch("/store/marketplace-returns", {
       method: "POST",
       body: { order_id: access.order_id, access_code: access.access_code, line_item_id: lineItemId, quantity, reason },
     })

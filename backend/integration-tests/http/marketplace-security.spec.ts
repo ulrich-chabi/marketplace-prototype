@@ -12,7 +12,6 @@ const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
 type V = { id: string; token: string; variantId?: string; productId?: string }
 
 medusaIntegrationTestRunner({
-  inApp: true,
   env: {},
   testSuite: ({ api, getContainer }) => {
     const call = makeCall(api)

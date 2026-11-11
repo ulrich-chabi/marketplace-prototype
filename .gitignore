@@ -1,7 +1,9 @@
 node_modules/
+.playwright-browsers/
 .env
 .env.*
 !.env.template
+!.env.local.example
 .medusa/
 dist/
 build/

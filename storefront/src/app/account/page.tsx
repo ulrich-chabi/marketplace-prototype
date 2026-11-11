@@ -18,7 +18,8 @@ type DemoOrder = {
   return_requests?: { order_item_id: string; status: string }[]
 }
 
-function label(value: string) {
+function label(value?: string | null) {
+  if (!value) return "Not available"
   return value.replaceAll("_", " ").replace(/\b\w/g, (letter) => letter.toUpperCase())
 }
 

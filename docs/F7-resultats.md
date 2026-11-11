@@ -15,7 +15,8 @@
 - `storefront`: `npm run typecheck` réussi.
 - `storefront`: `npx next build --webpack` réussi après une première erreur temporaire `EPERM` à la création d'un dossier `.next`.
 - Tests ajoutés : statut vendeur actif/en attente, formulaires d'entrée, accès aux pages et contrôle d'accessibilité.
-- Les tests d'intégration et Playwright restent à exécuter sur l'installation locale complète; voir les blocages SWC et Chromium consignés dans `F6-resultats.md`.
+- Suite d'intégration HTTP complète : 6 suites, 49 tests réussis.
+- Suite Playwright complète : 19 tests réussis; le parcours de candidature est également contrôlé sur petits et moyens écrans et par axe.
 
 ## Limites de cette version
 

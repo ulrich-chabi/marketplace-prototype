@@ -15,12 +15,11 @@
 - `storefront`: `npm run typecheck` réussi.
 - `storefront`: `npx next build --webpack` réussi.
 - Tests ajoutés : demande admissible, code invalide, quantité déjà demandée, décision plateforme et parcours client.
-- Tests d'intégration non exécutables dans l'environnement actuel : le chargement natif de SWC (`@swc/core`) échoue avant le démarrage de Jest; les serveurs locaux ne sont pas accessibles depuis la sandbox.
-- Test Playwright non exécuté : le binaire Chromium manque et le téléchargement échoue car `cdn.playwright.dev` ne résout pas dans cet environnement.
-- La génération automatique Medusa de migration est également bloquée par SWC; la migration et le snapshot du schéma ont été ajoutés explicitement et passent le contrôle TypeScript/JSON, mais devront être validés avec PostgreSQL lors du prochain lancement local.
+- Migration F6 appliquée sur la base PostgreSQL locale.
+- La suite HTTP complète passe : 6 suites, 49 tests réussis, dont 20 scénarios marketplace/retours.
+- La suite Playwright complète passe : 19 tests réussis, y compris la création de commande et la demande de retour.
+- Un conflit avec la route de retour native Medusa a été corrigé en déplaçant l'API marketplace vers `/store/marketplace-returns`.
 
 ## À rejouer sur le poste
 
-1. Depuis `backend`, appliquer les migrations avec `npx medusa db:migrate`.
-2. Lancer `npm run test:integration:http` depuis `backend`.
-3. Démarrer backend et storefront, puis exécuter `npx playwright install chromium` et `npm run test:e2e` depuis `storefront`.
+Le script racine `scripts/verify-prototype.ps1` rejoue migrations, tests backend, typecheck et build. Pour Playwright, démarrer l'API et le storefront, puis lancer `npm run test:e2e` depuis `storefront`.
