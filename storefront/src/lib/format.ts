@@ -1,5 +1,5 @@
-export function money(amount: number, currency = "usd") {
-  return new Intl.NumberFormat("en-US", { style: "currency", currency: currency.toUpperCase() }).format(amount)
+export function money(amount: number, currency = "cad") {
+  return new Intl.NumberFormat("en-CA", { style: "currency", currency: currency.toUpperCase() }).format(amount)
 }
 
 export function deliveryText(min: number | null, max: number | null) {

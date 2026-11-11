@@ -44,7 +44,7 @@ export type CatalogQuery = {
   offset?: number
 }
 
-// Région de vente : celle qui porte la devise demandée (USD par défaut).
+// Région de vente : celle qui porte la devise demandée (CAD par défaut).
 async function regionFor(query: any, currency: string) {
   const { data } = await query.graph({
     entity: "region",
@@ -100,7 +100,7 @@ export type CatalogPage = {
 export async function loadCatalog(
   container: MedusaContainer,
   q: CatalogQuery,
-  currency = "usd"
+  currency = "cad"
 ): Promise<CatalogPage> {
   const query: any = container.resolve(ContainerRegistrationKeys.QUERY)
   const region = await regionFor(query, currency)

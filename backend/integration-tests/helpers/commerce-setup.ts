@@ -13,7 +13,7 @@ import {
   updateStoresWorkflow,
 } from "@medusajs/medusa/core-flows"
 
-// Boutique de test : États-Unis, USD, livraison forfaitaire, paiement système.
+// Boutique de test : Canada, CAD, livraison forfaitaire, paiement système.
 export async function setupCommerce(container: MedusaContainer) {
   const link = container.resolve(ContainerRegistrationKeys.LINK)
   const fulfillment = container.resolve(Modules.FULFILLMENT)
@@ -28,7 +28,7 @@ export async function setupCommerce(container: MedusaContainer) {
     input: {
       selector: { id: store.id },
       update: {
-        supported_currencies: [{ currency_code: "usd", is_default: true }],
+        supported_currencies: [{ currency_code: "cad", is_default: true }],
         default_sales_channel_id: channel.id,
       },
     },
@@ -38,16 +38,16 @@ export async function setupCommerce(container: MedusaContainer) {
     input: {
       regions: [
         {
-          name: "United States",
-          currency_code: "usd",
-          countries: ["us"],
+          name: "Canada",
+          currency_code: "cad",
+          countries: ["ca"],
           payment_providers: ["pp_system_default"],
         },
       ],
     },
   })
   const { result: taxRegions } = await createTaxRegionsWorkflow(container).run({
-    input: [{ country_code: "us", provider_id: "tp_system" }],
+    input: [{ country_code: "ca", provider_id: "tp_system" }],
   })
   await container.resolve(Modules.TAX).createTaxRates({
     tax_region_id: taxRegions[0].id,
@@ -60,7 +60,7 @@ export async function setupCommerce(container: MedusaContainer) {
   const { result: locations } = await createStockLocationsWorkflow(container).run({
     input: {
       locations: [
-        { name: "US Warehouse", address: { city: "Austin", country_code: "US", address_1: "" } },
+        { name: "Canada Warehouse", address: { city: "Toronto", country_code: "CA", address_1: "" } },
       ],
     },
   })
@@ -82,9 +82,9 @@ export async function setupCommerce(container: MedusaContainer) {
   }
 
   const set = await fulfillment.createFulfillmentSets({
-    name: "US delivery",
+    name: "Canada delivery",
     type: "shipping",
-    service_zones: [{ name: "US", geo_zones: [{ country_code: "us", type: "country" }] }],
+    service_zones: [{ name: "Canada", geo_zones: [{ country_code: "ca", type: "country" }] }],
   })
   await link.create({
     [Modules.STOCK_LOCATION]: { stock_location_id: location.id },
@@ -100,7 +100,7 @@ export async function setupCommerce(container: MedusaContainer) {
         service_zone_id: set.service_zones[0].id,
         shipping_profile_id: profile.id,
         type: { label: "Standard", description: "Test shipping", code: "standard" },
-        prices: [{ currency_code: "usd", amount: 5 }],
+        prices: [{ currency_code: "cad", amount: 5 }],
         rules: [
           { attribute: "enabled_in_store", value: "true", operator: "eq" },
           { attribute: "is_return", value: "false", operator: "eq" },

@@ -48,11 +48,11 @@ export default async function CheckoutPage({
           <label className="block">Street address<input name="address_1" required autoComplete="street-address" className="mt-1 min-h-11 w-full rounded-xl border border-muted px-3" /></label>
           <div className="grid gap-4 sm:grid-cols-2">
             <label className="block">City<input name="city" required autoComplete="address-level2" className="mt-1 min-h-11 w-full rounded-xl border border-muted px-3" /></label>
-            <label className="block">State<input name="province" required autoComplete="address-level1" className="mt-1 min-h-11 w-full rounded-xl border border-muted px-3" /></label>
-            <label className="block">ZIP code<input name="postal_code" required autoComplete="postal-code" className="mt-1 min-h-11 w-full rounded-xl border border-muted px-3" /></label>
+            <label className="block">Province or territory<input name="province" required autoComplete="address-level1" className="mt-1 min-h-11 w-full rounded-xl border border-muted px-3" /></label>
+            <label className="block">Postal code<input name="postal_code" required autoComplete="postal-code" className="mt-1 min-h-11 w-full rounded-xl border border-muted px-3" /></label>
             <label className="block">Phone (optional)<input name="phone" type="tel" autoComplete="tel" className="mt-1 min-h-11 w-full rounded-xl border border-muted px-3" /></label>
           </div>
-          <p className="text-sm text-muted">Delivery is simulated for the United States.</p>
+          <p className="text-sm text-muted">Delivery is limited to Canada in this prototype.</p>
           <button type="submit" className="min-h-11 rounded-xl bg-terracotta px-5 text-white">Place demo order</button>
         </form>
 

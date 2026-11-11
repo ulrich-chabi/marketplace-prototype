@@ -105,7 +105,7 @@ export async function placeOrder(formData: FormData) {
         city,
         province: state,
         postal_code: postal,
-        country_code: "us",
+        country_code: "ca",
         phone: phone || undefined,
       },
       billing_address: {
@@ -115,7 +115,7 @@ export async function placeOrder(formData: FormData) {
         city,
         province: state,
         postal_code: postal,
-        country_code: "us",
+        country_code: "ca",
         phone: phone || undefined,
       },
     })
@@ -376,7 +376,7 @@ export async function createVendorProduct(formData: FormData) {
       body: {
         title, description: description.slice(0, 2000), status: "published",
         options: [{ title: "Size", values: ["Standard"] }],
-        variants: [{ title: "Standard", options: { Size: "Standard" }, manage_inventory: true, prices: [{ amount: Math.round(price * 100) / 100, currency_code: "usd" }] }],
+        variants: [{ title: "Standard", options: { Size: "Standard" }, manage_inventory: true, prices: [{ amount: Math.round(price * 100) / 100, currency_code: "cad" }] }],
       },
       headers: { Authorization: `Bearer ${token}` },
     })

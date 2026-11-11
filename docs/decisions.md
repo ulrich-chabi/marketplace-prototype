@@ -5,7 +5,7 @@ Statuts : validée / proposée / à confirmer / rejetée / hors périmètre. Der
 | # | Décision | Statut | Étape |
 |---|---|---|---|
 | 1 | Prototype de refonte UI/UX d'Amazon.com, proposition indépendante, sans infrastructure de production | validée | A |
-| 2 | Marché : États-Unis, anglais américain, USD | validée | A |
+| 2 | Marché de lancement : Canada uniquement; devise CAD et anglais canadien par défaut. Province d'exploitation, fiscalité réelle et offre française à définir avant lancement | validée pour la portée, paramètres commerciaux à définir | A |
 | 3 | Modèle hybride (ventes directes + vendeurs tiers), commandes multi-vendeurs | validée | A |
 | 4 | Paiements, livraisons, commissions, versements simulés ; aucune transaction réelle | validée | A |
 | 5 | Budget 0 à 1 $ ; calendrier initial 3 mois, dépassement accepté | validée | A |
@@ -42,7 +42,7 @@ Statuts : validée / proposée / à confirmer / rejetée / hors périmètre. Der
 | 36 | Terracotta assombri (#A33F22) : le précédent (#B4492A) était sous le seuil de contraste sur le fond sable des menus | validée; les couleurs principales dépassent 4,5:1 au contrôle de contraste | F |
 | 37 | Site non indexé par les moteurs de recherche (prototype) | validée pour le prototype; retirer le blocage uniquement lors d'une diffusion préparée | F |
 | 38 | Fiche produit : offres triées par prix, aucune offre mise en avant, mention « Lowest price » sur la moins chère | validée et testée | F2 |
-| 39 | Livraison et retours : délais (jours ouvrés) et durée de retour propres à chaque vendeur, valeurs FICTIVES ; livraison forfaitaire de 5 USD par colis vendeur | validée comme données de démonstration seulement | F2 |
+| 39 | Livraison et retours : délais (jours ouvrés) et durée de retour propres à chaque vendeur, valeurs FICTIVES ; livraison forfaitaire de 5 CAD par colis vendeur | validée comme données de démonstration seulement | F2 |
 | 40 | Stock affiché par offre (stocké moins réservé) : « In stock », « Only N left » jusqu'à 5, « Out of stock » | validée et testée | F2 |
 | 41 | Panier : identifiant gardé dans un cookie essentiel (httpOnly, sans traceur), lignes regroupées par vendeur, l'offre est relue côté serveur à l'ajout | validée et testée | F2 |
 | 42 | Comparateur : 2 à 4 produits, sélection gardée dans le navigateur (localStorage), comparaison sur l'offre la moins chère | validée et testée | F2 |

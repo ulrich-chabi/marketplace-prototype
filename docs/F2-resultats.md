@@ -22,7 +22,7 @@
 ## Non fait / limites connues
 
 - Pas de commande ni de paiement (F3) ; la quantité d'une ligne ne se modifie pas encore dans le panier.
-- Livraison : un tarif unique de 5 USD par colis vendeur, délais et retours fictifs ; pas de livraison par vendeur réelle.
+- Livraison : un tarif unique fictif de 5 CAD par colis vendeur, délais et retours fictifs ; pas de livraison par vendeur réelle.
 - Pas de contenu sponsorisé, de recommandations, d'avis ni de notes (aucune donnée ne les porte).
 - Les tests de bout en bout dépendent du catalogue de démonstration et d'un navigateur de test à installer (`npx playwright install chromium`). Dans l'environnement de l'assistant, ils ont tourné avec un navigateur déjà présent, non avec celui téléchargé par Playwright : à confirmer chez vous.
 - Aucun test automatique ne couvre encore la mise en page sur mobile et tablette.

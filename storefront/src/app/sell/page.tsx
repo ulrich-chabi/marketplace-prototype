@@ -72,7 +72,7 @@ export default async function SellerPage({ searchParams }: { searchParams: Promi
               <form action={createVendorProduct} className="mt-4 grid gap-4 sm:grid-cols-2">
                 <label className="sm:col-span-2">Product name<input name="title" minLength={3} maxLength={120} required className="mt-1 min-h-11 w-full rounded-xl border border-muted px-3" /></label>
                 <label className="sm:col-span-2">Description<textarea name="description" maxLength={2000} rows={3} className="mt-1 w-full rounded-xl border border-muted px-3 py-2" /></label>
-                <label>Price (USD)<input name="price" type="number" min="0.01" max="100000" step="0.01" required className="mt-1 min-h-11 w-full rounded-xl border border-muted px-3" /></label>
+                <label>Price (CAD)<input name="price" type="number" min="0.01" max="100000" step="0.01" required className="mt-1 min-h-11 w-full rounded-xl border border-muted px-3" /></label>
                 <label>Starting stock<input name="stock" type="number" min="0" max="100000" step="1" required className="mt-1 min-h-11 w-full rounded-xl border border-muted px-3" /></label>
                 <button type="submit" className="min-h-11 rounded-xl bg-terracotta px-5 text-white sm:col-span-2">Create product</button>
               </form>
@@ -89,7 +89,7 @@ export default async function SellerPage({ searchParams }: { searchParams: Promi
 
           <section className="mt-6 rounded-2xl border border-sand bg-white p-5">
             <h2 className="text-xl font-semibold">Orders</h2>
-            {orders.length ? <ul className="mt-3 divide-y divide-sand">{orders.map((order) => <li key={order.id} className="py-4"><div className="flex flex-wrap justify-between gap-2"><strong>Order #{order.display_id} · {statusText(order.status)}</strong><span>{new Date(order.created_at).toLocaleDateString("en-US")} · {money(order.total, order.currency_code)}</span></div><p className="mt-1 text-sm text-muted">Customer: {order.email}</p><ul className="mt-2 list-inside list-disc text-sm">{order.items.map((item, index) => <li key={`${item.title}-${index}`}>{item.title} × {item.quantity}</li>)}</ul><p className="mt-2 text-xs text-muted">Order processing and delivery are simulated in this prototype.</p></li>)}</ul> : <p className="mt-3 text-muted">No orders yet.</p>}
+            {orders.length ? <ul className="mt-3 divide-y divide-sand">{orders.map((order) => <li key={order.id} className="py-4"><div className="flex flex-wrap justify-between gap-2"><strong>Order #{order.display_id} · {statusText(order.status)}</strong><span>{new Date(order.created_at).toLocaleDateString("en-CA")} · {money(order.total, order.currency_code)}</span></div><p className="mt-1 text-sm text-muted">Customer: {order.email}</p><ul className="mt-2 list-inside list-disc text-sm">{order.items.map((item, index) => <li key={`${item.title}-${index}`}>{item.title} × {item.quantity}</li>)}</ul><p className="mt-2 text-xs text-muted">Order processing and delivery are simulated in this prototype.</p></li>)}</ul> : <p className="mt-3 text-muted">No orders yet.</p>}
           </section>
         </>
       ) : (

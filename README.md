@@ -10,7 +10,7 @@ marketplace-prototype/
 ├─ README.md
 ├─ .gitignore
 ├─ docs/                  Registre des décisions et comptes rendus
-├─ storefront/            Site Next.js (anglais américain, USD), port 8000
+├─ storefront/            Site Next.js (Canada, anglais, CAD), port 8000
 │  ├─ .env.local.example  Modèle de configuration (copier en .env.local)
 │  └─ src/                Pages, composants, accès au backend
 └─ backend/               Backend Medusa (port 9000)
@@ -62,7 +62,8 @@ cd backend
 npx medusa exec ./src/scripts/seed-marketplace.ts
 ```
 
-Le script configure la boutique américaine (USD), la taxe fictive de 1 %, la livraison et la clé publique (`pk_...`).
+Le script configure la région Canada (CAD), la taxe fictive de 1 %, la livraison et la clé publique (`pk_...`). Ces valeurs restent réservées à la démonstration locale et ne constituent pas une configuration fiscale ou de livraison réelle.
+Pour une base déjà créée, le changement de région ne convertit pas les prix ni ne modifie les commandes historiques. N'utilise pas le seed comme migration de données réelles; une migration dédiée et une sauvegarde seront nécessaires avant toute reprise de données.
 Sur une base vide, il crée aussi 20 rayons, 7 vendeurs et 400 fiches catalogue (20 par rayon, réglable avec
 `SEED_PRODUCTS_PER_CATEGORY`). Sur une base déjà alimentée, il met à jour les réglages de commande sans recréer le catalogue.
 

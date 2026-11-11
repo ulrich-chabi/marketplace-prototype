@@ -107,7 +107,7 @@ const setVendorStatusWorkflow = createWorkflow(
         locations: [
           {
             name: `Vendor ${d.plan.handle}`,
-            address: { city: "N/A", country_code: "US", address_1: "" },
+            address: { country_code: "CA", address_1: "" },
           },
         ],
       }))

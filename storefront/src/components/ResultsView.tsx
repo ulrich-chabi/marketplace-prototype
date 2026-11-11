@@ -48,7 +48,7 @@ export function ResultsView({
             </select>
           </div>
           <fieldset>
-            <legend className="mb-1 font-semibold">Price (USD)</legend>
+            <legend className="mb-1 font-semibold">Price (CAD)</legend>
             <div className="flex items-center gap-2">
               <label htmlFor="min_price" className="sr-only">Minimum price</label>
               <input id="min_price" name="min_price" inputMode="decimal" defaultValue={params.min_price ?? ""} placeholder="Min" className="min-h-11 w-full rounded-xl border border-muted px-2" />

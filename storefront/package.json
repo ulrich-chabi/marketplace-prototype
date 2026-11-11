@@ -2,7 +2,7 @@
   "name": "marketplace-storefront",
   "version": "0.0.1",
   "private": true,
-  "description": "Site Next.js du prototype de marketplace (anglais américain, USD).",
+  "description": "Site Next.js du prototype de marketplace canadienne (anglais, CAD).",
   "scripts": {
     "dev": "next dev -p 8000",
     "build": "next build --webpack",

@@ -81,7 +81,7 @@ export default async function AccountPage({
             <button type="submit" className="min-h-11 rounded-xl bg-terracotta px-5 text-white sm:col-span-2">Save profile</button>
           </form>
           <h2 className="mt-8 text-xl font-semibold">Order history</h2>
-          {orders.length ? <ul className="mt-3 divide-y divide-sand">{orders.map((item) => <li key={item.display_id} className="flex flex-wrap justify-between gap-2 py-3"><span>Order #{item.display_id} · {label(item.status)}</span><span>{new Date(item.created_at).toLocaleDateString("en-US")} · {money(item.total)}</span></li>)}</ul> : <p className="mt-2 text-muted">No account orders yet. Orders placed after sign-in will appear here.</p>}
+          {orders.length ? <ul className="mt-3 divide-y divide-sand">{orders.map((item) => <li key={item.display_id} className="flex flex-wrap justify-between gap-2 py-3"><span>Order #{item.display_id} · {label(item.status)}</span><span>{new Date(item.created_at).toLocaleDateString("en-CA")} · {money(item.total)}</span></li>)}</ul> : <p className="mt-2 text-muted">No account orders yet. Orders placed after sign-in will appear here.</p>}
         </section>
       ) : (
         <section className="mt-6 grid gap-5 rounded-2xl border border-sand bg-white p-5 md:grid-cols-2">
@@ -109,7 +109,7 @@ export default async function AccountPage({
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
               <h2 id="order-heading" className="text-xl font-semibold">Your demo order #{order.display_id}</h2>
-              <p className="mt-1 text-sm text-muted">Placed {new Date(order.created_at).toLocaleDateString("en-US")}</p>
+              <p className="mt-1 text-sm text-muted">Placed {new Date(order.created_at).toLocaleDateString("en-CA")}</p>
             </div>
             <form action={forgetTrackedOrder}><button type="submit" className="min-h-11 rounded-xl border border-muted px-4">Forget this order</button></form>
           </div>

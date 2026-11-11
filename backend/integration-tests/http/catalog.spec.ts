@@ -57,7 +57,7 @@ medusaIntegrationTestRunner({
       expect(kettle.price_from).toBe(20)
       expect(kettle.offer_count).toBe(2)
       expect(kettle.vendor_count).toBe(2)
-      expect(kettle.currency_code).toBe("usd")
+      expect(kettle.currency_code).toBe("cad")
       expect(r.data.count).toBe(3)
       expect(r.data.facets.vendors).toEqual([
         { handle: "vendor-a", name: "Vendor a", count: 2 },
@@ -122,7 +122,7 @@ medusaIntegrationTestRunner({
             shipping_profile_id: commerce.shippingProfileId,
             sales_channels: [{ id: commerce.salesChannelId }],
             options: [{ title: "Default", values: ["Default"] }],
-            variants: [{ title: "Default", options: { Default: "Default" }, prices: [{ amount: 5, currency_code: "usd" }] }],
+            variants: [{ title: "Default", options: { Default: "Default" }, prices: [{ amount: 5, currency_code: "cad" }] }],
           })),
         },
       })
@@ -173,7 +173,7 @@ medusaIntegrationTestRunner({
         vendor_name: "Vendor b", price: 15, condition: "new",
         delivery_days_min: null, delivery_days_max: null, return_window_days: null, available: null,
       })
-      expect(r.data.shipping).toEqual({ name: "Standard", price: 5, currency_code: "usd" })
+      expect(r.data.shipping).toEqual({ name: "Standard", price: 5, currency_code: "cad" })
     })
 
     it("refuse l'accès sans clé publique et les paramètres invalides, et résiste aux caractères spéciaux", async () => {

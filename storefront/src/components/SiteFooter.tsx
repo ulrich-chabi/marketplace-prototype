@@ -17,7 +17,7 @@ export function SiteFooter() {
           </section>
         ))}
       </div>
-      <p className="my-6 text-sm">Language: English (US) · Country: United States · Currency: USD</p>
+      <p className="my-6 text-sm">Language: English (Canada) · Country: Canada · Currency: CAD</p>
       <ul className="flex flex-wrap gap-6 border-t border-muted pt-4 text-sm">
         {[["terms", "Terms of use"], ["privacy", "Privacy notice"], ["ad-choices", "Your ad choices"], ["sponsored-results", "How sponsored results work"]].map(([slug, label]) => (
           <li key={slug}><Link href={`/legal/${slug}`} className="text-cream">{label}</Link></li>

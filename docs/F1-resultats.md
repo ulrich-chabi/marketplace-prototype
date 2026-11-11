@@ -4,7 +4,7 @@
 
 - **Backend** : module catalogue (fiche catalogue reliée aux produits des vendeurs), routes publiques `GET /store/catalog` (filtres : texte, rayon, vendeur, prix ; tris ; pagination ; liste des vendeurs disponibles) et `GET /store/catalog/:handle`. Seules les offres de vendeurs actifs, publiées et avec un prix sont visibles ; une fiche sans offre visible n'apparaît pas.
 - **Script de démonstration** : 20 rayons, 7 vendeurs (dont « Marketplace Direct »), 400 fiches et environ 1 000 offres fictives ; 19 secondes dans l'environnement de l'assistant.
-- **Site** (`storefront`) : accueil, tous les rayons, page de rayon et recherche avec filtres, fiche produit simple (offres par prix), pages d'information du pied de page (textes à rédiger), pages « Cart » et « Account » provisoires. Logo : emplacement. Interface en anglais américain, prix en USD, site non indexé.
+- **Site** (`storefront`) : accueil, tous les rayons, page de rayon et recherche avec filtres, fiche produit simple (offres par prix), pages d'information du pied de page (textes à rédiger), pages « Cart » et « Account » provisoires. Logo : emplacement. Interface en anglais canadien, prix en CAD, site non indexé.
 
 ## Vérifications effectuées (environnement de l'assistant : Linux, Node 22.22.2, PostgreSQL 16)
 

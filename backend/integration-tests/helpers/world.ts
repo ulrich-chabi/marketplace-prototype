@@ -19,7 +19,7 @@ export const productBody = (title: string, price: number, manageInventory = fals
       title: "One",
       options: { Size: "One" },
       manage_inventory: manageInventory,
-      prices: [{ amount: price, currency_code: "usd" }],
+      prices: [{ amount: price, currency_code: "cad" }],
     },
   ],
 })
@@ -63,7 +63,7 @@ export async function createCart(
       email: "buyer@test.local",
       shipping_address: {
         first_name: "Test", last_name: "Buyer", address_1: "1 Test Street",
-        city: "Austin", country_code: "us", postal_code: "78701",
+        city: "Toronto", province: "ON", country_code: "ca", postal_code: "M5V 3A8",
       },
     },
     storeHeaders
