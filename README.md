@@ -53,19 +53,16 @@ npm run dev
 
 Vérifications : http://localhost:9000/health (doit répondre 200) puis http://localhost:9000/app (administration).
 
-## Catalogue de démonstration et site
+## Initialisation de la boutique canadienne
 
-Le catalogue est entièrement fictif (marques inventées, aucun avis ni note). À faire UNE fois, backend arrêté ou non :
+Après les migrations, cette commande configure une boutique vide en CAD limitée au Canada et crée une clé publique. Elle n'ajoute aucun produit, vendeur, taxe, paiement ni tarif de livraison :
 
 ```powershell
 cd backend
-npx medusa exec ./src/scripts/seed-marketplace.ts
+npm run seed
 ```
 
-Le script configure la région Canada (CAD), la taxe fictive de 1 %, la livraison et la clé publique (`pk_...`). Ces valeurs restent réservées à la démonstration locale et ne constituent pas une configuration fiscale ou de livraison réelle.
-Pour une base déjà créée, le changement de région ne convertit pas les prix ni ne modifie les commandes historiques. N'utilise pas le seed comme migration de données réelles; une migration dédiée et une sauvegarde seront nécessaires avant toute reprise de données.
-Sur une base vide, il crée aussi 20 rayons, 7 vendeurs et 400 fiches catalogue (20 par rayon, réglable avec
-`SEED_PRODUCTS_PER_CATEGORY`). Sur une base déjà alimentée, il met à jour les réglages de commande sans recréer le catalogue.
+Copier la clé publique affichée dans `storefront/.env.local` sous `NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY`. Une base neuve ne contient pas encore de rayon ni de produit; ils doivent venir de vraies données approuvées avant la mise en vente.
 
 Ensuite, deux terminaux :
 
@@ -74,7 +71,7 @@ Ensuite, deux terminaux :
 cd backend
 npm run dev
 
-# Terminal 2 : site (première fois : créer .env.local et y coller la clé affichée par le script)
+# Terminal 2 : site
 cd storefront
 copy .env.local.example .env.local
 npm install
@@ -90,12 +87,9 @@ Espaces du prototype :
 - Opérations plateforme : `http://localhost:8000/platform` (connexion avec le compte créé par `npx medusa user`).
 - Administration Medusa : `http://localhost:9000/app`.
 
-Si le catalogue a été créé avec une version précédente (avant les délais de livraison et retours des vendeurs), lancer
-une fois, depuis `backend` : `npx medusa db:migrate` puis `npx medusa exec ./src/scripts/set-demo-vendor-policies.ts`.
-
 ### Tests de bout en bout du site
 
-Le backend (port 9000) ET le site (port 8000) doivent tourner, sur la base alimentée par le script de démonstration.
+Les parcours de catalogue et d'achat Playwright ont besoin d'un jeu de données de test isolé. Crée une base réservée aux tests, dirige temporairement `DATABASE_URL` vers celle-ci, puis lance `npm run seed:test` depuis `backend`. Cette commande crée des produits fictifs uniquement pour les tests; ne l'exécute jamais sur la base de la boutique.
 
 ```powershell
 cd storefront
@@ -104,10 +98,7 @@ npx playwright install chromium    # une seule fois (téléchargement d'environ 
 npm run test:e2e
 ```
 
-Résultat attendu : `19 passed`. Le navigateur Chromium Playwright doit être installé une fois.
-
-Le parcours F3 de commande de démonstration se trouve au panier via **Continue to checkout**. Il utilise uniquement
-des informations fictives et un paiement simulé; aucun paiement réel n'est effectué.
+Le navigateur Chromium Playwright doit être installé une fois. Les tests de catalogue et de commande ne sont pas exécutables sur la base canadienne vierge, qui ne contient volontairement aucune annonce.
 
 ## Tests
 
