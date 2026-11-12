@@ -161,6 +161,20 @@ medusaIntegrationTestRunner({
       expect(cap.status).toBe(200)
     })
 
+    it("bloque la création de commandes avec le paiement simulé en production", async () => {
+      const cartId = await buildCart([{ variantId: vendors.a.variantId!, quantity: 1 }])
+      const originalNodeEnv = process.env.NODE_ENV
+      process.env.NODE_ENV = "production"
+      try {
+        const response = await call("post", `/store/carts/${cartId}/complete-vendor`, {}, storeHeaders)
+        expect(response.status).toBe(503)
+        expect(response.data.message).toContain("real payment provider")
+      } finally {
+        if (originalNodeEnv === undefined) delete process.env.NODE_ENV
+        else process.env.NODE_ENV = originalNodeEnv
+      }
+    })
+
     const vendorOrderOf = (key: string) => vendorOrders.find((o) => o.vendor_id === vendors[key].id)!
 
     describe("Suivi d'une commande démo", () => {

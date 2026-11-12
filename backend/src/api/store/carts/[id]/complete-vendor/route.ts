@@ -4,6 +4,22 @@ import { createHash, randomBytes } from "node:crypto"
 import createVendorOrdersWorkflow from "../../../../../workflows/marketplace/create-vendor-orders"
 
 export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
+  if (process.env.NODE_ENV === "production") {
+    const query = req.scope.resolve(ContainerRegistrationKeys.QUERY)
+    const { data: [cart] } = await query.graph({
+      entity: "cart",
+      fields: ["payment_collection.payment_sessions.provider_id"],
+      filters: { id: req.params.id },
+    })
+    const providerId = cart?.payment_collection?.payment_sessions?.[0]?.provider_id
+    if (!providerId || providerId === "pp_system_default") {
+      return res.status(503).json({
+        type: "checkout_unavailable",
+        message: "Checkout is disabled in production until a real payment provider is configured.",
+      })
+    }
+  }
+
   const { result } = await createVendorOrdersWorkflow(req.scope).run({
     input: { cart_id: req.params.id },
   })
