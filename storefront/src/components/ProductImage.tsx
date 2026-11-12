@@ -1,24 +1,17 @@
-import { tintFor } from "@/lib/format"
+import Image from "next/image"
+import demoImages from "@/data/demo-images.json"
 
-// Visuel de substitution FICTIF : teinte par rayon et initiales de la marque.
-export function ProductImage({ title, category, className = "" }: { title: string; category: string | null; className?: string }) {
-  const initials = title
-    .split(/\s+/)
-    .filter((w) => /^[A-Za-z0-9]/.test(w))
-    .slice(0, 2)
-    .map((w) => w[0].toUpperCase())
-    .join("")
+export function ProductImage({ title, category, className = "", priority = false }: { title: string; category: string | null; className?: string; priority?: boolean }) {
+  const image = demoImages[category as keyof typeof demoImages]
   return (
-    <svg
-      role="img"
-      aria-label={`Demo illustration for ${title}`}
-      viewBox="0 0 200 140"
-      className={`block h-auto w-full rounded-xl ${className}`}
-    >
-      <rect width="200" height="140" fill={tintFor(category)} />
-      <circle cx="100" cy="64" r="34" fill="#ffffff" opacity="0.6" />
-      <text x="100" y="74" textAnchor="middle" fontSize="28" fontFamily="Georgia, serif" fill="#2b2420">{initials}</text>
-      <text x="100" y="124" textAnchor="middle" fontSize="10" fill="#5e524a">Demo illustration</text>
-    </svg>
+    <Image
+      src={image?.file ?? "/images/catalog/electronics.webp"}
+      alt={image?.alt ?? `Illustrative product photo for ${title}`}
+      width={800}
+      height={600}
+      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+      loading={priority ? "eager" : "lazy"}
+      className={`aspect-[4/3] h-auto w-full rounded-xl object-cover ${className}`}
+    />
   )
 }

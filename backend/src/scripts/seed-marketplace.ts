@@ -14,15 +14,16 @@ import {
   linkSalesChannelsToApiKeyWorkflow,
   linkSalesChannelsToStockLocationWorkflow,
   updateStoresWorkflow,
+  updateRegionsWorkflow,
 } from "@medusajs/medusa/core-flows"
 import { MARKETPLACE_MODULE } from "../modules/marketplace"
 import { CATALOG_MODULE } from "../modules/catalog"
 import setVendorStatusWorkflow from "../workflows/marketplace/set-vendor-status"
 import { BRANDS, COLORS, DEPARTMENTS, rng, VENDORS } from "./seed-data"
 
-// Configure la boutique canadienne (CAD), la taxe et la livraison. Si le catalogue
-// est vide, ajoute aussi les rayons, vendeurs et produits fictifs. Peut être relancé :
-//   npx medusa exec ./src/scripts/seed-marketplace.ts
+// Remplit une boutique canadienne avec des données fictives pour le prototype.
+// Ne pas exécuter sur une boutique en production ou contenant des données réelles.
+//   npm run seed:demo
 // Variable : SEED_PRODUCTS_PER_CATEGORY (20 par défaut).
 export default async function seedMarketplace({ container }: ExecArgs) {
   const logger = container.resolve(ContainerRegistrationKeys.LOGGER)
@@ -30,12 +31,12 @@ export default async function seedMarketplace({ container }: ExecArgs) {
   const link = container.resolve(ContainerRegistrationKeys.LINK)
   const catalogService: any = container.resolve(CATALOG_MODULE)
   const marketplace: any = container.resolve(MARKETPLACE_MODULE)
-  const perCategory = Math.max(1, Number(process.env.SEED_PRODUCTS_PER_CATEGORY ?? 20))
+  const perCategory = Math.max(1, Math.min(30, Number(process.env.SEED_PRODUCTS_PER_CATEGORY ?? 20)))
 
   const hasCatalog = (await catalogService.listCatalogProducts({}, { take: 1 })).length > 0
 
   // ---------- Boutique : devise, canal de vente, région, livraison ----------
-  logger.info("Boutique : devise CAD, région Canada, livraison forfaitaire…")
+  logger.info("Boutique de démonstration : Canada, CAD, taxe et livraison simulées…")
   const storeModule = container.resolve(Modules.STORE)
   const store = (await storeModule.listStores())[0]
   let salesChannelId = store.default_sales_channel_id as string | null
@@ -68,6 +69,12 @@ export default async function seedMarketplace({ container }: ExecArgs) {
     })
     regionId = result[0].id
   }
+  await updateRegionsWorkflow(container).run({
+    input: {
+      selector: { id: regionId },
+      update: { payment_providers: ["pp_system_default"] },
+    },
+  })
   const taxRegions = await container.resolve(Modules.TAX).listTaxRegions({ country_code: "ca" })
   let taxRegion = taxRegions[0]
   if (!taxRegion) {
@@ -81,7 +88,7 @@ export default async function seedMarketplace({ container }: ExecArgs) {
   if (!existingTaxRates.length) {
     await taxModule.createTaxRates({
       tax_region_id: taxRegion.id,
-      name: "Demo tax (1%)",
+      name: "Illustrative demo tax (1%)",
       code: "demo-tax-1-percent",
       rate: 1,
       is_default: true,
@@ -153,7 +160,22 @@ export default async function seedMarketplace({ container }: ExecArgs) {
 
   // Les réglages de commande restent idempotents même si le catalogue existe déjà.
   if (hasCatalog) {
-    logger.info("Les réglages de boutique sont à jour; le catalogue existe déjà.")
+    const existingCatalog = await catalogService.listCatalogProducts({}, { take: 1000 })
+    let refreshed = 0
+    for (const product of existingCatalog) {
+      if (product.description !== "Fictional demo product for the prototype. No real brand, specification or review.") continue
+      const department = DEPARTMENTS.find((candidate) => candidate.handle === product.category_handle)
+      if (!department) continue
+      const type = department.types.find((candidate) => product.title.includes(candidate)) ?? department.types[0]
+      const color = String(product.attributes?.color ?? "Slate")
+      await catalogService.updateCatalogProducts({
+        id: product.id,
+        description: demoDescription(department.handle, type, color),
+        attributes: { ...(product.attributes ?? {}), demo_listing: true },
+      })
+      refreshed += 1
+    }
+    logger.info(`Réglages de boutique à jour; ${refreshed} anciennes fiches génériques de démonstration actualisées.`)
     return
   }
 
@@ -171,7 +193,7 @@ export default async function seedMarketplace({ container }: ExecArgs) {
     })
   }
 
-  // ---------- Vendeurs (le premier représente les ventes directes) ----------
+  // ---------- Vendeurs fictifs de démonstration ----------
   logger.info(`Vendeurs : ${VENDORS.length}…`)
   const vendors: { id: string; name: string; locationId: string }[] = []
   for (const v of VENDORS) {
@@ -209,8 +231,8 @@ export default async function seedMarketplace({ container }: ExecArgs) {
 
       const catalog = await catalogService.createCatalogProducts({
         handle, title, brand, category_handle: dept.handle,
-        description: "Fictional demo product for the prototype. No real brand, specification or review.",
-        attributes: { color: pick(COLORS), model: code },
+        description: demoDescription(dept.handle, type, pick(COLORS)),
+        attributes: { color: pick(COLORS), model: code, demo_listing: true },
       })
       rows.push({
         catalog,
@@ -285,9 +307,35 @@ export default async function seedMarketplace({ container }: ExecArgs) {
     catalogCount += rows.length
   }
 
-  logger.info(`Terminé : ${catalogCount} fiches catalogue, ${offerCount} offres, ${vendors.length} vendeurs.`)
+  logger.info(`Terminé : ${catalogCount} fiches catalogue, ${offerCount} offres, ${vendors.length} vendeurs fictifs.`)
   logger.info("----------------------------------------------------------------")
   logger.info(`Clé publique à mettre dans le site (NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY) :`)
   logger.info(String((key as any).token))
   logger.info("----------------------------------------------------------------")
+}
+
+function demoDescription(category: string, type: string, color: string) {
+  const details: Record<string, string> = {
+    electronics: "Cushioned contact points, onboard controls and a foldable profile make it easy to store between uses.",
+    computers: "A clean desk companion with a cable-friendly layout, compact footprint and a sturdy everyday finish.",
+    "home-kitchen": "A practical kitchen essential with an easy-clean finish, balanced handling and a cupboard-friendly profile.",
+    fashion: "An everyday staple made with reinforced seams, adjustable fittings and a roomy main compartment.",
+    books: "A comfortable-format edition with a matte cover and a clear page layout, suited to a desk or bedside shelf.",
+    "toys-games": "A reusable set for shared play, with components packed together for tidy storage between sessions.",
+    "sports-outdoors": "Made for active routines with a grippy surface, a packable shape and a carry-friendly design.",
+    "beauty-personal-care": "A compact personal-care essential with a practical closure and a convenient shape for daily storage.",
+    "health-household": "A household-use design with straightforward controls and removable parts for routine cleaning. No medical claims are made.",
+    grocery: "A pantry-friendly format designed for simple storage and everyday use. Ingredients and package details are illustrative in this prototype.",
+    "pet-supplies": "An everyday pet accessory with a simple, easy-to-clean form and a practical size for home use.",
+    automotive: "A compact car accessory designed to keep common travel essentials organized within easy reach.",
+    "tools-home-improvement": "A practical workshop essential with a comfortable grip and a compact form for a home tool kit.",
+    "office-products": "A desk essential designed to keep daily work organized, with a compact footprint and an easy-care finish.",
+    "garden-outdoor": "A useful addition to a home garden with a straightforward form suited to patios, balconies or garden beds.",
+    baby: "A nursery and family-care accessory with a soft-touch finish and a practical design for everyday routines.",
+    "arts-crafts": "A creative-work essential designed for home projects, with supplies that store neatly between sessions.",
+    "musical-instruments": "An approachable music-making essential with a comfortable grip and a compact profile for practice at home.",
+    "video-games": "A gaming accessory with an easy-to-store shape, designed for casual play and a tidy entertainment setup.",
+    "movies-hobbies": "A hobby essential designed for hands-on projects, with a compact form that stores neatly between uses.",
+  }
+  return `${type} in ${color.toLowerCase()}. ${details[category] ?? "A practical everyday item with a compact, easy-to-store design."} This listing's product details, brand, price and stock are fictional prototype data. The accompanying photo is illustrative and may show a different item.`
 }

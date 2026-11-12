@@ -15,6 +15,7 @@
   "scripts": {
     "build": "medusa build",
     "seed": "medusa exec ./src/scripts/setup-canadian-store.ts",
+    "seed:demo": "medusa exec ./src/scripts/seed-marketplace.ts",
     "seed:test": "medusa exec ./src/scripts/seed-marketplace.ts",
     "start": "medusa start",
     "dev": "medusa develop",

@@ -50,7 +50,7 @@ export default async function HomePage() {
       <section aria-labelledby="arrivals" className="mt-10">
         <h2 id="arrivals" className="mb-4 text-2xl font-semibold">New arrivals</h2>
         <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
-          {arrivals.catalog.map((c) => <li key={c.id} className="flex"><div className="flex-1"><ProductCard card={c} /></div></li>)}
+          {arrivals.catalog.map((c, index) => <li key={c.id} className="flex"><div className="flex-1"><ProductCard card={c} priority={index === 0} /></div></li>)}
         </ul>
       </section>
 

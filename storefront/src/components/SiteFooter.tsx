@@ -18,6 +18,7 @@ export function SiteFooter() {
         ))}
       </div>
       <p className="my-6 text-sm">Language: English (Canada) · Country: Canada · Currency: CAD</p>
+      <p className="mb-3 text-sm">Prototype catalogue: all items, sellers, prices and availability are fictional. Photos are illustrative and may not depict the listed item. <Link href="/image-credits" className="text-cream underline">Photo credits and licences</Link>.</p>
       <ul className="flex flex-wrap gap-6 border-t border-muted pt-4 text-sm">
         {[["terms", "Terms of use"], ["privacy", "Privacy notice"], ["ad-choices", "Your ad choices"], ["sponsored-results", "How sponsored results work"]].map(([slug, label]) => (
           <li key={slug}><Link href={`/legal/${slug}`} className="text-cream">{label}</Link></li>

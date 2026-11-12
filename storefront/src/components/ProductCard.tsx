@@ -4,12 +4,12 @@ import { money, plural } from "@/lib/format"
 import { CompareToggle } from "./CompareToggle"
 import { ProductImage } from "./ProductImage"
 
-export function ProductCard({ card }: { card: CatalogCard }) {
+export function ProductCard({ card, priority = false }: { card: CatalogCard; priority?: boolean }) {
   const offers = plural(card.offer_count, "offer", "offers")
   const sellers = plural(card.vendor_count, "seller", "sellers")
   return (
     <article className="flex flex-col gap-3 rounded-2xl border border-sand bg-white p-4">
-      <ProductImage title={card.title} category={card.category_handle} />
+      <ProductImage title={card.title} category={card.category_handle} priority={priority} />
       <div className="flex flex-1 flex-col gap-1">
         <h3 className="text-base font-semibold leading-snug">
           <Link href={`/p/${card.handle}`}>{card.title}</Link>

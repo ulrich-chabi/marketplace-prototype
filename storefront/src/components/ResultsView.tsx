@@ -94,7 +94,7 @@ export function ResultsView({
           </div>
         ) : (
           <ul className="mt-6 grid gap-5 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-            {data.catalog.map((c) => <li key={c.id} className="flex"><div className="flex-1"><ProductCard card={c} /></div></li>)}
+            {data.catalog.map((c, index) => <li key={c.id} className="flex"><div className="flex-1"><ProductCard card={c} priority={index === 0} /></div></li>)}
           </ul>
         )}
         {pages > 1 && (

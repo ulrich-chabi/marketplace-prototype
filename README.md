@@ -87,6 +87,16 @@ Espaces du prototype :
 - Opérations plateforme : `http://localhost:8000/platform` (connexion avec le compte créé par `npx medusa user`).
 - Administration Medusa : `http://localhost:9000/app`.
 
+### Catalogue fictif pour la démonstration
+
+Pour remplir la base locale avec le catalogue de démonstration (20 rayons, jusqu'à 400 fiches, offres et vendeurs fictifs), lancer depuis `backend` :
+
+```powershell
+npm run seed:demo
+```
+
+Le catalogue, les prix, stocks, vendeurs, frais de livraison et la taxe affichée sont des données simulées : ne pas utiliser cette commande sur une boutique ou une base contenant des données réelles. Les photos de catégorie sont recadrées en 800 × 600 WebP; leurs sources et licences sont indiquées sur `/image-credits`. `npm run seed` continue de configurer une boutique canadienne vide.
+
 ### Tests de bout en bout du site
 
 Les parcours de catalogue et d'achat Playwright ont besoin d'un jeu de données de test isolé. Crée une base réservée aux tests, dirige temporairement `DATABASE_URL` vers celle-ci, puis lance `npm run seed:test` depuis `backend`. Cette commande crée des produits fictifs uniquement pour les tests; ne l'exécute jamais sur la base de la boutique.

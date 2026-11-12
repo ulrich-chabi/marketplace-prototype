@@ -38,7 +38,7 @@ export default async function ProductPage({ params, searchParams }: Props) {
     <div className="px-6 py-8 lg:px-10">
       {error && <p role="alert" className="mb-6 rounded-xl border border-terracotta bg-white p-4 font-semibold">{error}</p>}
       <div className="grid gap-8 lg:grid-cols-[24rem_1fr]">
-        <ProductImage title={product.title} category={product.category_handle} />
+        <ProductImage title={product.title} category={product.category_handle} priority />
         <div>
           <h1 className="font-serif text-3xl">{product.title}</h1>
           {product.brand && <p className="text-muted">{product.brand}</p>}
