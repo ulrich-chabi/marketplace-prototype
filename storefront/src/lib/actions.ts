@@ -362,19 +362,20 @@ export async function logoutVendor() {
 }
 
 export async function createVendorProduct(formData: FormData) {
-  const title = String(formData.get("title") ?? "").trim()
-  const description = String(formData.get("description") ?? "").trim()
+  const catalogHandle = String(formData.get("catalog_handle") ?? "").trim()
   const price = Number(formData.get("price"))
   const stock = Math.trunc(Number(formData.get("stock")))
   const token = (await cookies()).get(VENDOR_TOKEN_COOKIE)?.value
-  if (!token || title.length < 3 || title.length > 120 || !Number.isFinite(price) || price < 0.01 || price > 100000 || !Number.isInteger(stock) || stock < 0 || stock > 100000) {
+  if (!token || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(catalogHandle) || catalogHandle.length > 200 || !Number.isFinite(price) || price < 0.01 || price > 100000 || !Number.isInteger(stock) || stock < 0 || stock > 100000) {
     redirect("/sell?error=product")
   }
   try {
     const { product } = await sdk.client.fetch<{ product: { variants: { id: string }[] } }>("/vendors/products", {
       method: "POST",
       body: {
-        title, description: description.slice(0, 2000), status: "published",
+        catalog_handle: catalogHandle,
+        title: "Selected catalog product",
+        status: "published",
         options: [{ title: "Size", values: ["Standard"] }],
         variants: [{ title: "Standard", options: { Size: "Standard" }, manage_inventory: true, prices: [{ amount: Math.round(price * 100) / 100, currency_code: "cad" }] }],
       },
@@ -386,8 +387,9 @@ export async function createVendorProduct(formData: FormData) {
       method: "POST", body: { variant_id: variantId, stocked_quantity: stock },
       headers: { Authorization: `Bearer ${token}` },
     })
-  } catch {
+  } catch (error) {
     revalidatePath("/sell")
+    if ((error as { status?: number }).status === 409) redirect("/sell?error=duplicate-offer")
     redirect("/sell?error=product-created")
   }
   revalidatePath("/sell")

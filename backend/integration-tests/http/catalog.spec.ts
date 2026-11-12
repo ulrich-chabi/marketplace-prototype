@@ -38,6 +38,7 @@ medusaIntegrationTestRunner({
       admin = await createAdminToken(getContainer(), call, Modules)
       vendors.a = await createVendor(call, admin, "a")
       vendors.b = await createVendor(call, admin, "b")
+      vendors.c = await createVendor(call, admin, "c")
 
       const kettleA = await listing("a", "Aurora Kettle (A)", 20)
       const kettleB = await listing("b", "Aurora Kettle (B)", 25)
@@ -63,6 +64,35 @@ medusaIntegrationTestRunner({
         { handle: "vendor-a", name: "Vendor a", count: 2 },
         { handle: "vendor-b", name: "Vendor b", count: 2 },
       ])
+    })
+
+    it("rattache une nouvelle offre vendeur à la fiche catalogue choisie et conserve son image", async () => {
+      await catalogProduct({
+        handle: "seller-selected-camera",
+        title: "Northstar Camera Kit",
+        brand: "Northstar",
+        category_handle: "electronics",
+        attributes: { image_key: "electronics-1" },
+      }, [])
+
+      const created = await call("post", "/vendors/products", {
+        ...productBody("Seller supplied title", 34),
+        catalog_handle: "seller-selected-camera",
+      }, bearer(vendors.c.token))
+      expect(created.status).toBe(201)
+      expect(created.data.product.title).toBe("Northstar Camera Kit")
+
+      const publicDetail = await call("get", "/store/catalog/seller-selected-camera", undefined, sh)
+      expect(publicDetail.status).toBe(200)
+      expect(publicDetail.data.product.attributes.image_key).toBe("electronics-1")
+      expect(publicDetail.data.product.offers).toHaveLength(1)
+      expect(publicDetail.data.product.offers[0].vendor_name).toBe("Vendor c")
+
+      const duplicate = await call("post", "/vendors/products", {
+        ...productBody("Another seller supplied title", 35),
+        catalog_handle: "seller-selected-camera",
+      }, bearer(vendors.c.token))
+      expect(duplicate.status).toBe(409)
     })
 
     it("filtre par catégorie, texte (titre ou marque) et vendeur", async () => {

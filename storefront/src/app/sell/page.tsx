@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import { cookies } from "next/headers"
 import { createVendorProduct, loginVendor, logoutVendor, registerVendor, updateVendorStock } from "@/lib/actions"
+import { fetchCatalog, type CatalogCard } from "@/lib/catalog"
 import { money } from "@/lib/format"
 import { sdk } from "@/lib/medusa"
 
@@ -23,20 +24,25 @@ export default async function SellerPage({ searchParams }: { searchParams: Promi
   let products: Product[] = []
   let stock: Stock[] = []
   let orders: VendorOrder[] = []
+  let catalogProducts: CatalogCard[] = []
   if (token) {
     const headers = { Authorization: `Bearer ${token}` }
     try {
       const response = await sdk.client.fetch<{ vendor: Vendor }>("/vendors", { headers })
       vendor = response.vendor
       if (vendor.status === "active") {
-        const [productResponse, stockResponse, orderResponse] = await Promise.all([
+        const [productResponse, stockResponse, orderResponse, catalogResponse] = await Promise.all([
           sdk.client.fetch<{ products: Product[] }>("/vendors/products", { headers }),
           sdk.client.fetch<{ stock: Stock[] }>("/vendors/stock", { headers }),
           sdk.client.fetch<{ orders: VendorOrder[] }>("/vendors/orders", { headers }),
+          fetchCatalog({ limit: "100", sort: "newest" }),
         ])
         products = productResponse.products
         stock = stockResponse.stock
         orders = orderResponse.orders
+        catalogProducts = catalogResponse.catalog.filter((product) =>
+          typeof product.attributes?.image_key === "string" && product.attributes.image_key.length > 0
+        )
       } else if (vendor.status === "suspended") {
         const response = await sdk.client.fetch<{ orders: VendorOrder[] }>("/vendors/orders", { headers })
         orders = response.orders
@@ -50,9 +56,9 @@ export default async function SellerPage({ searchParams }: { searchParams: Promi
     <div className="mx-auto max-w-6xl px-6 py-10">
       <h1 className="font-serif text-3xl">Seller space</h1>
       <p className="mt-3 text-muted">Demo seller tools for offers, inventory and orders. Payments and fulfillment are simulated.</p>
-      {params.error && <p role="alert" className="mt-4 rounded-xl border border-terracotta bg-white p-4">We could not complete that request. Check the details and try again. If a product was created but its stock update failed, refresh this page to see it.</p>}
+      {params.error && <p role="alert" className="mt-4 rounded-xl border border-terracotta bg-white p-4">{String(params.error) === "duplicate-offer" ? "Your store already has an offer for that catalog item." : "We could not complete that request. Check the details and try again. If an offer was created but its stock update failed, refresh this page to see it."}</p>}
       {params.registered === "1" && <p role="status" className="mt-4 rounded-xl border border-sand bg-white p-4">Your application was submitted. The platform must approve your store before you can list products.</p>}
-      {params.product === "created" && <p role="status" className="mt-4 rounded-xl border border-sand bg-white p-4">Product and starting stock saved.</p>}
+      {params.product === "created" && <p role="status" className="mt-4 rounded-xl border border-sand bg-white p-4">Offer and starting stock saved.</p>}
       {params.stock === "updated" && <p role="status" className="mt-4 rounded-xl border border-sand bg-white p-4">Stock updated.</p>}
 
       {vendor ? (
@@ -68,14 +74,17 @@ export default async function SellerPage({ searchParams }: { searchParams: Promi
 
           {vendor.status === "active" && <>
             <section className="mt-6 rounded-2xl border border-sand bg-white p-5">
-              <h2 className="text-xl font-semibold">Add a product</h2>
-              <form action={createVendorProduct} className="mt-4 grid gap-4 sm:grid-cols-2">
-                <label className="sm:col-span-2">Product name<input name="title" minLength={3} maxLength={120} required className="mt-1 min-h-11 w-full rounded-xl border border-muted px-3" /></label>
-                <label className="sm:col-span-2">Description<textarea name="description" maxLength={2000} rows={3} className="mt-1 w-full rounded-xl border border-muted px-3 py-2" /></label>
+              <h2 className="text-xl font-semibold">Add an offer to a catalog product</h2>
+              {catalogProducts.length ? <form action={createVendorProduct} className="mt-4 grid gap-4 sm:grid-cols-2">
+                <label className="sm:col-span-2">Product<select name="catalog_handle" required defaultValue="" className="mt-1 min-h-11 w-full rounded-xl border border-muted px-3">
+                  <option value="" disabled>Select a catalog product</option>
+                  {catalogProducts.map((product) => <option key={product.handle} value={product.handle}>{product.title}{product.brand ? ` · ${product.brand}` : ""}</option>)}
+                </select></label>
                 <label>Price (CAD)<input name="price" type="number" min="0.01" max="100000" step="0.01" required className="mt-1 min-h-11 w-full rounded-xl border border-muted px-3" /></label>
                 <label>Starting stock<input name="stock" type="number" min="0" max="100000" step="1" required className="mt-1 min-h-11 w-full rounded-xl border border-muted px-3" /></label>
-                <button type="submit" className="min-h-11 rounded-xl bg-terracotta px-5 text-white sm:col-span-2">Create product</button>
-              </form>
+                <p className="text-sm text-muted sm:col-span-2">The catalog photo and product details stay consistent across sellers. Add your CAD price and available quantity.</p>
+                <button type="submit" className="min-h-11 rounded-xl bg-terracotta px-5 text-white sm:col-span-2">Publish offer</button>
+              </form> : <p className="mt-3 text-muted">There are no catalog products with verified photos available to offer right now.</p>}
             </section>
 
             <section className="mt-6 rounded-2xl border border-sand bg-white p-5">

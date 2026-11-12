@@ -12,9 +12,11 @@ import {
   useQueryGraphStep,
 } from "@medusajs/medusa/core-flows"
 import { MARKETPLACE_MODULE } from "../../modules/marketplace"
+import { CATALOG_MODULE } from "../../modules/catalog"
 
 type WorkflowInput = {
   vendor_id: string
+  catalog_product_id?: string
   product: CreateProductWorkflowInputDTO
 }
 
@@ -47,12 +49,18 @@ const createVendorProductWorkflow = createWorkflow(
       input: productData as CreateProductsWorkflowInput,
     })
 
-    const links = transform({ input, createdProducts }, (d) =>
-      d.createdProducts.map((product) => ({
+    const links = transform({ input, createdProducts }, (d) => [
+      ...d.createdProducts.map((product) => ({
         [MARKETPLACE_MODULE]: { vendor_id: d.input.vendor_id },
         [Modules.PRODUCT]: { product_id: product.id },
-      }))
-    )
+      })),
+      ...(d.input.catalog_product_id
+        ? d.createdProducts.map((product) => ({
+            [CATALOG_MODULE]: { catalog_product_id: d.input.catalog_product_id },
+            [Modules.PRODUCT]: { product_id: product.id },
+          }))
+        : []),
+    ])
     createRemoteLinkStep(links)
 
     const { data: products } = useQueryGraphStep({

@@ -3,12 +3,12 @@ import {
   defineMiddlewares,
   validateAndTransformBody,
 } from "@medusajs/framework/http"
-import { AdminCreateProduct } from "@medusajs/medusa/api/admin/products/validators"
 import { PostVendorStatusSchema } from "./admin/vendors/[id]/status/route"
 import { PostVendorOrderRefundSchema } from "./admin/vendor-orders/[id]/refund/route"
 import { loginRateLimit, enforcePasswordPolicy } from "./auth-security"
 import { ensureActiveVendor, ensureReadableVendor, ensureRegisteredVendor } from "./vendors/guard"
 import { PostVendorCreateSchema } from "./vendors/route"
+import { PostVendorProductSchema } from "./vendors/products/route"
 import { PostVendorStockSchema } from "./vendors/stock/route"
 import { PostOrderTrackingSchema } from "./store/order-tracking/route"
 import { PostReturnRequestSchema } from "./store/marketplace-returns/route"
@@ -53,7 +53,7 @@ export default defineMiddlewares({
     {
       matcher: "/vendors/products",
       method: ["POST"],
-      middlewares: [validateAndTransformBody(AdminCreateProduct)],
+      middlewares: [validateAndTransformBody(PostVendorProductSchema)],
     },
     {
       matcher: "/vendors/stock",
