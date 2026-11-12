@@ -9,7 +9,7 @@ export function ProductCard({ card, priority = false }: { card: CatalogCard; pri
   const sellers = plural(card.vendor_count, "seller", "sellers")
   return (
     <article className="flex flex-col gap-3 rounded-2xl border border-sand bg-white p-4">
-      <ProductImage title={card.title} category={card.category_handle} imageKey={typeof card.attributes?.image_key === "string" ? card.attributes.image_key : null} priority={priority} />
+      <ProductImage title={card.title} imageKey={typeof card.attributes?.image_key === "string" ? card.attributes.image_key : null} priority={priority} />
       <div className="flex flex-1 flex-col gap-1">
         <h3 className="text-base font-semibold leading-snug">
           <Link href={`/p/${card.handle}`}>{card.title}</Link>

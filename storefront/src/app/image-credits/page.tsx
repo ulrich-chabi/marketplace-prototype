@@ -18,7 +18,7 @@ export default function ImageCreditsPage() {
       <Link href="/" className="text-sm underline">Back to marketplace</Link>
       <h1 className="mt-4 font-serif text-3xl">Photo credits and licences</h1>
       <p className="mt-3 max-w-3xl text-muted">
-        These catalogue photos come from Wikimedia Commons. Each file is cropped to a 4:3 frame and converted to WebP for this prototype. The photos are illustrative and do not identify or guarantee the exact item in a listing.
+        Each listing uses its own Wikimedia Commons reference photo selected for the product type. The listed sellers, brands, models, prices and stock are invented; the photograph does not claim to show that fictional brand or model. Files are cropped to 4:3 and converted to WebP.
       </p>
       <ul className="mt-8 grid gap-4 sm:grid-cols-2">
         {Object.entries(demoImages).map(([key, image]) => (

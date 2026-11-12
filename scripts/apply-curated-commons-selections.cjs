@@ -8,6 +8,27 @@ const catalog = JSON.parse(await fs.readFile(manifestPath, "utf8"))
 
 // Named Commons files were checked for a direct visual match to these products.
 const choices = {
+  "computers-1": "Lenovo G500s laptop-2903.jpg",
+  "home-kitchen-4": "Pink portable blender.jpg",
+  "grocery-3": "Union Hand-Roasted Coffee - Coffee Bag.jpg",
+  "grocery-4": "Blackened tea leaves (Unsplash).jpg",
+  "office-products-1": "Red Spiral-Bound Notebook.jpg",
+  "office-products-2": "Industrial anti-fatigue mat with beveled edge and diamond plate texture.jpg",
+  "movies-hobbies-4": "Family photo album - leather cover (8012042758).jpg",
+  "fashion-1": "Green t-shirt and yellow t-shirt.png",
+  "toys-games-1": "A pile of alphabet wooden blocks.jpg",
+  "toys-games-4": "Old Teddy Bear.jpg",
+  "toys-games-5": "RC-car.jpg",
+  "health-household-2": "Liquid detergent.JPG",
+  "grocery-2": "Pasta IMG 3985.JPG",
+  "automotive-1": "Wikimedia Morocco Mini-Hackathon 2026 day 1 - Woman using laptop with mobile phone mount - 0022.jpg",
+  "automotive-5": "Car Dashcam.jpg",
+  "tools-home-improvement-3": "Stanley PowerLock tape measure on tool box.jpg",
+  "garden-outdoor-1": "Great Swamp Greenhouse photos coiled watering hose close in.JPG",
+  "garden-outdoor-4": "Path and solar lights - geograph.org.uk - 7148469.jpg",
+  "baby-4": "Pappa Bottle, Mama Bottle, and Little Baby Bottle (4981165213).jpg",
+  "arts-crafts-3": "Tempestry Kit Picture 16x9.png",
+  "musical-instruments-3": "Casio CTK-496 keyboard.jpg",
   "home-kitchen-3": "Griswold cast iron skillet.jpg",
   "toys-games-2": "The Wavelength party game box and elements 02.jpg",
   "sports-outdoors-1": "Yoga mat.jpg",
@@ -43,7 +64,7 @@ for (const [key, title] of Object.entries(choices)) {
   if (used.has(image.descriptionurl)) throw new Error(`Duplicate image source for ${title}`)
   const item = catalog[key]
   item.title = title
-  item.author = image.extmetadata?.Artist?.value?.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim() ?? ""
+  item.author = image.extmetadata?.Artist?.value?.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim() || "Author not listed"
   item.license = license
   item.source = image.descriptionurl
   item.download = image.thumburl ?? image.url

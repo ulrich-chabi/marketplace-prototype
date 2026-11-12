@@ -68,7 +68,7 @@ export default async function ComparePage({
               <td className="px-4 py-3"><span className="sr-only">Feature</span></td>
               {found.map((d) => (
                 <th key={d.product.handle} scope="col" className="px-4 py-3 align-top">
-                  <ProductImage title={d.product.title} category={d.product.category_handle} imageKey={typeof d.product.attributes?.image_key === "string" ? d.product.attributes.image_key : null} />
+                  <ProductImage title={d.product.title} imageKey={typeof d.product.attributes?.image_key === "string" ? d.product.attributes.image_key : null} />
                   <Link href={`/p/${d.product.handle}`} className="mt-2 block">{d.product.title}</Link>
                   <Link href={colHref(d.product.handle)} className="mt-1 block text-sm font-normal">Remove from comparison</Link>
                 </th>
