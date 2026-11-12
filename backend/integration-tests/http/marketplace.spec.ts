@@ -168,7 +168,7 @@ medusaIntegrationTestRunner({
       try {
         const response = await call("post", `/store/carts/${cartId}/complete-vendor`, {}, storeHeaders)
         expect(response.status).toBe(503)
-        expect(response.data.message).toContain("real payment and tax providers")
+        expect(response.data.message).toContain("payment, tax and order email providers")
       } finally {
         if (originalNodeEnv === undefined) delete process.env.NODE_ENV
         else process.env.NODE_ENV = originalNodeEnv

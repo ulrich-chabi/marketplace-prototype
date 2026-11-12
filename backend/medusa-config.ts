@@ -3,6 +3,11 @@ import { loadEnv, defineConfig } from '@medusajs/framework/utils'
 loadEnv(process.env.NODE_ENV || 'development', process.cwd())
 
 const isProduction = process.env.NODE_ENV === 'production'
+const sendgridApiKey = process.env.SENDGRID_API_KEY
+const sendgridFrom = process.env.SENDGRID_FROM
+const hasSendgridCredentials = Boolean(
+  sendgridApiKey && sendgridFrom && process.env.SENDGRID_ORDER_CONFIRMATION_TEMPLATE_ID
+)
 
 // En production, aucune valeur par défaut n'est tolérée pour les secrets,
 // l'URL de base de données et les origines CORS.
@@ -41,6 +46,22 @@ module.exports = defineConfig({
     { resolve: './src/modules/marketplace' },
     { resolve: './src/modules/security' },
     { resolve: './src/modules/catalog' },
+    ...(hasSendgridCredentials
+      ? [{
+          resolve: '@medusajs/medusa/notification',
+          options: {
+            providers: [{
+              resolve: '@medusajs/medusa/notification-sendgrid',
+              id: 'sendgrid',
+              options: {
+                channels: ['email'],
+                api_key: sendgridApiKey,
+                from: sendgridFrom,
+              },
+            }],
+          },
+        }]
+      : []),
   ],
   admin: {
     disable: process.env.DISABLE_MEDUSA_ADMIN === 'true',

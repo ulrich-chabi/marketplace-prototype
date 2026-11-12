@@ -2,6 +2,7 @@ import { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
 import { ContainerRegistrationKeys, Modules } from "@medusajs/framework/utils"
 import { createHash, randomBytes } from "node:crypto"
 import createVendorOrdersWorkflow from "../../../../../workflows/marketplace/create-vendor-orders"
+import { isProductionCheckoutReady } from "../../checkout-readiness"
 
 export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
   if (process.env.NODE_ENV === "production") {
@@ -16,10 +17,17 @@ export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
       country_code: cart?.shipping_address?.country_code ?? "ca",
     })
     const taxProviderId = taxRegions.find((region: any) => !region.province_code)?.provider_id
-    if (!providerId || providerId === "pp_system_default" || !taxProviderId || taxProviderId === "tp_system") {
+    if (!isProductionCheckoutReady({
+      paymentProviderId: providerId,
+      taxProviderId,
+      sendgridConfigured: Boolean(
+        process.env.SENDGRID_API_KEY && process.env.SENDGRID_FROM &&
+        process.env.SENDGRID_ORDER_CONFIRMATION_TEMPLATE_ID && process.env.STOREFRONT_PUBLIC_URL
+      ),
+    })) {
       return res.status(503).json({
         type: "checkout_unavailable",
-        message: "Checkout is disabled in production until real payment and tax providers are configured.",
+        message: "Checkout is disabled in production until payment, tax and order email providers are configured.",
       })
     }
   }
@@ -43,6 +51,16 @@ export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
   await req.scope.resolve(Modules.ORDER).updateOrders(orderId, {
     metadata: { ...(order.metadata ?? {}), guest_tracking_code_hash: trackingHash },
   })
+
+  // L'envoi est asynchrone et ne doit pas transformer une commande finalisée en erreur.
+  try {
+    await req.scope.resolve(Modules.EVENT_BUS).emit({
+      name: "marketplace.order.completed",
+      data: { id: order.id },
+    })
+  } catch (error) {
+    req.scope.resolve("logger").warn(`Confirmation email enqueue failed for order ${order.id}`)
+  }
 
   res.json({
     type: "order",

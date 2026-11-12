@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="fr">
+  <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Confirmation de commande</title></head>
+  <body style="margin:0;background:#f4f6f8;font-family:Arial,sans-serif;color:#17202a">
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="padding:32px 12px">
+      <tr><td align="center">
+        <table role="presentation" width="600" cellspacing="0" cellpadding="0" style="max-width:600px;background:#fff;border-radius:12px;padding:32px">
+          <tr><td><h1 style="margin:0 0 16px;font-size:26px">Merci pour votre commande, {{store_name}} confirme sa réception.</h1>
+            <p style="line-height:1.6">Votre commande <strong>#{{order_number}}</strong> a été enregistrée le {{order_date}}.</p>
+            <p style="font-size:18px">Total payé : <strong>{{total}}</strong></p>
+            <p style="line-height:1.6">Nous vous enverrons une mise à jour lorsque le traitement de votre commande avancera.</p>
+            <p style="margin:28px 0"><a href="{{storefront_url}}/account" style="background:#173f5f;color:#fff;text-decoration:none;padding:13px 20px;border-radius:6px">Visiter votre espace client</a></p>
+            <p style="font-size:12px;color:#64748b">Courriel automatique concernant une commande passée sur {{store_name}}.</p>
+          </td></tr>
+        </table>
+      </td></tr>
+    </table>
+  </body>
+</html>

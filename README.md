@@ -29,6 +29,8 @@ marketplace-prototype/
 
 ## Installation
 
+La configuration des courriels transactionnels de commande est décrite dans [docs/notifications.md](docs/notifications.md). Le checkout de production reste indisponible jusqu'à la configuration des fournisseurs réels de paiement, taxes et courriels.
+
 Dans le terminal de VS Code (PowerShell), depuis le dossier du projet :
 
 ```powershell
