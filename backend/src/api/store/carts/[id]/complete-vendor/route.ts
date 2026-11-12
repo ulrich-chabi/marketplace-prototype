@@ -8,14 +8,18 @@ export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
     const query = req.scope.resolve(ContainerRegistrationKeys.QUERY)
     const { data: [cart] } = await query.graph({
       entity: "cart",
-      fields: ["payment_collection.payment_sessions.provider_id"],
+      fields: ["shipping_address.country_code", "payment_collection.payment_sessions.provider_id"],
       filters: { id: req.params.id },
     })
     const providerId = cart?.payment_collection?.payment_sessions?.[0]?.provider_id
-    if (!providerId || providerId === "pp_system_default") {
+    const taxRegions = await req.scope.resolve(Modules.TAX).listTaxRegions({
+      country_code: cart?.shipping_address?.country_code ?? "ca",
+    })
+    const taxProviderId = taxRegions.find((region: any) => !region.province_code)?.provider_id
+    if (!providerId || providerId === "pp_system_default" || !taxProviderId || taxProviderId === "tp_system") {
       return res.status(503).json({
         type: "checkout_unavailable",
-        message: "Checkout is disabled in production until a real payment provider is configured.",
+        message: "Checkout is disabled in production until real payment and tax providers are configured.",
       })
     }
   }

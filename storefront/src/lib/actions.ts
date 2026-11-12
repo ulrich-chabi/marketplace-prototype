@@ -78,7 +78,8 @@ export async function placeOrder(formData: FormData) {
   const state = String(formData.get("province") ?? "").trim()
   const postal = String(formData.get("postal_code") ?? "").trim()
   const phone = String(formData.get("phone") ?? "").trim()
-  if (!/^\S+@\S+\.\S+$/.test(email) || !firstName || !lastName || !address || !city || !state || !postal) {
+  const canadianProvinces = new Set(["ab", "bc", "mb", "nb", "nl", "ns", "nt", "nu", "on", "pe", "qc", "sk", "yt"])
+  if (!/^\S+@\S+\.\S+$/.test(email) || !firstName || !lastName || !address || !city || !canadianProvinces.has(state.toLowerCase()) || !postal) {
     redirect("/checkout?error=details")
   }
 

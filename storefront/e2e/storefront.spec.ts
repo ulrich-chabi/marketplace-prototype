@@ -222,7 +222,7 @@ test.describe("Panier", () => {
     await page.getByLabel("Last name").fill("Buyer")
     await page.getByLabel("Street address").fill("1 Fictional Street")
     await page.getByLabel("City").fill("Toronto")
-    await page.getByLabel("Province or territory").fill("Ontario")
+    await page.getByLabel("Province or territory").selectOption("ON")
     await page.getByLabel("Postal code").fill("M5V 3A8")
     await page.getByRole("button", { name: "Place demo order" }).click()
     await expect(page.getByRole("heading", { name: "Demo order placed" })).toBeVisible({ timeout: 30_000 })

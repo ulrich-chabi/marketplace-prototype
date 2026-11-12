@@ -63,7 +63,7 @@ export default async function ProductPage({ params, searchParams }: Props) {
         <p className="mt-1 text-muted">
           Offers are sorted by price. No offer is promoted.
           {shipping && ` Shipping: ${money(shipping.price, shipping.currency_code)} per seller package (demo). `}
-          Tax (1% illustrative) is added at checkout.
+          Tax is estimated by destination province at checkout for this demo.
         </p>
         <div className="mt-4 overflow-x-auto rounded-2xl border border-sand bg-white">
           <table className="w-full min-w-[56rem] border-collapse text-left">

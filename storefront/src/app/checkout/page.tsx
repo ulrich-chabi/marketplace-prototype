@@ -26,7 +26,12 @@ export default async function CheckoutPage({
   } catch { /* fallback to the seller labels shown in the cart */ }
   const subtotal = cart.items.reduce((sum, item) => sum + item.unit_price * item.quantity, 0)
   const shipping = vendorCount * 5
-  const estimatedTax = subtotal * 0.01
+  const provinces = [
+    ["AB", "Alberta"], ["BC", "British Columbia"], ["MB", "Manitoba"],
+    ["NB", "New Brunswick"], ["NL", "Newfoundland and Labrador"], ["NS", "Nova Scotia"],
+    ["NT", "Northwest Territories"], ["NU", "Nunavut"], ["ON", "Ontario"],
+    ["PE", "Prince Edward Island"], ["QC", "Quebec"], ["SK", "Saskatchewan"], ["YT", "Yukon"],
+  ]
 
   return (
     <div className="mx-auto max-w-5xl px-6 py-8 lg:px-10">
@@ -48,7 +53,7 @@ export default async function CheckoutPage({
           <label className="block">Street address<input name="address_1" required autoComplete="street-address" className="mt-1 min-h-11 w-full rounded-xl border border-muted px-3" /></label>
           <div className="grid gap-4 sm:grid-cols-2">
             <label className="block">City<input name="city" required autoComplete="address-level2" className="mt-1 min-h-11 w-full rounded-xl border border-muted px-3" /></label>
-            <label className="block">Province or territory<input name="province" required autoComplete="address-level1" className="mt-1 min-h-11 w-full rounded-xl border border-muted px-3" /></label>
+            <label className="block">Province or territory<select name="province" required autoComplete="address-level1" defaultValue="" className="mt-1 min-h-11 w-full rounded-xl border border-muted px-3"><option value="" disabled>Select a province or territory</option>{provinces.map(([code, name]) => <option key={code} value={code}>{name}</option>)}</select></label>
             <label className="block">Postal code<input name="postal_code" required autoComplete="postal-code" className="mt-1 min-h-11 w-full rounded-xl border border-muted px-3" /></label>
             <label className="block">Phone (optional)<input name="phone" type="tel" autoComplete="tel" className="mt-1 min-h-11 w-full rounded-xl border border-muted px-3" /></label>
           </div>
@@ -66,10 +71,10 @@ export default async function CheckoutPage({
           <dl className="mt-4 space-y-2 border-t border-sand pt-4">
             <div className="flex justify-between"><dt>Items subtotal</dt><dd>{money(subtotal, cart.currency_code)}</dd></div>
             <div className="flex justify-between"><dt>Shipping ({vendorCount} {vendorCount === 1 ? "package" : "packages"})</dt><dd>{money(shipping, cart.currency_code)}</dd></div>
-            <div className="flex justify-between"><dt>Illustrative tax (1%)</dt><dd>{money(estimatedTax, cart.currency_code)}</dd></div>
-            <div className="flex justify-between border-t border-sand pt-3 text-lg font-semibold"><dt>Estimated total</dt><dd>{money(subtotal + shipping + estimatedTax, cart.currency_code)}</dd></div>
+            <div className="flex justify-between"><dt>Estimated tax</dt><dd>Calculated by province at checkout</dd></div>
+            <div className="flex justify-between border-t border-sand pt-3 text-lg font-semibold"><dt>Estimated total before tax</dt><dd>{money(subtotal + shipping, cart.currency_code)}</dd></div>
           </dl>
-          <p className="mt-3 text-xs text-muted">Final tax and order totals are calculated by the backend.</p>
+          <p className="mt-3 text-xs text-muted">Demo tax estimates use general Canadian provincial rates for ordinary taxable goods. Actual tax obligations depend on registration, item classification, exemptions and place-of-supply rules.</p>
           <Link href="/cart" className="mt-4 inline-block underline">Return to cart</Link>
         </aside>
       </div>

@@ -7,11 +7,11 @@ import {
   createShippingOptionsWorkflow,
   createShippingProfilesWorkflow,
   createStockLocationsWorkflow,
-  createTaxRegionsWorkflow,
   linkSalesChannelsToApiKeyWorkflow,
   linkSalesChannelsToStockLocationWorkflow,
   updateStoresWorkflow,
 } from "@medusajs/medusa/core-flows"
+import { configureCanadianDemoTaxes } from "../../src/scripts/canadian-demo-tax"
 
 // Boutique de test : Canada, CAD, livraison forfaitaire, paiement système.
 export async function setupCommerce(container: MedusaContainer) {
@@ -46,16 +46,7 @@ export async function setupCommerce(container: MedusaContainer) {
       ],
     },
   })
-  const { result: taxRegions } = await createTaxRegionsWorkflow(container).run({
-    input: [{ country_code: "ca", provider_id: "tp_system" }],
-  })
-  await container.resolve(Modules.TAX).createTaxRates({
-    tax_region_id: taxRegions[0].id,
-    name: "Demo tax (1%)",
-    code: "demo-tax-1-percent",
-    rate: 1,
-    is_default: true,
-  })
+  await configureCanadianDemoTaxes(container)
 
   const { result: locations } = await createStockLocationsWorkflow(container).run({
     input: {

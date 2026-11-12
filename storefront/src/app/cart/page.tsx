@@ -90,8 +90,8 @@ export default async function CartPage({
       <div className="mt-6 max-w-md rounded-2xl border border-sand bg-white p-5">
         <p className="flex justify-between text-lg"><span>Items subtotal</span><strong>{money(total, cart.currency_code)}</strong></p>
         <p className="mt-2 flex justify-between"><span>Estimated shipping</span><span>{money(sellerCount * 5, cart.currency_code)}</span></p>
-        <p className="mt-1 flex justify-between"><span>Illustrative tax (1%)</span><span>{money(total * 0.01, cart.currency_code)}</span></p>
-        <p className="mt-2 text-sm text-muted">Final totals are calculated by the store at checkout.</p>
+        <p className="mt-1 flex justify-between"><span>Estimated tax</span><span>Calculated by province at checkout</span></p>
+        <p className="mt-2 text-sm text-muted">Demo tax estimates use general provincial rates for ordinary taxable goods. Item classification and tax registration can change the final amount.</p>
         <Link href="/checkout" className="mt-4 inline-flex min-h-11 items-center rounded-xl bg-terracotta px-5 text-white">Continue to checkout</Link>
       </div>
     </div>

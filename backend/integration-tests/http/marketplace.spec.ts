@@ -168,7 +168,7 @@ medusaIntegrationTestRunner({
       try {
         const response = await call("post", `/store/carts/${cartId}/complete-vendor`, {}, storeHeaders)
         expect(response.status).toBe(503)
-        expect(response.data.message).toContain("real payment provider")
+        expect(response.data.message).toContain("real payment and tax providers")
       } finally {
         if (originalNodeEnv === undefined) delete process.env.NODE_ENV
         else process.env.NODE_ENV = originalNodeEnv
@@ -311,7 +311,7 @@ medusaIntegrationTestRunner({
         expect(a.data.orders).toHaveLength(1)
         expect(a.data.orders[0].id).toBe(vendorOrderOf("a").id)
         expect(a.data.orders[0].items).toHaveLength(1)
-        expect(Number(a.data.orders[0].total)).toBe(20.2)
+        expect(Number(a.data.orders[0].total)).toBe(22.6)
       })
 
       it("un vendeur sans commande reçoit une liste vide (et non toutes les commandes)", async () => {
@@ -371,7 +371,7 @@ medusaIntegrationTestRunner({
         const r = await refund("a", 5)
         expect(r.status).toBe(200)
         expect(r.data.refunded).toBe(5)
-        expect(r.data.remaining).toBe(15.2)
+        expect(r.data.remaining).toBe(17.6)
 
         const service: any = getContainer().resolve("marketplace")
         const ledgerA = await service.listVendorRefunds({ vendor_order_id: vendorOrderOf("a").id })
@@ -380,14 +380,14 @@ medusaIntegrationTestRunner({
         expect(Number(ledgerA[0].amount)).toBe(5)
         expect(ledgerB).toHaveLength(0)
 
-        const bFull = await refund("b", 30.3)
+        const bFull = await refund("b", 33.9)
         expect(bFull.status).toBe(200)
         expect(bFull.data.remaining).toBe(0)
       })
 
       it("refuse un remboursement supérieur au montant restant de la commande vendeur", async () => {
         expect((await refund("a", 12)).status).toBe(200)
-        const over = await refund("a", 9)
+        const over = await refund("a", 11)
         expect(over.status).toBe(400)
         const service: any = getContainer().resolve("marketplace")
         const ledgerA = await service.listVendorRefunds({ vendor_order_id: vendorOrderOf("a").id })
@@ -397,7 +397,7 @@ medusaIntegrationTestRunner({
       it("le remboursement du vendeur A ne peut pas consommer la part du vendeur B", async () => {
         // Le paiement capturé total (55) dépasse largement 21 : seul le plafond
         // propre à la commande vendeur empêche ce remboursement.
-        const r = await refund("a", 21)
+        const r = await refund("a", 23)
         expect(r.status).toBe(400)
       })
 

@@ -10,7 +10,6 @@ import {
   createShippingOptionsWorkflow,
   createShippingProfilesWorkflow,
   createStockLocationsWorkflow,
-  createTaxRegionsWorkflow,
   linkSalesChannelsToApiKeyWorkflow,
   linkSalesChannelsToStockLocationWorkflow,
   updateStoresWorkflow,
@@ -20,6 +19,7 @@ import { MARKETPLACE_MODULE } from "../modules/marketplace"
 import { CATALOG_MODULE } from "../modules/catalog"
 import setVendorStatusWorkflow from "../workflows/marketplace/set-vendor-status"
 import { BRANDS, COLORS, DEPARTMENTS, rng, VENDORS } from "./seed-data"
+import { configureCanadianDemoTaxes } from "./canadian-demo-tax"
 
 // Remplit une boutique canadienne avec des données fictives pour le prototype.
 // Ne pas exécuter sur une boutique en production ou contenant des données réelles.
@@ -36,7 +36,7 @@ export default async function seedMarketplace({ container }: ExecArgs) {
   const hasCatalog = (await catalogService.listCatalogProducts({}, { take: 1 })).length > 0
 
   // ---------- Boutique : devise, canal de vente, région, livraison ----------
-  logger.info("Boutique de démonstration : Canada, CAD, taxe et livraison simulées…")
+  logger.info("Boutique de démonstration : Canada, CAD, estimations fiscales provinciales et livraison simulées…")
   const storeModule = container.resolve(Modules.STORE)
   const store = (await storeModule.listStores())[0]
   let salesChannelId = store.default_sales_channel_id as string | null
@@ -75,25 +75,7 @@ export default async function seedMarketplace({ container }: ExecArgs) {
       update: { payment_providers: ["pp_system_default"] },
     },
   })
-  const taxRegions = await container.resolve(Modules.TAX).listTaxRegions({ country_code: "ca" })
-  let taxRegion = taxRegions[0]
-  if (!taxRegion) {
-    const { result } = await createTaxRegionsWorkflow(container).run({
-      input: [{ country_code: "ca", provider_id: "tp_system" }],
-    })
-    taxRegion = result[0]
-  }
-  const taxModule = container.resolve(Modules.TAX)
-  const existingTaxRates = await taxModule.listTaxRates({ tax_region_id: taxRegion.id })
-  if (!existingTaxRates.length) {
-    await taxModule.createTaxRates({
-      tax_region_id: taxRegion.id,
-      name: "Illustrative demo tax (1%)",
-      code: "demo-tax-1-percent",
-      rate: 1,
-      is_default: true,
-    })
-  }
+  await configureCanadianDemoTaxes(container)
 
   const fulfillment = container.resolve(Modules.FULFILLMENT)
   let profile = (await fulfillment.listShippingProfiles({ type: "default" }))[0]
