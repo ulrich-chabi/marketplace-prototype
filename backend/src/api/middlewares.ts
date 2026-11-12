@@ -14,7 +14,7 @@ import { PostOrderTrackingSchema } from "./store/order-tracking/route"
 import { PostReturnRequestSchema } from "./store/marketplace-returns/route"
 import { PostReturnDecisionSchema } from "./admin/return-requests/[id]/route"
 import { Modules } from "@medusajs/framework/utils"
-import { isProductionCheckoutReady } from "./store/carts/checkout-readiness"
+import { isAvalaraProductionConfigured, isProductionCheckoutReady } from "./store/carts/checkout-readiness"
 
 async function protectProductionPaymentSession(req: any, res: any, next: any) {
   if (process.env.NODE_ENV !== "production") return next()
@@ -25,6 +25,8 @@ async function protectProductionPaymentSession(req: any, res: any, next: any) {
     paymentProviderId: req.body?.provider_id,
     taxProviderId,
     stripeConfigured: Boolean(process.env.STRIPE_API_KEY && process.env.STRIPE_WEBHOOK_SECRET),
+    avalaraProductionConfigured: isAvalaraProductionConfigured(),
+    taxCatalogVerified: process.env.AVALARA_TAX_CATALOG_VERIFIED === "true",
     sendgridConfigured: Boolean(
       process.env.SENDGRID_API_KEY && process.env.SENDGRID_FROM &&
       process.env.SENDGRID_ORDER_CONFIRMATION_TEMPLATE_ID && process.env.STOREFRONT_PUBLIC_URL

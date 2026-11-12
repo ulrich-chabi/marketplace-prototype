@@ -14,7 +14,7 @@ Les étapes F1–F10 livrent la base du prototype local. Elles ne signifient ni 
 | F11 | Catalogue démo distinct : chaque fiche possède un visuel identifié, des crédits et des offres de vendeurs | Implémenté; 133 images distinctes et vérifiées, 20 rayons couverts |
 | F12 | Courriels transactionnels de commande; ne jamais envoyer le code privé de suivi | Code et modèle SendGrid prêts; compte, clés et envoi de test à vérifier |
 | F13 | Paiement Stripe sécurisé, autorisation, capture opérateur et webhooks | Code intégré; clés de test, activation de la région et test Stripe à faire |
-| F14 | Taxe canadienne réelle par province, territoire, produit et vendeur | Non commencé; fournisseur fiscal et validation des obligations canadiennes requis |
+| F14 | Taxe canadienne réelle par province, territoire, produit et vendeur | En cours : checkout de production désormais limité à Avalara en production, avec configuration et vérification explicites du catalogue et du code de livraison. Le fournisseur n'est pas encore intégré/activé; classification des annonces, obligations du vendeur et essais sandbox restent à faire |
 | F15 | Tarifs et étiquettes de livraison, suivi transporteur, retours et capture liée à l'expédition | Non commencé; frais, dates et statuts sont encore fictifs |
 | F16 | Versements vendeurs, commissions, rapprochement comptable et remboursements réels | Non commencé; l'intégration de paiements marketplace et les règles financières restent à définir |
 | F17 | Conditions, confidentialité, conformité, hébergement, sauvegardes et préparation au lancement | Non terminé; les pages actuelles décrivent le prototype et ne constituent pas des conditions commerciales approuvées |
