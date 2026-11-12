@@ -20,6 +20,7 @@ export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
     if (!isProductionCheckoutReady({
       paymentProviderId: providerId,
       taxProviderId,
+      stripeConfigured: Boolean(process.env.STRIPE_API_KEY && process.env.STRIPE_WEBHOOK_SECRET),
       sendgridConfigured: Boolean(
         process.env.SENDGRID_API_KEY && process.env.SENDGRID_FROM &&
         process.env.SENDGRID_ORDER_CONFIRMATION_TEMPLATE_ID && process.env.STOREFRONT_PUBLIC_URL

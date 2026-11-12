@@ -19,7 +19,8 @@ export async function POST(
     entity: "order",
     fields: [
       "id", "display_id", "created_at", "status", "fulfillment_status",
-      "payment_status", "total", "items.id", "items.title", "items.quantity", "metadata",
+      "payment_status", "payment_collections.payment_sessions.provider_id", "total",
+      "items.id", "items.title", "items.quantity", "metadata",
     ],
     filters: { id: req.validatedBody.order_id },
   })
@@ -47,6 +48,9 @@ export async function POST(
       status: order.status,
       fulfillment_status: order.fulfillment_status,
       payment_status: order.payment_status,
+      payment_provider: order.payment_collections?.some((collection: any) =>
+        collection.payment_sessions?.some((session: any) => session.provider_id === "pp_stripe_stripe")
+      ) ? "stripe" : "demo",
       total: order.total,
       items: (order.items ?? []).map((item: any) => ({ id: item.id, title: item.title, quantity: item.quantity })),
       return_requests: returnRequests.map((request) => ({ order_item_id: request.order_item_id, status: request.status })),

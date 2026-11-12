@@ -13,6 +13,7 @@ type DemoOrder = {
   status: string
   fulfillment_status: string
   payment_status: string
+  payment_provider?: "stripe" | "demo"
   total: number
   items: { id: string; title: string; quantity: number }[]
   return_requests?: { order_item_id: string; status: string }[]
@@ -63,7 +64,7 @@ export default async function AccountPage({
   return (
     <div className="mx-auto max-w-3xl px-6 py-10">
       <h1 className="font-serif text-3xl">Your account</h1>
-      <p className="mt-3 text-muted">Manage your demo customer profile and orders. Payments and fulfillment remain simulated.</p>
+      <p className="mt-3 text-muted">Manage your customer profile and orders. {process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ? "Stripe payments are processed securely; fulfillment remains simulated." : "Payments and fulfillment are simulated."}</p>
 
       {params.error && <p role="alert" className="mt-4 rounded-xl border border-terracotta bg-white p-4">We could not complete that account request. Check your details and try again.</p>}
       {params.saved === "1" && <p role="status" className="mt-4 rounded-xl border border-sand bg-white p-4">Your profile was updated.</p>}
@@ -108,7 +109,7 @@ export default async function AccountPage({
         <section className="mt-6 rounded-2xl border border-sand bg-white p-5" aria-labelledby="order-heading">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
-              <h2 id="order-heading" className="text-xl font-semibold">Your demo order #{order.display_id}</h2>
+              <h2 id="order-heading" className="text-xl font-semibold">Your order #{order.display_id}</h2>
               <p className="mt-1 text-sm text-muted">Placed {new Date(order.created_at).toLocaleDateString("en-CA")}</p>
             </div>
             <form action={forgetTrackedOrder}><button type="submit" className="min-h-11 rounded-xl border border-muted px-4">Forget this order</button></form>
@@ -116,7 +117,7 @@ export default async function AccountPage({
           <dl className="mt-5 grid gap-3 sm:grid-cols-3">
             <div className="rounded-xl bg-sand-soft p-3"><dt className="text-sm text-muted">Order status</dt><dd className="font-semibold">{label(order.status)}</dd></div>
             <div className="rounded-xl bg-sand-soft p-3"><dt className="text-sm text-muted">Shipping status</dt><dd className="font-semibold">{label(order.fulfillment_status)}</dd></div>
-            <div className="rounded-xl bg-sand-soft p-3"><dt className="text-sm text-muted">Payment status</dt><dd className="font-semibold">Simulated · {label(order.payment_status)}</dd></div>
+            <div className="rounded-xl bg-sand-soft p-3"><dt className="text-sm text-muted">Payment status</dt><dd className="font-semibold">{order.payment_provider === "stripe" ? `Stripe · ${label(order.payment_status)}` : `Simulated · ${label(order.payment_status)}`}</dd></div>
           </dl>
           <h3 className="mt-5 font-semibold">Items</h3>
           <ul className="mt-2 space-y-3">
@@ -134,7 +135,7 @@ export default async function AccountPage({
       )}
 
       <form action={lookupOrder} className="mt-6 space-y-4 rounded-2xl border border-sand bg-white p-5">
-        <h2 className="text-xl font-semibold">Track a demo order</h2>
+        <h2 className="text-xl font-semibold">Track an order</h2>
         <label className="block">Order reference<input name="order_id" type="text" placeholder="order_…" minLength={7} maxLength={100} required autoComplete="off" className="mt-1 min-h-11 w-full rounded-xl border border-muted px-3" /></label>
         <label className="block">Private access code<input name="access_code" type="password" minLength={40} maxLength={50} required autoComplete="off" className="mt-1 min-h-11 w-full rounded-xl border border-muted px-3" /></label>
         <button type="submit" className="min-h-11 rounded-xl bg-terracotta px-5 text-white">Find order</button>

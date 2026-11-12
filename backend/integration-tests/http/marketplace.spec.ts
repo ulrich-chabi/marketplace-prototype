@@ -175,6 +175,26 @@ medusaIntegrationTestRunner({
       }
     })
 
+    it("bloque la création d'une session de paiement avant toute autorisation en production", async () => {
+      const cart = await call("post", "/store/carts", { region_id: commerce.regionId }, storeHeaders)
+      const collection = await call("post", "/store/payment-collections", { cart_id: cart.data.cart.id }, storeHeaders)
+      const originalNodeEnv = process.env.NODE_ENV
+      process.env.NODE_ENV = "production"
+      try {
+        const response = await call(
+          "post",
+          `/store/payment-collections/${collection.data.payment_collection.id}/payment-sessions`,
+          { provider_id: "pp_stripe_stripe" },
+          storeHeaders
+        )
+        expect(response.status).toBe(503)
+        expect(response.data.type).toBe("checkout_unavailable")
+      } finally {
+        if (originalNodeEnv === undefined) delete process.env.NODE_ENV
+        else process.env.NODE_ENV = originalNodeEnv
+      }
+    })
+
     const vendorOrderOf = (key: string) => vendorOrders.find((o) => o.vendor_id === vendors[key].id)!
 
     describe("Suivi d'une commande démo", () => {

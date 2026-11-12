@@ -69,7 +69,7 @@ export async function removeLine(formData: FormData) {
   redirect("/cart")
 }
 
-export async function placeOrder(formData: FormData) {
+function checkoutAddress(formData: FormData) {
   const email = String(formData.get("email") ?? "").trim()
   const firstName = String(formData.get("first_name") ?? "").trim()
   const lastName = String(formData.get("last_name") ?? "").trim()
@@ -79,56 +79,57 @@ export async function placeOrder(formData: FormData) {
   const postal = String(formData.get("postal_code") ?? "").trim()
   const phone = String(formData.get("phone") ?? "").trim()
   const canadianProvinces = new Set(["ab", "bc", "mb", "nb", "nl", "ns", "nt", "nu", "on", "pe", "qc", "sk", "yt"])
-  if (!/^\S+@\S+\.\S+$/.test(email) || !firstName || !lastName || !address || !city || !canadianProvinces.has(state.toLowerCase()) || !postal) {
-    redirect("/checkout?error=details")
-  }
+  if (!/^\S+@\S+\.\S+$/.test(email) || !firstName || !lastName || !address || !city || !canadianProvinces.has(state.toLowerCase()) || !postal) throw new Error("details")
+  return { email, firstName, lastName, address, city, state, postal, phone }
+}
 
+async function prepareCartForCheckout(formData: FormData) {
+  const details = checkoutAddress(formData)
   const cartId = await getCartId()
   const cart = await getCart()
-  if (!cartId || !cart?.items.length) redirect("/cart?error=empty")
+  if (!cartId || !cart?.items.length) throw new Error("empty")
 
-  try {
-    const customerToken = (await cookies()).get(CUSTOMER_TOKEN_COOKIE)?.value
-    const customerHeaders = customerToken ? { Authorization: `Bearer ${customerToken}` } : undefined
-    if (customerHeaders) await sdk.store.cart.transferCart(cartId, {}, customerHeaders)
-    const headers = { "x-publishable-api-key": PUBLISHABLE_KEY }
-    const vendorResult = await fetch(`${BACKEND_URL}/store/carts/${cartId}/vendor-count`, { headers, cache: "no-store" })
-    if (!vendorResult.ok) throw new Error("A seller is unavailable")
-    const { vendor_count: vendorCount } = (await vendorResult.json()) as { vendor_count: number }
-    if (!vendorCount) throw new Error("The cart has no available items")
+  const customerToken = (await cookies()).get(CUSTOMER_TOKEN_COOKIE)?.value
+  const customerHeaders = customerToken ? { Authorization: `Bearer ${customerToken}` } : undefined
+  if (customerHeaders) await sdk.store.cart.transferCart(cartId, {}, customerHeaders)
+  const headers = { "x-publishable-api-key": PUBLISHABLE_KEY }
+  const vendorResult = await fetch(`${BACKEND_URL}/store/carts/${cartId}/vendor-count`, { headers, cache: "no-store" })
+  if (!vendorResult.ok) throw new Error("seller")
+  const { vendor_count: vendorCount } = (await vendorResult.json()) as { vendor_count: number }
+  if (!vendorCount) throw new Error("seller")
 
-    const { cart: addressedCart } = await sdk.store.cart.update(cartId, {
-      email,
+  const { cart: addressedCart } = await sdk.store.cart.update(cartId, {
+      email: details.email,
       shipping_address: {
-        first_name: firstName,
-        last_name: lastName,
-        address_1: address,
-        city,
-        province: state,
-        postal_code: postal,
+        first_name: details.firstName,
+        last_name: details.lastName,
+        address_1: details.address,
+        city: details.city,
+        province: details.state,
+        postal_code: details.postal,
         country_code: "ca",
-        phone: phone || undefined,
+        phone: details.phone || undefined,
       },
       billing_address: {
-        first_name: firstName,
-        last_name: lastName,
-        address_1: address,
-        city,
-        province: state,
-        postal_code: postal,
+        first_name: details.firstName,
+        last_name: details.lastName,
+        address_1: details.address,
+        city: details.city,
+        province: details.state,
+        postal_code: details.postal,
         country_code: "ca",
-        phone: phone || undefined,
+        phone: details.phone || undefined,
       },
     })
 
-    const { shipping_options: options } = await sdk.store.fulfillment.listCartOptions({ cart_id: cartId })
-    const standard = options.find((option: { id: string; name: string }) => option.name === "Standard") ?? options[0]
-    if (!standard) throw new Error("No shipping option is available for this address")
-    for (let i = 0; i < vendorCount; i++) {
-      await sdk.store.cart.addShippingMethod(cartId, { option_id: standard.id })
-    }
+  const { shipping_options: options } = await sdk.store.fulfillment.listCartOptions({ cart_id: cartId })
+  const standard = options.find((option: { id: string; name: string }) => option.name === "Standard") ?? options[0]
+  if (!standard) throw new Error("shipping")
+  for (let i = 0; i < vendorCount; i++) await sdk.store.cart.addShippingMethod(cartId, { option_id: standard.id })
+  return { cartId, addressedCart }
+}
 
-    await sdk.store.payment.initiatePaymentSession(addressedCart, { provider_id: "pp_system_default" })
+async function finishOrder(cartId: string, paymentMode: "demo" | "stripe") {
     const completed = await sdk.client.fetch<{
       order?: { id: string; display_id?: number; total?: number }
       tracking_code?: string
@@ -143,6 +144,7 @@ export async function placeOrder(formData: FormData) {
       orderNumber: completed.order.display_id,
       total: completed.order.total ?? null,
       trackingCode: completed.tracking_code,
+      paymentMode,
     }), {
       httpOnly: true,
       sameSite: "lax",
@@ -162,10 +164,50 @@ export async function placeOrder(formData: FormData) {
     })
     cookieStore.delete(CART_COOKIE)
     revalidatePath("/", "layout")
+}
+
+function checkoutErrorRedirect(error: unknown, fallback: "order" | "payment" = "order"): never {
+  if (error && typeof error === "object" && "digest" in error) throw error
+  const reason = error instanceof Error && ["details", "empty", "seller", "shipping"].includes(error.message) ? error.message : fallback
+  redirect(reason === "empty" ? "/cart?error=empty" : `/checkout?error=${reason}`)
+}
+
+export async function placeOrder(formData: FormData) {
+  const demoCheckoutEnabled = process.env.NODE_ENV !== "production" || process.env.DEMO_CHECKOUT_ENABLED === "true"
+  if (!demoCheckoutEnabled) redirect("/checkout?error=payment")
+  try {
+    const { cartId, addressedCart } = await prepareCartForCheckout(formData)
+    await sdk.store.payment.initiatePaymentSession(addressedCart, { provider_id: "pp_system_default" })
+    await finishOrder(cartId, "demo")
     redirect("/checkout/confirmation")
   } catch (error) {
-    if (error && typeof error === "object" && "digest" in error) throw error
-    redirect("/checkout?error=order")
+    checkoutErrorRedirect(error)
+  }
+}
+
+export async function prepareStripePayment(formData: FormData) {
+  if (!process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY) redirect("/checkout?error=payment")
+  try {
+    const { cartId, addressedCart } = await prepareCartForCheckout(formData)
+    await sdk.store.payment.initiatePaymentSession(addressedCart, { provider_id: "pp_stripe_stripe" })
+    redirect("/checkout?payment=ready")
+  } catch (error) {
+    checkoutErrorRedirect(error, "payment")
+  }
+}
+
+export async function completeStripeOrder() {
+  const cartId = await getCartId()
+  if (!cartId) redirect("/cart?error=empty")
+  try {
+    const { cart: retrievedCart } = await sdk.store.cart.retrieve(cartId, { fields: "id,payment_collection.payment_sessions.provider_id" })
+    const cart = retrievedCart as unknown as { payment_collection?: { payment_sessions?: Array<{ provider_id: string }> } }
+    const stripeSession = cart.payment_collection?.payment_sessions?.some((session) => session.provider_id === "pp_stripe_stripe")
+    if (!stripeSession) throw new Error("payment")
+    await finishOrder(cartId, "stripe")
+    redirect("/checkout/confirmation")
+  } catch (error) {
+    checkoutErrorRedirect(error, "payment")
   }
 }
 
@@ -493,7 +535,7 @@ export async function refundVendorOrder(formData: FormData) {
   redirect("/platform?refund=sent")
 }
 
-export async function captureDemoPayment(formData: FormData) {
+export async function captureOrderPayment(formData: FormData) {
   const paymentId = String(formData.get("payment_id") ?? "")
   const token = (await cookies()).get(PLATFORM_TOKEN_COOKIE)?.value
   if (!token || !paymentId) redirect("/platform?error=capture")

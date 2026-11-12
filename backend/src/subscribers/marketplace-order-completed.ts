@@ -1,6 +1,16 @@
 import type { SubscriberArgs, SubscriberConfig } from "@medusajs/framework"
 import { ContainerRegistrationKeys, Modules } from "@medusajs/framework/utils"
 
+export function hasStripePayment(order: {
+  payment_collections?: Array<{
+    payment_sessions?: Array<{ provider_id: string } | null> | null
+  } | null> | null
+}) {
+  return Boolean(order.payment_collections?.some((collection) =>
+    collection?.payment_sessions?.some((session) => session?.provider_id === "pp_stripe_stripe")
+  ))
+}
+
 export default async function orderCompletedHandler({ event, container }: SubscriberArgs<{ id: string }>) {
   const template = process.env.SENDGRID_ORDER_CONFIRMATION_TEMPLATE_ID
   const publicUrl = process.env.STOREFRONT_PUBLIC_URL
@@ -12,10 +22,13 @@ export default async function orderCompletedHandler({ event, container }: Subscr
   const query = container.resolve(ContainerRegistrationKeys.QUERY)
   const { data: [order] } = await query.graph({
     entity: "order",
-    fields: ["id", "display_id", "email", "currency_code", "total", "created_at"],
+    fields: ["id", "display_id", "email", "currency_code", "total", "created_at", "payment_collections.payment_sessions.provider_id"],
     filters: { id: event.data.id },
   })
-  if (!order?.email) return
+  if (!order?.email || !hasStripePayment(order)) {
+    console.info("Order confirmation email skipped: order has no Stripe payment session.")
+    return
+  }
 
   await container.resolve(Modules.NOTIFICATION).createNotifications({
     to: order.email,

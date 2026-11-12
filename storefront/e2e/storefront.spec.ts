@@ -32,6 +32,10 @@ test.describe("Parcourir", () => {
     await expect(page.getByText("Language: English (Canada) · Country: Canada · Currency: CAD")).toBeVisible()
     expect(await page.locator("main a[href^='/categories/']").count()).toBeGreaterThanOrEqual(20)
     await expect(page.locator("article")).toHaveCount(5)
+    await page.getByRole("heading", { name: "New arrivals" }).scrollIntoViewIfNeeded()
+    await expect.poll(async () => page.locator("article img").evaluateAll((images) =>
+      images.length === 5 && images.every((image) => (image as HTMLImageElement).complete && (image as HTMLImageElement).naturalWidth > 0)
+    ), { timeout: 15_000 }).toBe(true)
     const arrivalImages = await page.locator("article img").evaluateAll((images) =>
       images.map((image) => ({
         loaded: (image as HTMLImageElement).complete && (image as HTMLImageElement).naturalWidth > 0,
@@ -247,7 +251,7 @@ test.describe("Panier", () => {
     await expect(page.getByText("Save this private order access code")).toBeVisible()
     await expect(cartLink(page)).toHaveAccessibleName("Cart, 0 items")
     await page.getByRole("link", { name: "View order status" }).click()
-    await expect(page.getByRole("heading", { name: /^Your demo order #/ })).toBeVisible()
+    await expect(page.getByRole("heading", { name: /^Your order #/ })).toBeVisible()
     await expect(page.getByText("Shipping status")).toBeVisible()
     await page.getByRole("button", { name: "Request return" }).click()
     await expect(page.getByRole("status")).toContainText("sent to the platform for review")

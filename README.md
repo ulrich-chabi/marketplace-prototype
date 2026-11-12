@@ -1,7 +1,7 @@
 # Prototype de marketplace multi-vendeurs
 
 Backend Medusa (TypeScript) + PostgreSQL, et site Next.js (`storefront`).
-Paiements, livraisons, commissions : simulés. Données : fictives.
+Données de démonstration fictives. Le paiement est simulé par défaut; Stripe peut être activé avec un compte et des clés valides. Livraison, commissions et versements restent simulés.
 
 ## Structure
 
@@ -29,7 +29,8 @@ marketplace-prototype/
 
 ## Installation
 
-La configuration des courriels transactionnels de commande est décrite dans [docs/notifications.md](docs/notifications.md). Le checkout de production reste indisponible jusqu'à la configuration des fournisseurs réels de paiement, taxes et courriels.
+La configuration des courriels transactionnels de commande est décrite dans [docs/notifications.md](docs/notifications.md). Le checkout de production reste indisponible jusqu'à la configuration vérifiée du paiement Stripe, d'un fournisseur fiscal canadien et des courriels transactionnels.
+Le paiement Stripe et le composant sécurisé sont décrits dans [docs/payments-stripe.md](docs/payments-stripe.md). Utilisez uniquement les clés Stripe de test pendant la mise au point; l'autorisation n'est capturée qu'après validation de la commande par la plateforme.
 
 Dans le terminal de VS Code (PowerShell), depuis le dossier du projet :
 
@@ -99,7 +100,7 @@ npm run seed:demo
 
 Le catalogue, les prix, stocks, vendeurs, frais de livraison et la taxe affichée sont des données simulées : ne pas utiliser cette commande sur une boutique ou une base contenant des données réelles. Les photos produit sont recadrées en 800 × 600 WebP; la source, l’auteur et la licence de chaque photo sont indiqués sur `/image-credits`. `npm run seed` continue de configurer une boutique canadienne vide.
 
-Le seed démo configure des estimations provinciales générales pour des biens courants dans les 13 provinces et territoires canadiens. Elles suivent les taux généraux publiés, mais ne couvrent pas les exemptions par produit, le statut d'inscription des vendeurs, les cas particuliers de lieu de fourniture ou les remises fiscales. Elles ne doivent pas servir à encaisser de vraies commandes. Avant tout déploiement, configurez un fournisseur fiscal qualifié (par exemple Avalara) et faites confirmer les obligations applicables. Le checkout de production reste désactivé tant que le fournisseur de taxe intégré de démonstration ou le paiement simulé est actif. Références : [ARC](https://www.canada.ca/en/revenue-agency/services/tax/businesses/topics/gst-hst-businesses/charge-collect-which-rate/calculator.html), [Revenu Québec](https://www.revenuquebec.ca/en/businesses/consumption-taxes/gsthst-and-qst/basic-rules-for-applying-the-gsthst-and-qst/tables-of-gst-and-qst-rates/), [Saskatchewan](https://www.saskatchewan.ca/Business/Taxes-Licensing-and-Reporting/Provincial-Taxes-Policies-and-Bulletins/Provincial-Sales-Tax), [Manitoba](https://www.gov.mb.ca/finance/taxation/taxes/retail.html), [Colombie-Britannique](https://www2.gov.bc.ca/gov/content/taxes/sales-taxes/pst/publications/small-business-guide).
+Le seed démo configure des estimations provinciales générales pour des biens courants dans les 13 provinces et territoires canadiens. Elles suivent les taux généraux publiés, mais ne couvrent pas les exemptions par produit, le statut d'inscription des vendeurs, les cas particuliers de lieu de fourniture ou les remises fiscales. Elles ne doivent pas servir à encaisser de vraies commandes. Avant tout déploiement, configurez un fournisseur fiscal qualifié et faites confirmer les obligations applicables. Le checkout de production reste désactivé tant que Stripe, la taxe et les courriels de commande ne sont pas configurés. Références : [ARC](https://www.canada.ca/en/revenue-agency/services/tax/businesses/topics/gst-hst-businesses/charge-collect-which-rate/calculator.html), [Revenu Québec](https://www.revenuquebec.ca/en/businesses/consumption-taxes/gsthst-and-qst/basic-rules-for-applying-the-gsthst-and-qst/tables-of-gst-and-qst-rates/), [Saskatchewan](https://www.saskatchewan.ca/Business/Taxes-Licensing-and-Reporting/Provincial-Taxes-Policies-and-Bulletins/Provincial-Sales-Tax), [Manitoba](https://www.gov.mb.ca/finance/taxation/taxes/retail.html), [Colombie-Britannique](https://www2.gov.bc.ca/gov/content/taxes/sales-taxes/pst/publications/small-business-guide).
 
 ### Tests de bout en bout du site
 
@@ -113,6 +114,8 @@ npm run test:e2e
 ```
 
 Le navigateur Chromium Playwright doit être installé une fois. Les tests de catalogue et de commande ne sont pas exécutables sur la base canadienne vierge, qui ne contient volontairement aucune annonce.
+
+Pour exécuter les tests navigateur contre un **build local de production** sans clé Stripe, lancer le storefront de test avec `$env:DEMO_CHECKOUT_ENABLED='true'`. Cette option réactive uniquement le paiement fictif utilisé par Playwright; ne jamais la définir sur le déploiement public. En développement (`npm run dev`), les commandes simulées sont déjà disponibles.
 
 ## Tests
 

@@ -5,6 +5,7 @@ loadEnv(process.env.NODE_ENV || 'development', process.cwd())
 const isProduction = process.env.NODE_ENV === 'production'
 const sendgridApiKey = process.env.SENDGRID_API_KEY
 const sendgridFrom = process.env.SENDGRID_FROM
+const stripeApiKey = process.env.STRIPE_API_KEY
 const hasSendgridCredentials = Boolean(
   sendgridApiKey && sendgridFrom && process.env.SENDGRID_ORDER_CONFIRMATION_TEMPLATE_ID
 )
@@ -57,6 +58,22 @@ module.exports = defineConfig({
                 channels: ['email'],
                 api_key: sendgridApiKey,
                 from: sendgridFrom,
+              },
+            }],
+          },
+        }]
+      : []),
+    ...(stripeApiKey
+      ? [{
+          resolve: '@medusajs/medusa/payment',
+          options: {
+            providers: [{
+              resolve: '@medusajs/medusa/payment-stripe',
+              id: 'stripe',
+              options: {
+                apiKey: stripeApiKey,
+                webhookSecret: process.env.STRIPE_WEBHOOK_SECRET,
+                capture: false,
               },
             }],
           },

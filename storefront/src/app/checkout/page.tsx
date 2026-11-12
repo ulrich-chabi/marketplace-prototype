@@ -1,10 +1,11 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { redirect } from "next/navigation"
-import { placeOrder } from "@/lib/actions"
+import { placeOrder, prepareStripePayment } from "@/lib/actions"
 import { getCart } from "@/lib/cart"
 import { money } from "@/lib/format"
-import { BACKEND_URL, PUBLISHABLE_KEY } from "@/lib/medusa"
+import { BACKEND_URL, PUBLISHABLE_KEY, sdk } from "@/lib/medusa"
+import StripeCheckoutForm from "@/components/StripeCheckoutForm"
 
 export const dynamic = "force-dynamic"
 export const metadata: Metadata = { title: "Checkout" }
@@ -17,6 +18,21 @@ export default async function CheckoutPage({
   const cart = await getCart()
   if (!cart?.items.length) redirect("/cart")
   const params = await searchParams
+  const stripeEnabled = Boolean(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY)
+  const stripeTestMode = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY?.startsWith("pk_test_") ?? false
+  const demoCheckoutEnabled = process.env.NODE_ENV !== "production" || process.env.DEMO_CHECKOUT_ENABLED === "true"
+  const checkoutAvailable = stripeEnabled || demoCheckoutEnabled
+  let stripeClientSecret = ""
+  if (stripeEnabled && params.payment === "ready") {
+    try {
+      const { cart: retrievedPaymentCart } = await sdk.store.cart.retrieve(cart.id, {
+        fields: "id,payment_collection.payment_sessions.provider_id,payment_collection.payment_sessions.data",
+      })
+      const paymentCart = retrievedPaymentCart as unknown as { payment_collection?: { payment_sessions?: Array<{ provider_id: string; data?: Record<string, unknown> }> } }
+      const session = paymentCart.payment_collection?.payment_sessions?.find((item) => item.provider_id === "pp_stripe_stripe")
+      stripeClientSecret = String(session?.data?.client_secret ?? "")
+    } catch { /* un message de configuration est affiché plus bas */ }
+  }
   let vendorCount = new Set(cart.items.map((item) => item.metadata?.vendor_handle ?? item.metadata?.vendor_name)).size
   try {
     const response = await fetch(`${BACKEND_URL}/store/carts/${cart.id}/vendor-count`, {
@@ -37,13 +53,22 @@ export default async function CheckoutPage({
     <div className="mx-auto max-w-5xl px-6 py-8 lg:px-10">
       <h1 className="font-serif text-3xl">Checkout</h1>
       <p className="mt-2 rounded-xl border border-sand bg-white p-4 text-sm">
-        Prototype only: use fictional contact and address details. Payment is simulated; no real charge will be made.
+        {stripeEnabled
+          ? stripeTestMode
+            ? "Stripe secure checkout is in test mode. Use Stripe test cards; no real payment will be taken."
+            : "Stripe secure checkout is enabled. Your payment will be authorized and captured by the platform when the order is prepared."
+          : "Prototype only: use fictional contact and address details. Payment is simulated; no real charge will be made."}
       </p>
       {params.error === "details" && <p role="alert" className="mt-4 rounded-xl border border-terracotta bg-white p-4">Enter a valid email and complete all required address fields.</p>}
       {params.error === "order" && <p role="alert" className="mt-4 rounded-xl border border-terracotta bg-white p-4">We could not place this order. Check the cart and try again.</p>}
+      {params.error === "payment" && <p role="alert" className="mt-4 rounded-xl border border-terracotta bg-white p-4">Secure payment is not configured. No order has been placed.</p>}
+      {params.error === "seller" && <p role="alert" className="mt-4 rounded-xl border border-terracotta bg-white p-4">A seller or item in this cart is no longer available.</p>}
+      {params.error === "shipping" && <p role="alert" className="mt-4 rounded-xl border border-terracotta bg-white p-4">No delivery option is available for this Canadian address.</p>}
+      {stripeEnabled && params.payment === "ready" && !stripeClientSecret && <p role="alert" className="mt-4 rounded-xl border border-terracotta bg-white p-4">The secure payment session could not be loaded. Return to your cart and try again.</p>}
+      {!checkoutAvailable && <p role="alert" className="mt-4 rounded-xl border border-terracotta bg-white p-4">Checkout is unavailable until Stripe is configured for this store.</p>}
 
       <div className="mt-6 grid gap-8 lg:grid-cols-[1fr_20rem]">
-        <form action={placeOrder} className="space-y-5 rounded-2xl border border-sand bg-white p-5">
+        {stripeClientSecret ? <StripeCheckoutForm clientSecret={stripeClientSecret} /> : checkoutAvailable ? <form action={stripeEnabled ? prepareStripePayment : placeOrder} className="space-y-5 rounded-2xl border border-sand bg-white p-5">
           <h2 className="text-xl font-semibold">Contact and delivery</h2>
           <label className="block">Email address<input name="email" type="email" required autoComplete="email" className="mt-1 min-h-11 w-full rounded-xl border border-muted px-3" /></label>
           <div className="grid gap-4 sm:grid-cols-2">
@@ -58,8 +83,10 @@ export default async function CheckoutPage({
             <label className="block">Phone (optional)<input name="phone" type="tel" autoComplete="tel" className="mt-1 min-h-11 w-full rounded-xl border border-muted px-3" /></label>
           </div>
           <p className="text-sm text-muted">Delivery is limited to Canada in this prototype.</p>
-          <button type="submit" className="min-h-11 rounded-xl bg-terracotta px-5 text-white">Place demo order</button>
-        </form>
+          {stripeEnabled
+            ? <button type="submit" className="min-h-11 rounded-xl bg-terracotta px-5 text-white">Continue to secure payment</button>
+            : <button type="submit" className="min-h-11 rounded-xl bg-terracotta px-5 text-white">Place demo order</button>}
+        </form> : null}
 
         <aside className="h-fit rounded-2xl border border-sand bg-white p-5">
           <h2 className="text-xl font-semibold">Order summary</h2>

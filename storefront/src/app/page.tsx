@@ -25,7 +25,7 @@ export default async function HomePage() {
       </section>
 
       <ul className="mt-5 grid gap-5 md:grid-cols-3">
-        {["Delivery date and total cost shown before checkout", "Returns policy shown on every offer", "Payment is simulated: no real charge"].map((t) => (
+        {["Delivery date and total cost shown before checkout", "Returns policy shown on every offer", process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ? "Stripe payment authorization is available" : "Payment is simulated: no real charge"].map((t) => (
           <li key={t} className="rounded-2xl border border-sand bg-white p-5">{t}</li>
         ))}
       </ul>

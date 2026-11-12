@@ -8,14 +8,14 @@ export const metadata: Metadata = { title: "Order confirmation" }
 
 export default async function ConfirmationPage() {
   const value = (await cookies()).get("checkout_receipt")?.value
-  let receipt: { order?: string | number; orderNumber?: number; total?: number | null; trackingCode?: string } = {}
+  let receipt: { order?: string | number; orderNumber?: number; total?: number | null; trackingCode?: string; paymentMode?: "demo" | "stripe" } = {}
   try { receipt = value ? JSON.parse(value) : {} } catch { /* receipt expired or malformed */ }
 
   return (
     <div className="mx-auto max-w-2xl px-6 py-12">
       <section className="rounded-2xl border border-sand bg-white p-7">
-        <h1 className="font-serif text-3xl">Demo order placed</h1>
-        <p className="mt-3">Your simulated order was created. No payment was taken.</p>
+        <h1 className="font-serif text-3xl">{receipt.paymentMode === "stripe" ? "Order placed" : "Demo order placed"}</h1>
+        <p className="mt-3">{receipt.paymentMode === "stripe" ? "Your payment was authorized securely. The platform will capture it when the order is prepared." : "Your simulated order was created. No payment was taken."}</p>
         {receipt.order && <p className="mt-4"><strong>Order reference:</strong> {receipt.order}</p>}
         {receipt.orderNumber != null && <p className="mt-1"><strong>Order number:</strong> #{receipt.orderNumber}</p>}
         {typeof receipt.total === "number" && <p className="mt-1"><strong>Order total:</strong> {money(receipt.total)}</p>}
