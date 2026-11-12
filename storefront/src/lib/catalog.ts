@@ -6,6 +6,7 @@ export type CatalogCard = {
   title: string
   brand: string | null
   category_handle: string | null
+  attributes: Record<string, unknown> | null
   price_from: number
   currency_code: string
   offer_count: number

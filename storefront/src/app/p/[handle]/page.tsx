@@ -32,13 +32,14 @@ export default async function ProductPage({ params, searchParams }: Props) {
   const { product, shipping } = detail
   const error = ERRORS[String((await searchParams).error ?? "")]
   const cheapest = product.offers[0]?.price
-  const attributes = Object.entries(product.attributes ?? {})
+  const imageKey = typeof product.attributes?.image_key === "string" ? product.attributes.image_key : null
+  const attributes = Object.entries(product.attributes ?? {}).filter(([key]) => !["image_key", "demo_listing"].includes(key))
 
   return (
     <div className="px-6 py-8 lg:px-10">
       {error && <p role="alert" className="mb-6 rounded-xl border border-terracotta bg-white p-4 font-semibold">{error}</p>}
       <div className="grid gap-8 lg:grid-cols-[24rem_1fr]">
-        <ProductImage title={product.title} category={product.category_handle} priority />
+        <ProductImage title={product.title} category={product.category_handle} imageKey={imageKey} priority />
         <div>
           <h1 className="font-serif text-3xl">{product.title}</h1>
           {product.brand && <p className="text-muted">{product.brand}</p>}

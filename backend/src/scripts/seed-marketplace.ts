@@ -31,7 +31,7 @@ export default async function seedMarketplace({ container }: ExecArgs) {
   const link = container.resolve(ContainerRegistrationKeys.LINK)
   const catalogService: any = container.resolve(CATALOG_MODULE)
   const marketplace: any = container.resolve(MARKETPLACE_MODULE)
-  const perCategory = Math.max(1, Math.min(30, Number(process.env.SEED_PRODUCTS_PER_CATEGORY ?? 20)))
+  const perCategory = Math.max(1, Math.min(12, Number(process.env.SEED_PRODUCTS_PER_CATEGORY ?? 5)))
 
   const hasCatalog = (await catalogService.listCatalogProducts({}, { take: 1 })).length > 0
 
@@ -170,7 +170,7 @@ export default async function seedMarketplace({ container }: ExecArgs) {
       const color = String(product.attributes?.color ?? "Slate")
       await catalogService.updateCatalogProducts({
         id: product.id,
-        description: demoDescription(department.handle, type, color),
+        description: demoDescription(department.handle, type, color, String(product.brand ?? ""), String(product.attributes?.model ?? "")),
         attributes: { ...(product.attributes ?? {}), demo_listing: true },
       })
       refreshed += 1
@@ -223,6 +223,8 @@ export default async function seedMarketplace({ container }: ExecArgs) {
       const brand = BRANDS[Math.floor(random() * BRANDS.length)]
       const code = `${String.fromCharCode(65 + Math.floor(random() * 26))}${100 + Math.floor(random() * 900)}`
       const title = `${brand} ${type} ${code}`
+      const color = pick(COLORS)
+      const imageKey = `${dept.handle}-${i + 1}`
       const handle = `${dept.handle}-${i + 1}-${title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}`
       const base = dept.priceMin + random() * (dept.priceMax - dept.priceMin)
       const offerTotal = 1 + Math.floor(random() * 4) // 1 à 4 offres
@@ -231,8 +233,8 @@ export default async function seedMarketplace({ container }: ExecArgs) {
 
       const catalog = await catalogService.createCatalogProducts({
         handle, title, brand, category_handle: dept.handle,
-        description: demoDescription(dept.handle, type, pick(COLORS)),
-        attributes: { color: pick(COLORS), model: code, demo_listing: true },
+        description: demoDescription(dept.handle, type, color, brand, code),
+        attributes: { color, model: code, image_key: imageKey, demo_listing: true },
       })
       rows.push({
         catalog,
@@ -314,7 +316,7 @@ export default async function seedMarketplace({ container }: ExecArgs) {
   logger.info("----------------------------------------------------------------")
 }
 
-function demoDescription(category: string, type: string, color: string) {
+function demoDescription(category: string, type: string, color: string, brand: string, model: string) {
   const details: Record<string, string> = {
     electronics: "Cushioned contact points, onboard controls and a foldable profile make it easy to store between uses.",
     computers: "A clean desk companion with a cable-friendly layout, compact footprint and a sturdy everyday finish.",
@@ -337,5 +339,5 @@ function demoDescription(category: string, type: string, color: string) {
     "video-games": "A gaming accessory with an easy-to-store shape, designed for casual play and a tidy entertainment setup.",
     "movies-hobbies": "A hobby essential designed for hands-on projects, with a compact form that stores neatly between uses.",
   }
-  return `${type} in ${color.toLowerCase()}. ${details[category] ?? "A practical everyday item with a compact, easy-to-store design."} This listing's product details, brand, price and stock are fictional prototype data. The accompanying photo is illustrative and may show a different item.`
+  return `${brand} ${type}, model ${model}, in ${color.toLowerCase()}. ${details[category] ?? "A practical everyday item with a compact, easy-to-store design."} The brand, model, specifications, price and stock are fictional prototype details; the photograph illustrates this product type.`
 }

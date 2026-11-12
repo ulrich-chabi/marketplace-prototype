@@ -1,11 +1,12 @@
 import Image from "next/image"
 import demoImages from "@/data/demo-images.json"
 
-export function ProductImage({ title, category, className = "", priority = false }: { title: string; category: string | null; className?: string; priority?: boolean }) {
-  const image = demoImages[category as keyof typeof demoImages]
+export function ProductImage({ title, category, imageKey, className = "", priority = false }: { title: string; category: string | null; imageKey?: string | null; className?: string; priority?: boolean }) {
+  const key = imageKey || (category ? `${category}-1` : "electronics-1")
+  const image = demoImages[key as keyof typeof demoImages]
   return (
     <Image
-      src={image?.file ?? "/images/catalog/electronics.webp"}
+      src={image?.file ?? "/images/catalog/electronics-1.webp"}
       alt={image?.alt ?? `Illustrative product photo for ${title}`}
       width={800}
       height={600}

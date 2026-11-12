@@ -7,6 +7,7 @@ const storefrontRequire = createRequire(path.join(root, "storefront", "package.j
 const sharp = storefrontRequire("sharp")
 const sourceFile = path.join(root, "storefront", "src", "data", "demo-images.json")
 const outputDir = path.join(root, "storefront", "public", "images", "catalog")
+const force = process.argv.includes("--force")
 
 async function main() {
   const assets = JSON.parse(await readFile(sourceFile, "utf8"))
@@ -16,7 +17,7 @@ async function main() {
     const outputPath = path.join(outputDir, `${category}.webp`)
     try {
       await access(outputPath)
-      continue
+      if (!force) continue
     } catch {}
     const response = await fetch(asset.download, {
       headers: { "User-Agent": "MarketplacePrototype/1.0 (https://github.com/ulrich-chabi/marketplace-prototype)" },

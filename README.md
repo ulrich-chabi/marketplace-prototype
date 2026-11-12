@@ -89,13 +89,13 @@ Espaces du prototype :
 
 ### Catalogue fictif pour la démonstration
 
-Pour remplir la base locale avec le catalogue de démonstration (20 rayons, jusqu'à 400 fiches, offres et vendeurs fictifs), lancer depuis `backend` :
+Pour remplir la base locale avec le catalogue de démonstration (20 rayons, 100 produits fictifs distincts, chacun avec sa propre photo et plusieurs offres de vendeurs), lancer depuis `backend` :
 
 ```powershell
 npm run seed:demo
 ```
 
-Le catalogue, les prix, stocks, vendeurs, frais de livraison et la taxe affichée sont des données simulées : ne pas utiliser cette commande sur une boutique ou une base contenant des données réelles. Les photos de catégorie sont recadrées en 800 × 600 WebP; leurs sources et licences sont indiquées sur `/image-credits`. `npm run seed` continue de configurer une boutique canadienne vide.
+Le catalogue, les prix, stocks, vendeurs, frais de livraison et la taxe affichée sont des données simulées : ne pas utiliser cette commande sur une boutique ou une base contenant des données réelles. Les photos produit sont recadrées en 800 × 600 WebP; la source, l’auteur et la licence de chaque photo sont indiqués sur `/image-credits`. `npm run seed` continue de configurer une boutique canadienne vide.
 
 ### Tests de bout en bout du site
 
