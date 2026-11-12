@@ -32,6 +32,14 @@ test.describe("Parcourir", () => {
     await expect(page.getByText("Language: English (Canada) · Country: Canada · Currency: CAD")).toBeVisible()
     expect(await page.locator("main a[href^='/categories/']").count()).toBeGreaterThanOrEqual(20)
     await expect(page.locator("article")).toHaveCount(5)
+    const arrivalImages = await page.locator("article img").evaluateAll((images) =>
+      images.map((image) => ({
+        loaded: (image as HTMLImageElement).complete && (image as HTMLImageElement).naturalWidth > 0,
+        alt: image.getAttribute("alt"),
+      }))
+    )
+    expect(arrivalImages).toHaveLength(5)
+    expect(arrivalImages.every((image) => image.loaded && Boolean(image.alt))).toBe(true)
     await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/)
   })
 
@@ -43,6 +51,16 @@ test.describe("Parcourir", () => {
     expect(await page.locator("article").count()).toBeGreaterThan(0)
     await page.getByRole("link", { name: /^Logo/ }).click()
     await expect(page).toHaveURL(/\/$/)
+  })
+
+  test("la page de crédits référence chaque photo une seule fois", async ({ page }) => {
+    await page.goto("/image-credits")
+    await expect(page.getByRole("heading", { name: "Photo credits and licences" })).toBeVisible()
+    const sourceLinks = await page.locator("a[href*='/wiki/File:']").evaluateAll((links) =>
+      links.map((link) => (link as HTMLAnchorElement).href)
+    )
+    expect(sourceLinks).toHaveLength(133)
+    expect(new Set(sourceLinks).size).toBe(133)
   })
 
   test("la recherche trouve un produit et annonce l'absence de résultat", async ({ page }) => {

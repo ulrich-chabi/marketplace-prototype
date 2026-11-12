@@ -1,5 +1,7 @@
 import { ExecArgs } from "@medusajs/framework/types"
 import { ContainerRegistrationKeys, Modules } from "@medusajs/framework/utils"
+import { readFileSync } from "node:fs"
+import { resolve } from "node:path"
 import {
   createApiKeysWorkflow,
   createInventoryLevelsWorkflow,
@@ -24,16 +26,19 @@ import { configureCanadianDemoTaxes } from "./canadian-demo-tax"
 // Remplit une boutique canadienne avec des données fictives pour le prototype.
 // Ne pas exécuter sur une boutique en production ou contenant des données réelles.
 //   npm run seed:demo
-// Variable : SEED_PRODUCTS_PER_CATEGORY (20 par défaut).
+// Variable : SEED_PRODUCTS_PER_CATEGORY (7 par défaut, limité aux photos disponibles).
 export default async function seedMarketplace({ container }: ExecArgs) {
   const logger = container.resolve(ContainerRegistrationKeys.LOGGER)
   const query: any = container.resolve(ContainerRegistrationKeys.QUERY)
   const link = container.resolve(ContainerRegistrationKeys.LINK)
   const catalogService: any = container.resolve(CATALOG_MODULE)
   const marketplace: any = container.resolve(MARKETPLACE_MODULE)
-  const perCategory = Math.max(1, Math.min(12, Number(process.env.SEED_PRODUCTS_PER_CATEGORY ?? 5)))
-
-  const hasCatalog = (await catalogService.listCatalogProducts({}, { take: 1 })).length > 0
+  const configuredCount = Number(process.env.SEED_PRODUCTS_PER_CATEGORY ?? 7)
+  const perCategory = Number.isFinite(configuredCount) ? Math.max(1, Math.min(12, Math.floor(configuredCount))) : 7
+  const imageManifestPath = resolve(process.cwd(), "../storefront/src/data/demo-images.json")
+  const demoImages = JSON.parse(readFileSync(imageManifestPath, "utf8")) as Record<string, unknown>
+  const existingCatalog = await catalogService.listCatalogProducts({}, { take: 1000 })
+  const hasCatalog = existingCatalog.length > 0
 
   // ---------- Boutique : devise, canal de vente, région, livraison ----------
   logger.info("Boutique de démonstration : Canada, CAD, estimations fiscales provinciales et livraison simulées…")
@@ -142,23 +147,22 @@ export default async function seedMarketplace({ container }: ExecArgs) {
 
   // Les réglages de commande restent idempotents même si le catalogue existe déjà.
   if (hasCatalog) {
-    const existingCatalog = await catalogService.listCatalogProducts({}, { take: 1000 })
     let refreshed = 0
     for (const product of existingCatalog) {
-      if (product.description !== "Fictional demo product for the prototype. No real brand, specification or review.") continue
+      if (!product.attributes?.demo_listing) continue
       const department = DEPARTMENTS.find((candidate) => candidate.handle === product.category_handle)
       if (!department) continue
-      const type = department.types.find((candidate) => product.title.includes(candidate)) ?? department.types[0]
+      const imageIndex = Number(String(product.attributes?.image_key ?? "").split("-").at(-1)) - 1
+      const type = department.types[imageIndex] ?? department.types.find((candidate) => product.title.includes(candidate)) ?? department.types[0]
       const color = String(product.attributes?.color ?? "Slate")
       await catalogService.updateCatalogProducts({
         id: product.id,
         description: demoDescription(department.handle, type, color, String(product.brand ?? ""), String(product.attributes?.model ?? "")),
-        attributes: { ...(product.attributes ?? {}), demo_listing: true },
+        attributes: { ...(product.attributes ?? {}), ...demoProductAttributes(department, type, imageIndex, color), demo_listing: true },
       })
       refreshed += 1
     }
-    logger.info(`Réglages de boutique à jour; ${refreshed} anciennes fiches génériques de démonstration actualisées.`)
-    return
+    logger.info(`Réglages de boutique à jour; ${refreshed} fiches de démonstration actualisées.`)
   }
 
   // ---------- Rayons ----------
@@ -179,15 +183,21 @@ export default async function seedMarketplace({ container }: ExecArgs) {
   logger.info(`Vendeurs : ${VENDORS.length}…`)
   const vendors: { id: string; name: string; locationId: string }[] = []
   for (const v of VENDORS) {
-    const created = await marketplace.createVendors({
-      name: v.name, handle: v.handle, status: "pending",
-      delivery_days_min: v.deliveryMin, delivery_days_max: v.deliveryMax, return_window_days: v.returnDays,
-    })
-    await setVendorStatusWorkflow(container).run({ input: { vendor_id: created.id, status: "active" } })
+    let vendor = (await marketplace.listVendors({ handle: v.handle }, { take: 1 }))[0]
+    if (!vendor) {
+      vendor = await marketplace.createVendors({
+        name: v.name, handle: v.handle, status: "pending",
+        delivery_days_min: v.deliveryMin, delivery_days_max: v.deliveryMax, return_window_days: v.returnDays,
+      })
+    }
+    if (vendor.status !== "active") {
+      await setVendorStatusWorkflow(container).run({ input: { vendor_id: vendor.id, status: "active" } })
+    }
     const {
       data: [withLoc],
-    } = await query.graph({ entity: "vendor", fields: ["id", "stock_location.id"], filters: { id: created.id } })
-    vendors.push({ id: created.id, name: v.name, locationId: withLoc.stock_location.id })
+    } = await query.graph({ entity: "vendor", fields: ["id", "stock_location.id"], filters: { id: vendor.id } })
+    if (!withLoc?.stock_location?.id) throw new Error(`Le vendeur de démonstration ${v.handle} n'a pas d'emplacement de stock.`)
+    vendors.push({ id: vendor.id, name: v.name, locationId: withLoc.stock_location.id })
   }
 
   // ---------- Catalogue : fiches + offres ----------
@@ -195,18 +205,26 @@ export default async function seedMarketplace({ container }: ExecArgs) {
   const pick = <T,>(arr: T[]) => arr[Math.floor(random() * arr.length)]
   let catalogCount = 0
   let offerCount = 0
+  const existingImageKeys = new Set(
+    existingCatalog
+      .map((product: any) => product.attributes?.image_key)
+      .filter((key: unknown): key is string => typeof key === "string")
+  )
 
   for (const dept of DEPARTMENTS) {
-    logger.info(`Catalogue : ${dept.name} (${perCategory} fiches)…`)
+    const productCount = Math.min(perCategory, dept.imageCount, dept.types.length)
+    logger.info(`Catalogue : ${dept.name} (${productCount} fiches avec photo dédiée)…`)
     const rows: { catalog: any; offers: { vendorIdx: number; price: number; stock: number; condition: string }[] }[] = []
 
-    for (let i = 0; i < perCategory; i++) {
-      const type = dept.types[i % dept.types.length]
+    for (let i = 0; i < productCount; i++) {
+      const imageKey = `${dept.handle}-${i + 1}`
+      if (!demoImages[imageKey]) throw new Error(`Photo de démonstration absente : ${imageKey}`)
+      if (existingImageKeys.has(imageKey)) continue
+      const type = dept.types[i]
       const brand = BRANDS[Math.floor(random() * BRANDS.length)]
       const code = `${String.fromCharCode(65 + Math.floor(random() * 26))}${100 + Math.floor(random() * 900)}`
       const title = `${brand} ${type} ${code}`
       const color = pick(COLORS)
-      const imageKey = `${dept.handle}-${i + 1}`
       const handle = `${dept.handle}-${i + 1}-${title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}`
       const base = dept.priceMin + random() * (dept.priceMax - dept.priceMin)
       const offerTotal = 1 + Math.floor(random() * 4) // 1 à 4 offres
@@ -216,8 +234,15 @@ export default async function seedMarketplace({ container }: ExecArgs) {
       const catalog = await catalogService.createCatalogProducts({
         handle, title, brand, category_handle: dept.handle,
         description: demoDescription(dept.handle, type, color, brand, code),
-        attributes: { color, model: code, image_key: imageKey, demo_listing: true },
+        attributes: {
+          color,
+          model: code,
+          image_key: imageKey,
+          ...demoProductAttributes(dept, type, i, color),
+          demo_listing: true,
+        },
       })
+      existingImageKeys.add(imageKey)
       rows.push({
         catalog,
         offers: [...chosen].map((vendorIdx) => ({
@@ -321,5 +346,95 @@ function demoDescription(category: string, type: string, color: string, brand: s
     "video-games": "A gaming accessory with an easy-to-store shape, designed for casual play and a tidy entertainment setup.",
     "movies-hobbies": "A hobby essential designed for hands-on projects, with a compact form that stores neatly between uses.",
   }
-  return `${brand} ${type}, model ${model}, in ${color.toLowerCase()}. ${details[category] ?? "A practical everyday item with a compact, easy-to-store design."} The brand, model, specifications, price and stock are fictional prototype details; the photograph illustrates this product type.`
+  const productDetails: Record<string, string> = {
+    Webcam: "A compact camera with a clip-on base and adjustable viewing angle for a home desk.",
+    "Action Camera": "A pocket-sized camera body with a sealed housing and a quick-release mounting point.",
+    "External SSD": "A portable solid-state drive with a protective shell and a short transfer cable.",
+    "Laptop Stand": "A folding riser with a vented platform and non-slip contact pads.",
+    "Storage Containers": "A stackable set with clear lids and a compact shape for pantry shelves.",
+    "Cutting Board": "A reversible food-preparation surface with rounded corners and a juice groove.",
+    "Rain Jacket": "A lightweight shell with an adjustable hood, zipped pockets and a packable cut.",
+    Backpack: "A day bag with a padded laptop sleeve, water-bottle pocket and reinforced base.",
+    "History Atlas": "A large-format reference volume with maps, a place index and a durable lay-flat binding.",
+    "Card Game": "A boxed deck with illustrated cards and a quick-start rules sheet for group play.",
+    "Sleeping Bag": "A packable sleeping bag with a full-length zip and a drawstring storage sack.",
+    "Hair Brush": "A cushioned paddle brush with rounded pins and a comfortable handle.",
+    "Pill Organizer": "A weekly organizer with seven removable, clearly marked daily compartments.",
+    Thermometer: "A digital household thermometer with a clear readout and a protective storage case.",
+    Honey: "A small-batch style pantry jar with a tamper band and a wide-mouth pour opening.",
+    "Spice Set": "A matching group of labelled spice jars supplied in a countertop storage rack.",
+    "Automatic Feeder": "A programmable feeder with a removable food tray and a simple portion control dial.",
+    "Floor Mats": "A four-piece set with raised edges and a textured surface for everyday vehicle use.",
+    "Car Vacuum": "A compact 12-volt cleaner with a flexible nozzle and a washable dust cup.",
+    "Tool Box": "A portable case with a reinforced handle, removable tray and metal latches.",
+    "Laser Level": "A self-levelling line tool with a magnetic base and a compact carry case.",
+    "Label Maker": "A handheld label printer with a backlit display and a one-line keyboard.",
+    Whiteboard: "A framed dry-erase board with a smooth writing surface and a slim marker ledge.",
+    "Compost Bin": "A lidded garden bin with ventilation slots and a hinged access panel.",
+    "Bath Tub": "A lightweight infant bath with a contoured base and a smooth, easy-rinse surface.",
+    "Craft Scissors": "A lightweight pair with rounded tips, a comfortable grip and stainless blades.",
+    "Pottery Tools": "A small shaping set with wooden-handled tools packed in a reusable sleeve.",
+    "Guitar Tuner": "A clip-on tuner with a pivoting display and a vibration-sensing clamp.",
+    "Music Stand": "A folding stand with an adjustable-height stem and a tilt-adjustable music tray.",
+    "Racing Wheel": "A tabletop driving controller with a clamp mount and a textured steering rim.",
+    "Capture Card": "A compact video capture board with labelled input ports and a low-profile bracket.",
+    "Puzzle Mat": "A roll-up surface with a storage tube to keep an in-progress puzzle together.",
+  }
+  const detail = productDetails[type] ?? details[category] ?? "A practical everyday item with a compact, easy-to-store design."
+  return `${brand} ${type}, model ${model}, in ${color.toLowerCase()}. ${detail} ${details[category] ?? "Designed for straightforward everyday use."} The brand, model, specifications, price and stock are fictional prototype details; the photograph illustrates this product type.`
+}
+
+function demoProductAttributes(department: (typeof DEPARTMENTS)[number], type: string, index: number, color: string) {
+  const materials: Record<string, string[]> = {
+    electronics: ["ABS polymer and silicone", "Anodized aluminium", "Recycled ABS and nylon"],
+    computers: ["Anodized aluminium", "ABS polymer", "Powder-coated steel and silicone"],
+    "home-kitchen": ["Food-grade stainless steel", "Borosilicate glass", "Maple wood and silicone"],
+    fashion: ["Recycled polyester", "Cotton canvas", "Nylon and polyurethane"],
+    books: ["Printed paper with a matte board cover", "Recycled paper and cloth binding", "Paper and laminated board"],
+    "toys-games": ["Maple wood and water-based finish", "Molded ABS plastic", "Card stock and fabric"],
+    "sports-outdoors": ["Ripstop polyester", "EVA foam and nylon", "Powder-coated aluminium"],
+    "beauty-personal-care": ["ABS polymer", "Stainless steel and silicone", "Glass and polypropylene"],
+    "health-household": ["Polypropylene", "Stainless steel and ABS", "Recycled polyester"],
+    grocery: ["Glass jar with a metal lid", "Recyclable paper pouch", "Food-safe polypropylene container"],
+    "pet-supplies": ["Reinforced nylon", "Washable polyester", "Food-safe polypropylene"],
+    automotive: ["Molded rubber", "ABS polymer and steel", "Polyester and non-slip backing"],
+    "tools-home-improvement": ["Chrome-vanadium steel", "ABS polymer and steel", "Powder-coated aluminium"],
+    "office-products": ["Recycled paper and board", "Powder-coated steel", "ABS polymer and silicone"],
+    "garden-outdoor": ["Recycled polypropylene", "Galvanized steel", "Powder-coated aluminium"],
+    baby: ["BPA-free polypropylene", "Cotton muslin", "Recycled polyester"],
+    "arts-crafts": ["Beech wood and stainless steel", "Water-based pigments", "Cotton canvas and paper"],
+    "musical-instruments": ["Maple wood and ABS", "Brass and nickel plating", "Powder-coated steel"],
+    "video-games": ["ABS polymer and silicone", "Powder-coated steel", "Copper, fiberglass and ABS"],
+    "movies-hobbies": ["Acrylic and ABS polymer", "Wood pulp and printed board", "Clear acrylic and aluminium"],
+  }
+  const packages: Record<string, string[]> = {
+    electronics: ["1 main item, charging cable and quick-start card", "1 main item and storage pouch", "1 main item with mounting hardware"],
+    computers: ["1 main item, connection cable and setup card", "1 main item with non-slip pads", "1 main item and protective sleeve"],
+    "home-kitchen": ["1 kitchen item and care card", "1 coordinated set with storage lids", "1 main item and cleaning brush"],
+    fashion: ["1 wearable item in a recyclable sleeve", "1 bag with adjustable straps", "1 item with a small care label"],
+    books: ["1 printed volume", "1 illustrated reference book", "1 paperback edition"],
+    "toys-games": ["1 play set and illustrated instructions", "1 boxed game with rules card", "1 reusable set with storage pouch"],
+    "sports-outdoors": ["1 main item and carry strap", "1 item with a packable storage sack", "1 adjustable item with fitting guide"],
+    "beauty-personal-care": ["1 personal-care item and care insert", "1 grooming tool with protective cap", "1 compact set in a storage case"],
+    "health-household": ["1 household item and printed instructions", "1 reusable set with storage case", "1 main item with replacement parts"],
+    grocery: ["1 sealed demonstration package", "1 pantry jar with tamper band", "1 boxed selection of pantry items"],
+    "pet-supplies": ["1 pet accessory and fitting guide", "1 washable item with care instructions", "1 feeding accessory with removable tray"],
+    automotive: ["1 vehicle accessory with fitting guide", "1 set with installation hardware", "1 compact item with power cable"],
+    "tools-home-improvement": ["1 tool with a fitted storage case", "1 tool set with removable tray", "1 main item and safety instructions"],
+    "office-products": ["1 desk item with setup card", "1 stationery set in a reusable case", "1 item with mounting hardware"],
+    "garden-outdoor": ["1 garden item with assembly guide", "1 set with reusable storage sleeve", "1 outdoor item and fitting hardware"],
+    baby: ["1 nursery item with care instructions", "1 infant-care accessory and storage pouch", "1 item with a washable cover"],
+    "arts-crafts": ["1 craft set with illustrated instructions", "1 tool set in a reusable sleeve", "1 creative kit with storage tray"],
+    "musical-instruments": ["1 instrument accessory and setup card", "1 adjustable stand with carry sleeve", "1 practice accessory with storage case"],
+    "video-games": ["1 gaming accessory with connection cable", "1 controller accessory and setup card", "1 compact device with mounting bracket"],
+    "movies-hobbies": ["1 hobby item with setup instructions", "1 display accessory and fitting hardware", "1 reusable project kit with storage pouch"],
+  }
+  const safeIndex = Number.isInteger(index) && index >= 0 ? index : 0
+  const pickAt = (values: string[]) => values[safeIndex % values.length]
+  return {
+    product_type: type,
+    finish: color,
+    material: pickAt(materials[department.handle] ?? ["Recycled material"]),
+    package_contents: pickAt(packages[department.handle] ?? [`1 ${type} item`]),
+  }
 }

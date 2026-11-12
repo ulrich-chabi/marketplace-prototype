@@ -8,6 +8,7 @@
     "build": "next build --webpack",
     "start": "next start -p 8000",
     "typecheck": "tsc --noEmit",
+    "verify:demo-images": "node ./scripts/verify-demo-images.mjs",
     "test:e2e": "playwright test"
   },
   "dependencies": {
