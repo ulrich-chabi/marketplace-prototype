@@ -33,6 +33,9 @@ export async function SiteHeader() {
           <Link key={c.id} href={`/categories/${c.handle}`} className="whitespace-nowrap">{c.name}</Link>
         ))}
       </nav>
+      <p role="note" className="border-b border-sand bg-white px-6 py-2 text-sm text-muted lg:px-10">
+        Demo marketplace: all listings, sellers, prices and stock are fictional. No real orders are fulfilled.
+      </p>
     </header>
   )
 }

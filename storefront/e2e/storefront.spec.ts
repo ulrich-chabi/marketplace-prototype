@@ -60,6 +60,7 @@ test.describe("Parcourir", () => {
 
   test("une nouvelle fiche catalogue affiche sa photo spécifique", async ({ page }) => {
     await page.goto("/categories/electronics")
+    await expect(page.getByRole("note")).toContainText("all listings, sellers, prices and stock are fictional")
     const card = page.locator("article").filter({ hasText: "Noise Cancelling Earbuds" }).first()
     await expect(card).toBeVisible()
     const image = card.getByRole("img", { name: /Noise Cancelling Earbuds/ })
