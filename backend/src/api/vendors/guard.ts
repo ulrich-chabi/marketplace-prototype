@@ -50,9 +50,20 @@ export const ensureVendor =
 
 // Écriture, catalogue, stock : vendeur actif uniquement.
 export const ensureActiveVendor = ensureVendor(["active"])
-// Les comptes en attente peuvent aussi corriger leur adresse privée; les écritures
-// commerciales restent protégées par ensureActiveVendor sur catalogue et stock.
-export const ensureReadableVendor = ensureVendor(["pending", "active", "suspended"])
+// Les comptes en attente ne lisent que leur profil (route /vendors) et peuvent
+// corriger leur origine privée; commandes et autres routes restent réservées
+// aux vendeurs actifs ou suspendus.
+export const ensureReadableVendor = async (
+  req: AuthenticatedMedusaRequest,
+  res: MedusaResponse,
+  next: MedusaNextFunction
+) => {
+  const canUpdatePendingShippingOrigin = req.method === "PATCH" && req.path === "/vendors/shipping-origin"
+  const allowed: VendorStatus[] = canUpdatePendingShippingOrigin
+    ? ["pending", "active", "suspended"]
+    : ["active", "suspended"]
+  return ensureVendor(allowed)(req, res, next)
+}
 // Le tableau de bord de base permet à un vendeur en attente de consulter son statut.
 export const ensureRegisteredVendor = ensureVendor(["pending", "active", "suspended"])
 
