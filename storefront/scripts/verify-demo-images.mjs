@@ -20,7 +20,7 @@ for (const [key, image] of Object.entries(manifest)) {
   if (!image.title || !image.author || !image.license || !image.productType || !image.category) {
     throw new Error(`${key}: informations de crédit ou de produit incomplètes`)
   }
-  if (!/^(CC BY(-SA)? [0-9.]+|CC0|Public domain|No restrictions)$/.test(image.license)) {
+  if (!/^(CC BY(-SA)? [0-9.]+(?: Austria)?|CC0|Public domain|No restrictions)$/.test(image.license)) {
     throw new Error(`${key}: licence non reconnue (${image.license})`)
   }
   if (files.has(image.file)) throw new Error(`${key}: fichier déjà associé à un autre produit`)

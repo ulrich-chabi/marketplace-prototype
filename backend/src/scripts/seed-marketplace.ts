@@ -414,6 +414,8 @@ function demoDescription(category: string, type: string, color: string, brand: s
     "Food Scale": "A compact kitchen scale with a flat weighing platform, tare control and a clear digital readout.",
     "Canvas Sneakers": "Low-cut canvas shoes with contrast stitching, a lace-up front and a flexible rubber sole.",
     "Knit Dress": "A rib-knit short-sleeve dress with a fitted waist and geometric contrast panels.",
+    "LED Light Bulb": "A compact multi-emitter LED replacement bulb with a clear protective dome and standard screw base.",
+    "Game Console": "A vertical home game console with a front-loading disc drive, memory-card slots and wired controller ports.",
     "Dark Chocolate": "Individually wrapped dark chocolate pieces with a firm shell and a soft citrus-style centre; ingredients are illustrative.",
     "Wiper Blades": "A pair of replacement wiper blades with curved rubber edges and adapter clips for common arm fittings.",
     "Emergency Kit": "A compact workplace response kit with a sealed container, clear labels and an illustrated contents card.",
