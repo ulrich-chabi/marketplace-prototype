@@ -2381,5 +2381,16 @@
     "license": "CC BY-SA 3.0",
     "source": "https://commons.wikimedia.org/wiki/File:File-folders.jpg",
     "download": "https://upload.wikimedia.org/wikipedia/commons/3/34/File-folders.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled"
+  },
+  "computers-12": {
+    "file": "/images/catalog/computers-12.webp",
+    "category": "Computers",
+    "productType": "Laptop Sleeve",
+    "alt": "Illustrative photo of Laptop Sleeve; fictional demo listing",
+    "title": "SPARC processor powered laptop made by Tadpole, with carrying case.jpg",
+    "author": "Adrian Cockcroft",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:SPARC_processor_powered_laptop_made_by_Tadpole,_with_carrying_case.jpg",
+    "download": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/83/SPARC_processor_powered_laptop_made_by_Tadpole%2C_with_carrying_case.jpg/1280px-SPARC_processor_powered_laptop_made_by_Tadpole%2C_with_carrying_case.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
   }
 }

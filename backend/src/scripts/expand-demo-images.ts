@@ -17,43 +17,43 @@ type ImageCredit = {
 const manifestPath = resolve(process.cwd(), "../storefront/src/data/demo-images.json")
 const acceptedLicense = /^(CC0|Public domain|Public Domain Mark|No restrictions|CC BY(?:-SA)? [234]\.0(?: [A-Za-z-]+)?)$/i
 const ignoredWords = new Set(["a", "an", "and", "for", "of", "the", "with", "set", "kit", "home", "outdoor", "book", "guide", "pack", "e"])
-const unsuitable = /\b(chart|concept|diagram|girl|boy|woman|man|person|people|painting|museum|tornado|survey|screenshot|logo|icon|library|shelf|park|shadow|interior|field|poster|still|sale|customer|shows|staff|sergeant|exhibit|post[- ]medieval|\d{2}th century|vlt|beam pattern|radio|dpla|fema|graffiti|souvenir|victories|armed forces|oil wells?|film frame|riot|red square|planner working)\b/i
+const unsuitable = /\b(chart|concept|diagram|girl|boy|woman|man|person|people|painting|museum|tornado|survey|screenshot|logo|icon|library|shelf|park|shadow|interior|field|poster|still|sale|customer|shows|staff|sergeant|exhibit|post[- ]medieval|\d{2}th century|vlt|beam pattern|radio|dpla|fema|graffiti|souvenir|victories|armed forces|oil wells?|film frame|riot|red square|planner working|model holding|auto show|car show|mounted as a pendant|when teething|teething patterns|amtrak station display case|touring car|lozier|greenwich)\b/i
 const headers = { "User-Agent": "MarketplacePrototype/1.0 (https://github.com/ulrich-chabi/marketplace-prototype)" }
 // Libellés alternatifs employés dans les catalogues et titres Wikimedia Commons.
 // La sélection reste fondée sur les mots recherchés, les dimensions et la licence.
 const searchAliases: Record<string, string[]> = {
   "Webcam Cover Set": ["webcam privacy cover", "laptop camera cover"],
-  "Laptop Sleeve": ["laptop case sleeve", "notebook computer sleeve"],
+  "Laptop Sleeve": ["laptop protective sleeve", "notebook computer case", "laptop carrying case"],
   "Science Kit": ["chemistry set", "science experiment kit"],
-  "Play Dough Set": ["play dough modelling clay", "modeling clay set"],
+  "Play Dough Set": ["play dough modelling clay", "plasticine modelling clay", "modeling clay toy set"],
   "Art Easel": ["painting easel", "artist easel"],
   "Chess Set": ["chess board pieces", "chess set"],
   Kite: ["flying kite", "kite flying"],
   "Lip Balm Set": ["lip balm", "lip salve"],
-  "Cleansing Oil": ["facial cleansing oil", "oil cleanser skincare", "facial oil bottle"],
+  "Cleansing Oil": ["facial cleansing oil bottle", "oil cleanser cosmetic", "facial oil bottle", "skin cleansing oil"],
   "Makeup Bag": ["cosmetic bag", "toiletry makeup pouch"],
   "Bath Salts": ["bath salt crystals", "bath salts"],
-  "Training Treats Pouch": ["dog training treat pouch", "dog treat bag training"],
-  "Trunk Organizer": ["car cargo organizer", "car trunk storage organizer"],
-  "Microfiber Towels": ["microfiber cleaning cloth", "microfibre cloth"],
-  Sunshade: ["car windshield sun shade", "automobile sunshade"],
+  "Training Treats Pouch": ["dog training treat pouch", "dog treat bag training", "dog treat pouch"],
+  "Trunk Organizer": ["car cargo organizer", "car trunk storage organizer", "vehicle trunk organizer"],
+  "Microfiber Towels": ["microfiber towel cloth", "microfibre towel cloth", "microfiber cleaning cloth"],
+  Sunshade: ["car windshield sun shade", "automobile sunshade", "windshield sunshade"],
   "Ergonomic Chair Cushion": ["ergonomic seat cushion", "chair cushion"],
   Stapler: ["office stapler", "desktop stapler"],
   "File Folders": ["office file folder", "document folders"],
-  Planner: ["paper day planner", "weekly planner notebook", "bound agenda planner"],
-  "Document Scanner": ["desktop document scanner", "portable document scanner"],
-  "Teething Toys": ["silicone baby teether", "baby teething ring toy"],
-  "Nursery Night Light": ["baby night light nursery", "children nightlight"],
-  "Swaddle Set": ["baby swaddle blanket", "infant swaddling cloth"],
-  "Bib Pack": ["baby bib", "infant bibs"],
-  "Thumbstick Covers": ["joystick thumbstick caps", "game controller thumb grips"],
-  "Cable Organizer": ["cable management organizer", "cord organizer"],
-  "Collector Display Case": ["collectible display case", "display cabinet collectibles"],
+  Planner: ["paper day planner", "weekly planner notebook", "bound agenda planner", "diary planner book"],
+  "Document Scanner": ["desktop document scanner", "portable document scanner", "flatbed document scanner", "handheld scanner documents"],
+  "Teething Toys": ["silicone baby teether", "baby teething ring toy", "infant teething toy"],
+  "Nursery Night Light": ["baby night light nursery", "children nightlight", "night light for nursery"],
+  "Swaddle Set": ["baby swaddle blanket", "infant swaddling cloth", "muslin swaddle baby"],
+  "Bib Pack": ["baby feeding bib", "infant bibs cloth", "baby bibs"],
+  "Thumbstick Covers": ["joystick thumbstick caps", "game controller thumb grips", "thumbstick grip caps"],
+  "Cable Organizer": ["cable management organizer", "cord organizer", "cable organizer clips"],
+  "Collector Display Case": ["collectible display case", "display cabinet collectibles", "model car display case"],
   "Star Map": ["star chart map", "astronomical star map"],
-  "Film Poster Frame": ["movie poster frame", "cinema poster frame", "poster in picture frame"],
-  "Hobby Tool Set": ["model making hobby tools", "hobby craft tool set"],
-  "Craft Storage Box": ["craft supplies storage box", "arts crafts organizer"],
-  "Pocket Microscope": ["portable handheld microscope", "pocket microscope"],
+  "Film Poster Frame": ["movie poster frame", "cinema poster frame", "poster in picture frame", "framed movie poster"],
+  "Hobby Tool Set": ["model making hobby tools", "hobby craft tool set", "model airplane tool set"],
+  "Craft Storage Box": ["craft supplies storage box", "arts crafts organizer", "craft storage container box"],
+  "Pocket Microscope": ["portable handheld microscope", "pocket microscope", "portable digital microscope"],
 }
 
 async function main() {
