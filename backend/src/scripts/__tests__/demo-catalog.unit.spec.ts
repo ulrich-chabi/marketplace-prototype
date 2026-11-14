@@ -50,4 +50,12 @@ describe("catalogue de démonstration", () => {
     expect(countAvailableDemoProducts(department, sparseImages)).toBe(1)
     expect(countAvailableDemoProducts(department, images, 2)).toBe(2)
   })
+
+  it("remplit les trois dernières fiches distinctes du rayon épicerie", () => {
+    const grocery = DEPARTMENTS.find((department) => department.handle === "grocery")!
+    expect(countAvailableDemoProducts(grocery, images)).toBe(12)
+    expect(images["grocery-10"]).toBeDefined()
+    expect(images["grocery-11"]).toBeDefined()
+    expect(images["grocery-12"]).toBeDefined()
+  })
 })

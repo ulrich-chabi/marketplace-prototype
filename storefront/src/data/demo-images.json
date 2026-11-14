@@ -2161,5 +2161,38 @@
     "license": "CC BY 2.0",
     "source": "https://commons.wikimedia.org/wiki/File:Sony_Playstation_2_SCPH-5001_V9_-_Console_de_p%C3%A9_Console_in_stand_position_(19478314865).jpg",
     "download": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c7/Sony_Playstation_2_SCPH-5001_V9_-_Console_de_p%C3%A9_Console_in_stand_position_%2819478314865%29.jpg/1280px-Sony_Playstation_2_SCPH-5001_V9_-_Console_de_p%C3%A9_Console_in_stand_position_%2819478314865%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+  },
+  "grocery-10": {
+    "file": "/images/catalog/grocery-10.webp",
+    "category": "Grocery",
+    "productType": "Trail Mix",
+    "alt": "Illustrative photo of Trail Mix; fictional demo listing",
+    "title": "Planters-Trail-Mix.jpg",
+    "author": "Evan-Amos",
+    "license": "CC0",
+    "source": "https://commons.wikimedia.org/wiki/File:Planters-Trail-Mix.jpg",
+    "download": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/71/Planters-Trail-Mix.jpg/1280px-Planters-Trail-Mix.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+  },
+  "grocery-11": {
+    "file": "/images/catalog/grocery-11.webp",
+    "category": "Grocery",
+    "productType": "Hot Sauce",
+    "alt": "Illustrative photo of Hot Sauce; fictional demo listing",
+    "title": "All kinds of hot sauce.jpg",
+    "author": "Tom Harpel",
+    "license": "CC BY 2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:All_kinds_of_hot_sauce.jpg",
+    "download": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/82/All_kinds_of_hot_sauce.jpg/1280px-All_kinds_of_hot_sauce.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+  },
+  "grocery-12": {
+    "file": "/images/catalog/grocery-12.webp",
+    "category": "Grocery",
+    "productType": "Dried Fruit Box",
+    "alt": "Illustrative photo of Dried Fruit Box; fictional demo listing",
+    "title": "Diwali special dry fruit box.png",
+    "author": "Anushkaboyo",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Diwali_special_dry_fruit_box.png",
+    "download": "https://upload.wikimedia.org/wikipedia/commons/a/a3/Diwali_special_dry_fruit_box.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled"
   }
 }
