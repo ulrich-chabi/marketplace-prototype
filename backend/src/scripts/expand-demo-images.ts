@@ -70,7 +70,9 @@ async function findLicensedPhoto(productType: string, usedSources: Set<string>, 
     generator: "search",
     gsrnamespace: "6",
     gsrlimit: "40",
-    gsrsearch: `\"${productType}\"`,
+    // La recherche sans guillemets laisse remonter les variantes de nom usuelles
+    // (par ex. « train set » ou « model railway ») utilisées dans les titres Commons.
+    gsrsearch: productType,
     prop: "imageinfo",
     iiprop: "url|mime|size|extmetadata",
     iiurlwidth: "1280",
