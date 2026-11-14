@@ -47,4 +47,5 @@ Statuts : validée / proposée / à confirmer / rejetée / hors périmètre. Der
 | 41 | Panier : identifiant gardé dans un cookie essentiel (httpOnly, sans traceur), lignes regroupées par vendeur, l'offre est relue côté serveur à l'ajout | validée et testée | F2 |
 | 42 | Comparateur : 2 à 4 produits, sélection gardée dans le navigateur (localStorage), comparaison sur l'offre la moins chère | validée et testée | F2 |
 | 43 | Tests de bout en bout du site avec Playwright (nécessitent l'installation d'un navigateur de test) | validée; 19 scénarios passent sur le site et l'API locaux | F2 |
+| 44 | Paiements Connect pour panier multi-vendeurs : étudier des paiements séparés des transferts; ne fixer commission, responsabilité financière, pays vendeur ou calendrier de libération qu'après approbation explicite | proposée; les frais, remboursements et litiges seraient au compte plateforme selon le modèle Stripe documenté | F16 |
 
