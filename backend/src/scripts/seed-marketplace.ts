@@ -34,8 +34,8 @@ export default async function seedMarketplace({ container }: ExecArgs) {
   const link = container.resolve(ContainerRegistrationKeys.LINK)
   const catalogService: any = container.resolve(CATALOG_MODULE)
   const marketplace: any = container.resolve(MARKETPLACE_MODULE)
-  const configuredCount = Number(process.env.SEED_PRODUCTS_PER_CATEGORY ?? 12)
-  const perCategory = Number.isFinite(configuredCount) ? Math.max(1, Math.min(12, Math.floor(configuredCount))) : 12
+  const configuredCount = Number(process.env.SEED_PRODUCTS_PER_CATEGORY ?? 20)
+  const perCategory = Number.isFinite(configuredCount) ? Math.max(1, Math.min(20, Math.floor(configuredCount))) : 20
   const imageManifestPath = resolve(process.cwd(), "../storefront/src/data/demo-images.json")
   const demoImages = JSON.parse(readFileSync(imageManifestPath, "utf8")) as Record<string, unknown>
   const existingCatalog = await catalogService.listCatalogProducts({}, { take: 1000 })

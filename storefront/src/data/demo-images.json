@@ -48,11 +48,11 @@
     "category": "Arts & Crafts",
     "productType": "Sewing Kit",
     "alt": "Illustrative photo for the fictional Sewing Kit listing",
-    "title": "Berghotel auf der Loreley Näh-Etui Sewing kit (1).jpg",
-    "author": "Marion Halft",
-    "license": "CC BY-SA 4.0",
-    "source": "https://commons.wikimedia.org/wiki/File:Berghotel_auf_der_Loreley_N%C3%A4h-Etui_Sewing_kit_%281%29.jpg",
-    "download": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/cf/Berghotel_auf_der_Loreley_N%C3%A4h-Etui_Sewing_kit_%281%29.jpg/960px-Berghotel_auf_der_Loreley_N%C3%A4h-Etui_Sewing_kit_%281%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+    "title": "Kit, sewing (AM 607154-1).jpg",
+    "author": "not researched",
+    "license": "CC BY 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Kit,_sewing_(AM_607154-1).jpg",
+    "download": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/98/Kit%2C_sewing_%28AM_607154-1%29.jpg/1280px-Kit%2C_sewing_%28AM_607154-1%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
   },
   "arts-crafts-6": {
     "key": "arts-crafts-6",
@@ -194,11 +194,11 @@
     "category": "Baby",
     "productType": "Bottle Set",
     "alt": "Illustrative photo for the fictional Bottle Set listing",
-    "title": "1924.03.0206 - Feeding bottle - Etnografiska museet.jpg",
-    "author": "Etnografiska museet",
-    "license": "CC BY 4.0",
-    "source": "https://commons.wikimedia.org/wiki/File:1924.03.0206_-_Feeding_bottle_-_Etnografiska_museet.jpg",
-    "download": "https://upload.wikimedia.org/wikipedia/commons/d/d1/1924.03.0206_-_Feeding_bottle_-_Etnografiska_museet.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled"
+    "title": "Pappa Bottle, Mama Bottle, and Little Baby Bottle (4981165213).jpg",
+    "author": "cogdogblog",
+    "license": "CC BY 2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Pappa_Bottle,_Mama_Bottle,_and_Little_Baby_Bottle_(4981165213).jpg",
+    "download": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3e/Pappa_Bottle%2C_Mama_Bottle%2C_and_Little_Baby_Bottle_%284981165213%29.jpg/1280px-Pappa_Bottle%2C_Mama_Bottle%2C_and_Little_Baby_Bottle_%284981165213%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
   },
   "baby-5": {
     "file": "/images/catalog/baby-5.webp",
@@ -2392,5 +2392,214 @@
     "license": "CC BY-SA 4.0",
     "source": "https://commons.wikimedia.org/wiki/File:SPARC_processor_powered_laptop_made_by_Tadpole,_with_carrying_case.jpg",
     "download": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/83/SPARC_processor_powered_laptop_made_by_Tadpole%2C_with_carrying_case.jpg/1280px-SPARC_processor_powered_laptop_made_by_Tadpole%2C_with_carrying_case.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+  },
+  "computers-13": {
+    "file": "/images/catalog/computers-13.webp",
+    "category": "Computers",
+    "productType": "Ergonomic Keyboard",
+    "alt": "Illustrative photo of Ergonomic Keyboard; fictional demo listing",
+    "title": "Microsoft Natural Ergonomic Keyboard 4000 and mouse.jpg",
+    "author": "Lady Aleena",
+    "license": "Public domain",
+    "source": "https://commons.wikimedia.org/wiki/File:Microsoft_Natural_Ergonomic_Keyboard_4000_and_mouse.jpg",
+    "download": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/62/Microsoft_Natural_Ergonomic_Keyboard_4000_and_mouse.jpg/1280px-Microsoft_Natural_Ergonomic_Keyboard_4000_and_mouse.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+  },
+  "computers-14": {
+    "file": "/images/catalog/computers-14.webp",
+    "category": "Computers",
+    "productType": "Trackball Mouse",
+    "alt": "Illustrative photo of Trackball Mouse; fictional demo listing",
+    "title": "Kensington Expert Mouse Wireless Trackball.jpg",
+    "author": "Alexsh",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Kensington_Expert_Mouse_Wireless_Trackball.jpg",
+    "download": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1c/Kensington_Expert_Mouse_Wireless_Trackball.jpg/1280px-Kensington_Expert_Mouse_Wireless_Trackball.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+  },
+  "computers-16": {
+    "file": "/images/catalog/computers-16.webp",
+    "category": "Computers",
+    "productType": "Thunderbolt Dock",
+    "alt": "Illustrative photo of Thunderbolt Dock; fictional demo listing",
+    "title": "OWC Thunderbolt 3 Dock.jpg",
+    "author": "Amin",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:OWC_Thunderbolt_3_Dock.jpg",
+    "download": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/43/OWC_Thunderbolt_3_Dock.jpg/1280px-OWC_Thunderbolt_3_Dock.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+  },
+  "home-kitchen-13": {
+    "file": "/images/catalog/home-kitchen-13.webp",
+    "category": "Home & Kitchen",
+    "productType": "Pressure Cooker",
+    "alt": "Illustrative photo of Pressure Cooker; fictional demo listing",
+    "title": "Pressure cooker.jpg",
+    "author": "Author not listed",
+    "license": "CC BY-SA 3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Pressure_cooker.jpg",
+    "download": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/58/Pressure_cooker.jpg/1280px-Pressure_cooker.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+  },
+  "home-kitchen-14": {
+    "file": "/images/catalog/home-kitchen-14.webp",
+    "category": "Home & Kitchen",
+    "productType": "Food Processor",
+    "alt": "Illustrative photo of Food Processor; fictional demo listing",
+    "title": "Food Processor.jpg",
+    "author": "Donovan Govan.",
+    "license": "CC BY-SA 3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Food_Processor.jpg",
+    "download": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/32/Food_Processor.jpg/1280px-Food_Processor.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+  },
+  "fashion-13": {
+    "file": "/images/catalog/fashion-13.webp",
+    "category": "Fashion",
+    "productType": "Knit Beanie",
+    "alt": "Illustrative photo of Knit Beanie; fictional demo listing",
+    "title": "Blue knit-cap beanie by RobertLender.jpeg",
+    "author": "Robert Lender from Vienna, Austria, postprocessed by Rosso Robot (cropped, colors enhanced).",
+    "license": "CC BY-SA 2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Blue_knit-cap_beanie_by_RobertLender.jpeg",
+    "download": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b6/Blue_knit-cap_beanie_by_RobertLender.jpeg/1280px-Blue_knit-cap_beanie_by_RobertLender.jpeg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+  },
+  "electronics-13": {
+    "file": "/images/catalog/electronics-13.webp",
+    "category": "Electronics",
+    "productType": "Noise Cancelling Earbuds",
+    "alt": "Illustrative photo of Noise Cancelling Earbuds; fictional demo listing",
+    "title": "Wireless 3.0 Earbuds Transparent 3.png",
+    "author": "Trent Huss",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Wireless_3.0_Earbuds_Transparent_3.png",
+    "download": "https://upload.wikimedia.org/wikipedia/commons/4/4e/Wireless_3.0_Earbuds_Transparent_3.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled"
+  },
+  "electronics-14": {
+    "file": "/images/catalog/electronics-14.webp",
+    "category": "Electronics",
+    "productType": "Digital Alarm Clock",
+    "alt": "Illustrative photo of Digital Alarm Clock; fictional demo listing",
+    "title": "Digital-clock-alarm.jpg",
+    "author": "Tysto",
+    "license": "Public domain",
+    "source": "https://commons.wikimedia.org/wiki/File:Digital-clock-alarm.jpg",
+    "download": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/eb/Digital-clock-alarm.jpg/1280px-Digital-clock-alarm.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+  },
+  "electronics-15": {
+    "file": "/images/catalog/electronics-15.webp",
+    "category": "Electronics",
+    "productType": "Wi-Fi Range Extender",
+    "alt": "Illustrative photo of Wi-Fi Range Extender; fictional demo listing",
+    "title": "Wifi Range Extender.jpg",
+    "author": "Kskhh",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Wifi_Range_Extender.jpg",
+    "download": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/62/Wifi_Range_Extender.jpg/1280px-Wifi_Range_Extender.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+  },
+  "electronics-16": {
+    "file": "/images/catalog/electronics-16.webp",
+    "category": "Electronics",
+    "productType": "DLP Video Projector",
+    "alt": "DLP Video Projector product photo, used as a fictional prototype listing",
+    "title": "BenQ DLP projector MP515 20101213.jpg",
+    "author": "Aivar Luist",
+    "license": "Public domain",
+    "source": "https://commons.wikimedia.org/wiki/File:BenQ_DLP_projector_MP515_20101213.jpg",
+    "download": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6b/BenQ_DLP_projector_MP515_20101213.jpg/1280px-BenQ_DLP_projector_MP515_20101213.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+  },
+  "electronics-17": {
+    "file": "/images/catalog/electronics-17.webp",
+    "category": "Electronics",
+    "productType": "USB Microphone",
+    "alt": "Illustrative photo of USB Microphone; fictional demo listing",
+    "title": "Singstar usb microphones.png",
+    "author": "DynaBlast",
+    "license": "CC BY-SA 3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Singstar_usb_microphones.png",
+    "download": "https://upload.wikimedia.org/wikipedia/commons/c/c1/Singstar_usb_microphones.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled"
+  },
+  "computers-15": {
+    "file": "/images/catalog/computers-15.webp",
+    "category": "Computers",
+    "productType": "Laptop Cooling Pad",
+    "alt": "Illustrative photo of Laptop Cooling Pad; fictional demo listing",
+    "title": "Cybermania - Xena Notebook cooler.JPG",
+    "author": "Lestat (Jan Mehlich)",
+    "license": "CC BY-SA 3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Cybermania_-_Xena_Notebook_cooler.JPG",
+    "download": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/aa/Cybermania_-_Xena_Notebook_cooler.JPG/1280px-Cybermania_-_Xena_Notebook_cooler.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+  },
+  "home-kitchen-15": {
+    "file": "/images/catalog/home-kitchen-15.webp",
+    "category": "Home & Kitchen",
+    "productType": "Ceramic Dinnerware",
+    "alt": "Illustrative photo of Ceramic Dinnerware; fictional demo listing",
+    "title": "Tableware plate porcelain stack.jpg",
+    "author": "RitaE",
+    "license": "CC0",
+    "source": "https://commons.wikimedia.org/wiki/File:Tableware_plate_porcelain_stack.jpg",
+    "download": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/89/Tableware_plate_porcelain_stack.jpg/1280px-Tableware_plate_porcelain_stack.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+  },
+  "home-kitchen-16": {
+    "file": "/images/catalog/home-kitchen-16.webp",
+    "category": "Home & Kitchen",
+    "productType": "Dutch Oven",
+    "alt": "Illustrative photo of Dutch Oven; fictional demo listing",
+    "title": "Dutch-ovens.jpg",
+    "author": "FiveRings at English Wikipedia",
+    "license": "CC BY-SA 3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Dutch-ovens.jpg",
+    "download": "https://upload.wikimedia.org/wikipedia/commons/2/23/Dutch-ovens.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled"
+  },
+  "home-kitchen-17": {
+    "file": "/images/catalog/home-kitchen-17.webp",
+    "category": "Home & Kitchen",
+    "productType": "Immersion Blender",
+    "alt": "Illustrative photo of Immersion Blender; fictional demo listing",
+    "title": "Blender (immersion).png",
+    "author": "Fluous",
+    "license": "CC BY-SA 3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Blender_(immersion).png",
+    "download": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9d/Blender_%28immersion%29.png/1280px-Blender_%28immersion%29.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+  },
+  "fashion-14": {
+    "file": "/images/catalog/fashion-14.webp",
+    "category": "Fashion",
+    "productType": "Hand-Knit Wool Socks",
+    "alt": "Hand-Knit Wool Socks product photo, used as a fictional prototype listing",
+    "title": "Carape 2.jpg",
+    "author": "Ioannes2909",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Carape_2.jpg",
+    "download": "https://upload.wikimedia.org/wikipedia/commons/c/ca/Carape_2.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled"
+  },
+  "fashion-15": {
+    "file": "/images/catalog/fashion-15.webp",
+    "category": "Fashion",
+    "productType": "Crossbody Bag",
+    "alt": "Illustrative photo of Crossbody Bag; fictional demo listing",
+    "title": "HK TST 尖沙咀 Tsim Sha Tsui 廣東道 Canton Road shop Emporio Armani clothing store green crossbody bag October 2022 Px3.jpg",
+    "author": "Fadchwizo Rodawomt",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:HK_TST_%E5%B0%96%E6%B2%99%E5%92%80_Tsim_Sha_Tsui_%E5%BB%A3%E6%9D%B1%E9%81%93_Canton_Road_shop_Emporio_Armani_clothing_store_green_crossbody_bag_October_2022_Px3.jpg",
+    "download": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/11/HK_TST_%E5%B0%96%E6%B2%99%E5%92%80_Tsim_Sha_Tsui_%E5%BB%A3%E6%9D%B1%E9%81%93_Canton_Road_shop_Emporio_Armani_clothing_store_green_crossbody_bag_October_2022_Px3.jpg/1280px-HK_TST_%E5%B0%96%E6%B2%99%E5%92%80_Tsim_Sha_Tsui_%E5%BB%A3%E6%9D%B1%E9%81%93_Canton_Road_shop_Emporio_Armani_clothing_store_green_crossbody_bag_October_2022_Px3.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+  },
+  "fashion-16": {
+    "file": "/images/catalog/fashion-16.webp",
+    "category": "Fashion",
+    "productType": "Rain Boots",
+    "alt": "Illustrative photo of Rain Boots; fictional demo listing",
+    "title": "Rain boots, bike shorts and fenders.jpg",
+    "author": "Richard Masoner",
+    "license": "CC BY-SA 2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Rain_boots,_bike_shorts_and_fenders.jpg",
+    "download": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/94/Rain_boots%2C_bike_shorts_and_fenders.jpg/1280px-Rain_boots%2C_bike_shorts_and_fenders.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+  },
+  "fashion-17": {
+    "file": "/images/catalog/fashion-17.webp",
+    "category": "Fashion",
+    "productType": "Linen Shirt",
+    "alt": "Illustrative photo of Linen Shirt; fictional demo listing",
+    "title": "Seto linen shirt (Saatse Museum).jpg",
+    "author": "Unknown author Unknown author",
+    "license": "CC0",
+    "source": "https://commons.wikimedia.org/wiki/File:Seto_linen_shirt_(Saatse_Museum).jpg",
+    "download": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/03/Seto_linen_shirt_%28Saatse_Museum%29.jpg/1280px-Seto_linen_shirt_%28Saatse_Museum%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
   }
 }

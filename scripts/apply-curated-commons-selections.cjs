@@ -8,6 +8,10 @@ const catalog = JSON.parse(await fs.readFile(manifestPath, "utf8"))
 
 // Named Commons files were checked for a direct visual match to these products.
 const choices = {
+  "computers-16": "OWC Thunderbolt 3 Dock.jpg",
+  "electronics-16": "BenQ DLP projector MP515 20101213.jpg",
+  "fashion-14": "Carape 2.jpg",
+  "fashion-17": "Seto linen shirt (Saatse Museum).jpg",
   "computers-1": "Lenovo G500s laptop-2903.jpg",
   "home-kitchen-4": "Pink portable blender.jpg",
   "grocery-3": "Union Hand-Roasted Coffee - Coffee Bag.jpg",

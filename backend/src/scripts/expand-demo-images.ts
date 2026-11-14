@@ -22,6 +22,14 @@ const headers = { "User-Agent": "MarketplacePrototype/1.0 (https://github.com/ul
 // Libellés alternatifs employés dans les catalogues et titres Wikimedia Commons.
 // La sélection reste fondée sur les mots recherchés, les dimensions et la licence.
 const searchAliases: Record<string, string[]> = {
+  "Noise Cancelling Earbuds": ["noise cancelling earbuds", "wireless earbuds", "earbuds"],
+  "Wi-Fi Range Extender": ["wi-fi range extender", "wifi extender", "wireless repeater"],
+  "Digital Alarm Clock": ["digital alarm clock", "LED alarm clock"],
+  "DLP Video Projector": ["DLP video projector", "BenQ projector"],
+  "Laptop Cooling Pad": ["laptop cooling pad", "notebook cooler", "laptop cooler"],
+  "Webcam Ring Light": ["webcam ring light", "ring light for webcam"],
+  "Ceramic Dinnerware": ["ceramic dinnerware", "ceramic plate set", "porcelain tableware"],
+  "Hand-Knit Wool Socks": ["hand knit wool socks", "wool socks", "knitted socks"],
   "Webcam Cover Set": ["webcam privacy cover", "laptop camera cover"],
   "Laptop Sleeve": ["laptop protective sleeve", "notebook computer case", "laptop carrying case"],
   "Science Kit": ["chemistry set", "science experiment kit"],
@@ -132,17 +140,20 @@ async function findLicensedPhoto(productType: string, usedSources: Set<string>, 
     const title = String(page.title ?? "").replace(/^File:/, "")
     const normalizedTitle = normalize(title)
     const titleWords = normalizedTitle.split(" ").map(canonicalWord)
-    const score = distinctiveTerms.filter((term) => titleWords.includes(canonicalWord(term))).length
+    const positions = distinctiveTerms.map((term) => titleWords.indexOf(canonicalWord(term)))
+    const score = positions.filter((position) => position >= 0).length
+    const presentPositions = positions.filter((position) => position >= 0)
+    const titleSpan = presentPositions.length ? Math.max(...presentPositions) - Math.min(...presentPositions) : Infinity
     const license = clean(image?.extmetadata?.LicenseShortName?.value ?? "").replace(/\b 2\.0 at$/i, " 2.0 Austria")
     const source = String(image?.descriptionurl ?? "")
-    return { image, title, normalizedTitle, titleWords, score, license, source }
-  }).filter(({ image, title, normalizedTitle, titleWords, score, license, source }) => {
-    const requiredMatches = distinctiveTerms.length === 1 ? 1 : 2
+    return { image, title, normalizedTitle, titleWords, score, titleSpan, license, source }
+  }).filter(({ image, title, normalizedTitle, score, titleSpan, license, source }) => {
+    const requiredMatches = distinctiveTerms.length
     return image && ["image/jpeg", "image/png", "image/webp"].includes(image.mime) &&
       image.width >= 500 && image.height >= 350 && acceptedLicense.test(license) &&
       source.startsWith("https://commons.wikimedia.org/wiki/File:") &&
       !usedSources.has(source) && !usedTitles.has(normalizedTitle) &&
-      !unsuitable.test(title) && score >= requiredMatches
+      !unsuitable.test(title) && score >= requiredMatches && titleSpan <= Math.max(2, distinctiveTerms.length + 1)
   }).sort((a, b) => b.score - a.score)
 
   const image = ranked[0]
