@@ -10,7 +10,17 @@ export type CartLine = {
   unit_price: number
   metadata?: { vendor_name?: string; vendor_handle?: string; catalog_handle?: string } | null
 }
-export type Cart = { id: string; currency_code: string; items: CartLine[] }
+export type Cart = {
+  id: string
+  currency_code: string
+  items: CartLine[]
+  item_subtotal?: number | null
+  shipping_subtotal?: number | null
+  shipping_total?: number | null
+  tax_total?: number | null
+  total?: number | null
+  shipping_methods?: unknown[]
+}
 
 export async function getCartId() {
   return (await cookies()).get(CART_COOKIE)?.value
@@ -21,7 +31,9 @@ export async function getCart(): Promise<Cart | null> {
   const id = await getCartId()
   if (!id) return null
   try {
-    const { cart } = await sdk.store.cart.retrieve(id, { fields: "id,currency_code,*items" })
+    const { cart } = await sdk.store.cart.retrieve(id, {
+      fields: "id,currency_code,item_subtotal,shipping_subtotal,shipping_total,tax_total,total,*items,*shipping_methods",
+    })
     return cart as unknown as Cart
   } catch {
     return null // panier expiré ou supprimé

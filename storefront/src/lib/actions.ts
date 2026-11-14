@@ -126,7 +126,12 @@ async function prepareCartForCheckout(formData: FormData) {
   const standard = options.find((option: { id: string; name: string }) => option.name === "Standard") ?? options[0]
   if (!standard) throw new Error("shipping")
   for (let i = 0; i < vendorCount; i++) await sdk.store.cart.addShippingMethod(cartId, { option_id: standard.id })
-  return { cartId, addressedCart }
+  // L'ajout des méthodes peut modifier frais, taxes et total (notamment avec
+  // un fournisseur calculé). Toujours initier le paiement sur le panier final.
+  const { cart: pricedCart } = await sdk.store.cart.retrieve(cartId, {
+    fields: "id,currency_code,email,shipping_address.*,billing_address.*,item_subtotal,shipping_total,tax_total,total,*items,*shipping_methods",
+  })
+  return { cartId, addressedCart: pricedCart }
 }
 
 async function finishOrder(cartId: string, paymentMode: "demo" | "stripe") {

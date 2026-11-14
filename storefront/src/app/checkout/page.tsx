@@ -40,8 +40,10 @@ export default async function CheckoutPage({
     })
     if (response.ok) vendorCount = (await response.json()).vendor_count
   } catch { /* fallback to the seller labels shown in the cart */ }
-  const subtotal = cart.items.reduce((sum, item) => sum + item.unit_price * item.quantity, 0)
-  const shipping = vendorCount * 5
+  const subtotal = cart.item_subtotal ?? cart.items.reduce((sum, item) => sum + item.unit_price * item.quantity, 0)
+  const shippingMethodCount = cart.shipping_methods?.length ?? 0
+  const shippingIsQuoted = shippingMethodCount > 0
+  const shipping = shippingIsQuoted ? (cart.shipping_total ?? 0) : vendorCount * 5
   const provinces = [
     ["AB", "Alberta"], ["BC", "British Columbia"], ["MB", "Manitoba"],
     ["NB", "New Brunswick"], ["NL", "Newfoundland and Labrador"], ["NS", "Nova Scotia"],
@@ -97,11 +99,11 @@ export default async function CheckoutPage({
           </ul>
           <dl className="mt-4 space-y-2 border-t border-sand pt-4">
             <div className="flex justify-between"><dt>Items subtotal</dt><dd>{money(subtotal, cart.currency_code)}</dd></div>
-            <div className="flex justify-between"><dt>Shipping ({vendorCount} {vendorCount === 1 ? "package" : "packages"})</dt><dd>{money(shipping, cart.currency_code)}</dd></div>
-            <div className="flex justify-between"><dt>Estimated tax</dt><dd>Calculated by province at checkout</dd></div>
-            <div className="flex justify-between border-t border-sand pt-3 text-lg font-semibold"><dt>Estimated total before tax</dt><dd>{money(subtotal + shipping, cart.currency_code)}</dd></div>
+            <div className="flex justify-between"><dt>{shippingIsQuoted ? `Shipping (${shippingMethodCount} ${shippingMethodCount === 1 ? "package" : "packages"})` : `Estimated shipping (${vendorCount} ${vendorCount === 1 ? "package" : "packages"})`}</dt><dd>{money(shipping, cart.currency_code)}</dd></div>
+            <div className="flex justify-between"><dt>Estimated tax</dt><dd>{shippingIsQuoted && cart.tax_total != null ? money(cart.tax_total, cart.currency_code) : "Calculated after delivery details"}</dd></div>
+            <div className="flex justify-between border-t border-sand pt-3 text-lg font-semibold"><dt>{shippingIsQuoted && cart.total != null ? "Current checkout total" : "Estimated total before tax"}</dt><dd>{money(shippingIsQuoted && cart.total != null ? cart.total : subtotal + shipping, cart.currency_code)}</dd></div>
           </dl>
-          <p className="mt-3 text-xs text-muted">Demo tax estimates use general Canadian provincial rates for ordinary taxable goods. Actual tax obligations depend on registration, item classification, exemptions and place-of-supply rules.</p>
+          <p className="mt-3 text-xs text-muted">Before delivery details, shipping uses the prototype estimate. The checkout total is refreshed after a delivery option is selected. Tax estimates may differ from the final tax obligation.</p>
           <Link href="/cart" className="mt-4 inline-block underline">Return to cart</Link>
         </aside>
       </div>

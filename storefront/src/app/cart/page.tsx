@@ -35,6 +35,7 @@ export default async function CartPage({
     bySeller.set(seller, [...(bySeller.get(seller) ?? []), line])
   }
   const total = items.reduce((s, l) => s + l.unit_price * l.quantity, 0)
+  const shippingIsQuoted = Boolean(cart.shipping_methods?.length)
   let sellerCount = bySeller.size
   try {
     const response = await fetch(`${BACKEND_URL}/store/carts/${cart.id}/vendor-count`, {
@@ -89,7 +90,7 @@ export default async function CartPage({
 
       <div className="mt-6 max-w-md rounded-2xl border border-sand bg-white p-5">
         <p className="flex justify-between text-lg"><span>Items subtotal</span><strong>{money(total, cart.currency_code)}</strong></p>
-        <p className="mt-2 flex justify-between"><span>Estimated shipping</span><span>{money(sellerCount * 5, cart.currency_code)}</span></p>
+        <p className="mt-2 flex justify-between"><span>{shippingIsQuoted ? "Shipping" : "Estimated shipping"}</span><span>{money(shippingIsQuoted ? (cart.shipping_total ?? 0) : sellerCount * 5, cart.currency_code)}</span></p>
         <p className="mt-1 flex justify-between"><span>Estimated tax</span><span>Calculated by province at checkout</span></p>
         <p className="mt-2 text-sm text-muted">Demo tax estimates use general provincial rates for ordinary taxable goods. Item classification and tax registration can change the final amount.</p>
         <Link href="/checkout" className="mt-4 inline-flex min-h-11 items-center rounded-xl bg-terracotta px-5 text-white">Continue to checkout</Link>
