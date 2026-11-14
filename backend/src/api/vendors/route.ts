@@ -6,12 +6,14 @@ import createVendorWorkflow, {
   CreateVendorWorkflowInput,
 } from "../../workflows/marketplace/create-vendor"
 import { getVendorContext } from "./guard"
+import { CanadianShippingOriginSchema } from "./shipping-origin-schema"
 
 export const PostVendorCreateSchema = z
   .object({
     name: z.string().min(1),
     handle: z.string().optional(),
     logo: z.string().optional(),
+    shipping_origin: CanadianShippingOriginSchema,
     admin: z
       .object({
         email: z.string().email(),
@@ -28,7 +30,11 @@ export const GET = async (req: AuthenticatedMedusaRequest, res: MedusaResponse) 
   const query = req.scope.resolve(ContainerRegistrationKeys.QUERY)
   const { data: [admin] } = await query.graph({
     entity: "vendor",
-    fields: ["id", "name", "handle", "status", "return_window_days", "delivery_days_min", "delivery_days_max"],
+    fields: [
+      "id", "name", "handle", "status", "return_window_days", "delivery_days_min", "delivery_days_max",
+      "shipping_origin_address_1", "shipping_origin_city", "shipping_origin_province",
+      "shipping_origin_postal_code", "shipping_origin_phone",
+    ],
     filters: { id: getVendorContext(req).vendorId },
   })
   if (!admin) throw new MedusaError(MedusaError.Types.UNAUTHORIZED, "Compte vendeur introuvable.")

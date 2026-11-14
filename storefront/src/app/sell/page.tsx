@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import { cookies } from "next/headers"
-import { createVendorProduct, loginVendor, logoutVendor, registerVendor, updateVendorStock } from "@/lib/actions"
+import { createVendorProduct, loginVendor, logoutVendor, registerVendor, updateVendorShippingOrigin, updateVendorStock } from "@/lib/actions"
 import { fetchCatalog, type CatalogCard } from "@/lib/catalog"
 import { money } from "@/lib/format"
 import { sdk } from "@/lib/medusa"
@@ -8,7 +8,7 @@ import { sdk } from "@/lib/medusa"
 export const dynamic = "force-dynamic"
 export const metadata: Metadata = { title: "Seller space" }
 
-type Vendor = { id: string; name: string; handle: string; status: "pending" | "active" | "suspended" }
+type Vendor = { id: string; name: string; handle: string; status: "pending" | "active" | "suspended"; shipping_origin_address_1: string; shipping_origin_city: string; shipping_origin_province: string; shipping_origin_postal_code: string; shipping_origin_phone: string }
 type Product = { id: string; title: string; handle: string; status: string; variants?: { id: string; title: string; manage_inventory: boolean }[] }
 type Stock = { variant_id: string; title: string; stocked_quantity: number | null; reserved_quantity: number | null }
 type VendorOrder = { id: string; display_id: number; status: string; email: string; total: number; currency_code: string; created_at: string; items: { title: string; quantity: number }[] }
@@ -60,6 +60,7 @@ export default async function SellerPage({ searchParams }: { searchParams: Promi
       {params.registered === "1" && <p role="status" className="mt-4 rounded-xl border border-sand bg-white p-4">Your application was submitted. The platform must approve your store before you can list products.</p>}
       {params.product === "created" && <p role="status" className="mt-4 rounded-xl border border-sand bg-white p-4">Offer and starting stock saved.</p>}
       {params.stock === "updated" && <p role="status" className="mt-4 rounded-xl border border-sand bg-white p-4">Stock updated.</p>}
+      {params.shipping === "updated" && <p role="status" className="mt-4 rounded-xl border border-sand bg-white p-4">Private shipping origin updated.</p>}
 
       {vendor ? (
         <>
@@ -70,6 +71,19 @@ export default async function SellerPage({ searchParams }: { searchParams: Promi
             </div>
             {vendor.status === "pending" && <p className="mt-4 rounded-xl bg-sand-soft p-4">Your seller application is waiting for platform approval. You can sign in again later to check its status.</p>}
             {vendor.status === "suspended" && <p className="mt-4 rounded-xl bg-sand-soft p-4">Your account is suspended. You can review existing orders, but cannot edit products or stock. Contact the platform administrator for help.</p>}
+          </section>
+
+          <section className="mt-6 rounded-2xl border border-sand bg-white p-5">
+            <h2 className="text-xl font-semibold">Private shipping origin</h2>
+            <p className="mt-2 text-sm text-muted">Used for carrier quotes and shipping labels. This address is not shown on public product pages.</p>
+            <form action={updateVendorShippingOrigin} className="mt-4 grid gap-3 sm:grid-cols-2">
+              <label className="sm:col-span-2">Street address<input name="shipping_address" required minLength={3} maxLength={150} defaultValue={vendor.shipping_origin_address_1} autoComplete="street-address" className="mt-1 min-h-11 w-full rounded-xl border border-muted px-3" /></label>
+              <label>City<input name="shipping_city" required minLength={2} maxLength={100} defaultValue={vendor.shipping_origin_city} autoComplete="address-level2" className="mt-1 min-h-11 w-full rounded-xl border border-muted px-3" /></label>
+              <label>Province or territory<select name="shipping_province" required defaultValue={vendor.shipping_origin_province} autoComplete="address-level1" className="mt-1 min-h-11 w-full rounded-xl border border-muted px-3"><option value="" disabled>Select one</option>{["AB","BC","MB","NB","NL","NS","NT","NU","ON","PE","QC","SK","YT"].map((code) => <option key={code} value={code}>{code}</option>)}</select></label>
+              <label>Postal code<input name="shipping_postal_code" required pattern="[ABCEGHJ-NPRSTVXYabceghj-nprstvxy][0-9][ABCEGHJ-NPRSTV-Zabceghj-nprstv-z][ -]?[0-9][ABCEGHJ-NPRSTV-Zabceghj-nprstv-z][0-9]" defaultValue={vendor.shipping_origin_postal_code} autoComplete="postal-code" className="mt-1 min-h-11 w-full rounded-xl border border-muted px-3" /></label>
+              <label>Phone<input name="shipping_phone" type="tel" required minLength={10} maxLength={25} defaultValue={vendor.shipping_origin_phone} autoComplete="tel" className="mt-1 min-h-11 w-full rounded-xl border border-muted px-3" /></label>
+              <button type="submit" className="min-h-11 rounded-xl border border-muted px-5 sm:col-span-2">Save private address</button>
+            </form>
           </section>
 
           {vendor.status === "active" && <>
@@ -115,6 +129,11 @@ export default async function SellerPage({ searchParams }: { searchParams: Promi
             <div className="grid grid-cols-2 gap-3"><label>First name<input name="first_name" required autoComplete="given-name" className="mt-1 min-h-11 w-full rounded-xl border border-muted px-3" /></label><label>Last name<input name="last_name" required autoComplete="family-name" className="mt-1 min-h-11 w-full rounded-xl border border-muted px-3" /></label></div>
             <label className="block">Email<input name="email" type="email" required autoComplete="email" className="mt-1 min-h-11 w-full rounded-xl border border-muted px-3" /></label>
             <label className="block">Password<input name="password" type="password" required minLength={4} maxLength={128} autoComplete="new-password" className="mt-1 min-h-11 w-full rounded-xl border border-muted px-3" /></label>
+            <h3 className="pt-2 font-semibold">Canadian shipping origin</h3>
+            <p className="text-sm text-muted">Private address used for carrier quotes and labels; it will not appear on public listings.</p>
+            <label className="block">Street address<input name="shipping_address" required minLength={3} maxLength={150} autoComplete="street-address" className="mt-1 min-h-11 w-full rounded-xl border border-muted px-3" /></label>
+            <div className="grid grid-cols-2 gap-3"><label>City<input name="shipping_city" required minLength={2} autoComplete="address-level2" className="mt-1 min-h-11 w-full rounded-xl border border-muted px-3" /></label><label>Province<select name="shipping_province" required defaultValue="" autoComplete="address-level1" className="mt-1 min-h-11 w-full rounded-xl border border-muted px-3"><option value="" disabled>Select</option>{["AB","BC","MB","NB","NL","NS","NT","NU","ON","PE","QC","SK","YT"].map((code) => <option key={code} value={code}>{code}</option>)}</select></label></div>
+            <div className="grid grid-cols-2 gap-3"><label>Postal code<input name="shipping_postal_code" required autoComplete="postal-code" className="mt-1 min-h-11 w-full rounded-xl border border-muted px-3" /></label><label>Phone<input name="shipping_phone" type="tel" required minLength={10} autoComplete="tel" className="mt-1 min-h-11 w-full rounded-xl border border-muted px-3" /></label></div>
             <p className="text-sm text-muted">New stores are reviewed by the platform before products can be listed.</p>
             <button type="submit" className="min-h-11 rounded-xl border border-muted px-5">Submit application</button>
           </form>

@@ -61,7 +61,17 @@ medusaIntegrationTestRunner({
       const created = await call(
         "post",
         "/vendors",
-        { name: `Vendor ${key}`, admin: { email } },
+        {
+          name: `Vendor ${key}`,
+          admin: { email },
+          shipping_origin: {
+            address_1: `${key} Test Warehouse`,
+            city: "Toronto",
+            province: "ON",
+            postal_code: "M5V 3A8",
+            phone: "+1 416-555-0101",
+          },
+        },
         bearer(reg.data.token)
       )
       expect(created.status).toBe(201)
@@ -284,6 +294,41 @@ medusaIntegrationTestRunner({
         const pending = await call("get", "/vendors", undefined, bearer(vendors.pending.token))
         expect(pending.status).toBe(200)
         expect(pending.data.vendor.status).toBe("pending")
+        expect(pending.data.vendor.shipping_origin_address_1).toContain("Test Warehouse")
+      })
+
+      it("permet au vendeur de modifier son adresse privée et valide le code postal canadien", async () => {
+        const saved = await call("patch", "/vendors/shipping-origin", {
+          shipping_origin: {
+            address_1: "88 Fictional Maple Street", city: "Ottawa", province: "ON",
+            postal_code: "K1P 1A1", phone: "+1 613-555-0109",
+          },
+        }, bearer(vendors.a.token))
+        expect(saved.status).toBe(200)
+        const own = await call("get", "/vendors", undefined, bearer(vendors.a.token))
+        expect(own.data.vendor.shipping_origin_postal_code).toBe("K1P 1A1")
+        const invalid = await call("patch", "/vendors/shipping-origin", {
+          shipping_origin: { address_1: "88 Fictional Maple Street", city: "Ottawa", province: "ON", postal_code: "12345", phone: "+1 613-555-0109" },
+        }, bearer(vendors.a.token))
+        expect(invalid.status).toBe(400)
+      })
+
+      it("permet à une candidature en attente de corriger son origine privée", async () => {
+        const response = await call("patch", "/vendors/shipping-origin", {
+          shipping_origin: {
+            address_1: "14 Fictional Lake Road", city: "Toronto", province: "ON",
+            postal_code: "M4B 1B3", phone: "+1 416-555-0199",
+          },
+        }, bearer(vendors.pending.token))
+        expect(response.status).toBe(200)
+      })
+
+      it("ne révèle pas les origines privées dans la liste administrateur", async () => {
+        const list = await call("get", "/admin/vendors", undefined, bearer(adminToken))
+        expect(list.status).toBe(200)
+        const own = list.data.vendors.find((entry: any) => entry.id === vendors.a.id)
+        expect(own).toBeDefined()
+        expect(own.shipping_origin_address_1).toBeUndefined()
       })
 
       it("refuse un vendeur en attente de validation", async () => {

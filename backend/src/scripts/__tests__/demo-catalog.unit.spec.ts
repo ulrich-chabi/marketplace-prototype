@@ -1,12 +1,21 @@
 import { readFileSync } from "node:fs"
 import { resolve } from "node:path"
-import { countAvailableDemoProducts, DEPARTMENTS } from "../seed-data"
+import { countAvailableDemoProducts, demoShippingMeasurements, DEPARTMENTS } from "../seed-data"
 
 const images = JSON.parse(
   readFileSync(resolve(process.cwd(), "../storefront/src/data/demo-images.json"), "utf8")
 ) as Record<string, { productType: string; category: string; source: string; license: string }>
 
 describe("catalogue de démonstration", () => {
+  it("produit des dimensions physiques positives et variées par rayon", () => {
+    const electronics = demoShippingMeasurements("electronics", 0)
+    const kitchen = demoShippingMeasurements("home-kitchen", 0)
+    const nextItem = demoShippingMeasurements("electronics", 1)
+    expect(electronics.weight).toBeGreaterThan(0)
+    expect(electronics.length).toBeGreaterThan(0)
+    expect(electronics).not.toEqual(kitchen)
+    expect(electronics).not.toEqual(nextItem)
+  })
   it("associe chaque produit semé à une photo distincte et créditée", () => {
     expect(DEPARTMENTS).toHaveLength(20)
     expect(new Set(Object.values(images).map((image) => image.source)).size).toBe(Object.keys(images).length)

@@ -8,11 +8,16 @@ import {
 import { setAuthAppMetadataStep, useQueryGraphStep } from "@medusajs/medusa/core-flows"
 import { MARKETPLACE_MODULE } from "../../modules/marketplace"
 import MarketplaceModuleService from "../../modules/marketplace/service"
+import {
+  CanadianShippingOrigin,
+  shippingOriginToVendorFields,
+} from "../../api/vendors/shipping-origin-schema"
 
 export type CreateVendorWorkflowInput = {
   name: string
   handle?: string
   logo?: string
+  shipping_origin: CanadianShippingOrigin
   admin: { email: string; first_name?: string; last_name?: string }
   authIdentityId: string
 }
@@ -20,7 +25,7 @@ export type CreateVendorWorkflowInput = {
 const createVendorStep = createStep(
   "create-vendor",
   async (
-    data: { name: string; handle?: string; logo?: string },
+    data: { name: string; handle?: string; logo?: string; shipping_origin: CanadianShippingOrigin },
     { container }
   ) => {
     const service: MarketplaceModuleService = container.resolve(MARKETPLACE_MODULE)
@@ -28,7 +33,13 @@ const createVendorStep = createStep(
     const handle =
       data.handle ||
       data.name.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")
-    const vendor = await service.createVendors({ ...data, handle, status: "pending" })
+    const { shipping_origin, ...vendorData } = data
+    const vendor = await service.createVendors({
+      ...vendorData,
+      ...shippingOriginToVendorFields(shipping_origin),
+      handle,
+      status: "pending",
+    })
     return new StepResponse(vendor, vendor.id)
   },
   async (vendorId, { container }) => {
@@ -62,6 +73,7 @@ const createVendorWorkflow = createWorkflow(
       name: input.name,
       handle: input.handle,
       logo: input.logo,
+      shipping_origin: input.shipping_origin,
     })
 
     const adminData = transform({ input, vendor }, (d) => ({

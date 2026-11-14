@@ -20,8 +20,9 @@ import {
 import { MARKETPLACE_MODULE } from "../modules/marketplace"
 import { CATALOG_MODULE } from "../modules/catalog"
 import setVendorStatusWorkflow from "../workflows/marketplace/set-vendor-status"
-import { BRANDS, COLORS, countAvailableDemoProducts, DEPARTMENTS, rng, VENDORS } from "./seed-data"
+import { BRANDS, COLORS, countAvailableDemoProducts, DEPARTMENTS, demoShippingMeasurements, rng, VENDORS } from "./seed-data"
 import { configureCanadianDemoTaxes } from "./canadian-demo-tax"
+import { shippingOriginToStockLocationAddress } from "../api/vendors/shipping-origin-schema"
 
 // Remplit une boutique canadienne avec des données fictives pour le prototype.
 // Ne pas exécuter sur une boutique en production ou contenant des données réelles.
@@ -184,10 +185,26 @@ export default async function seedMarketplace({ container }: ExecArgs) {
   const vendors: { id: string; name: string; locationId: string }[] = []
   for (const v of VENDORS) {
     let vendor = (await marketplace.listVendors({ handle: v.handle }, { take: 1 }))[0]
+    const shippingOriginFields = {
+      shipping_origin_address_1: v.shippingOrigin.address_1,
+      shipping_origin_city: v.shippingOrigin.city,
+      shipping_origin_province: v.shippingOrigin.province,
+      shipping_origin_postal_code: v.shippingOrigin.postal_code,
+      shipping_origin_phone: v.shippingOrigin.phone,
+    }
     if (!vendor) {
       vendor = await marketplace.createVendors({
         name: v.name, handle: v.handle, status: "pending",
         delivery_days_min: v.deliveryMin, delivery_days_max: v.deliveryMax, return_window_days: v.returnDays,
+        ...shippingOriginFields,
+      })
+    } else {
+      vendor = await marketplace.updateVendors({
+        id: vendor.id,
+        delivery_days_min: v.deliveryMin,
+        delivery_days_max: v.deliveryMax,
+        return_window_days: v.returnDays,
+        ...shippingOriginFields,
       })
     }
     if (vendor.status !== "active") {
@@ -197,6 +214,10 @@ export default async function seedMarketplace({ container }: ExecArgs) {
       data: [withLoc],
     } = await query.graph({ entity: "vendor", fields: ["id", "stock_location.id"], filters: { id: vendor.id } })
     if (!withLoc?.stock_location?.id) throw new Error(`Le vendeur de démonstration ${v.handle} n'a pas d'emplacement de stock.`)
+    await container.resolve(Modules.STOCK_LOCATION).updateStockLocations(withLoc.stock_location.id, {
+      address: shippingOriginToStockLocationAddress(v.shippingOrigin),
+      metadata: { demo_shipping_origin: true },
+    })
     vendors.push({ id: vendor.id, name: v.name, locationId: withLoc.stock_location.id })
   }
 
@@ -267,12 +288,13 @@ export default async function seedMarketplace({ container }: ExecArgs) {
             shipping_profile_id: profile.id,
             sales_channels: [{ id: salesChannelId! }],
             options: [{ title: "Default", values: ["Default"] }],
-            metadata: { condition: o.condition, catalog_handle: o.catalog.handle },
+            metadata: { condition: o.condition, catalog_handle: o.catalog.handle, demo_shipping_measurements: true },
             variants: [
               {
                 title: "Default",
                 options: { Default: "Default" },
                 manage_inventory: true,
+                ...demoShippingMeasurements(o.catalog.category_handle, Number(o.catalog.attributes?.image_key?.split("-").at(-1)) - 1),
                 prices: [{ amount: o.price, currency_code: "cad" }],
               },
             ],
@@ -315,6 +337,39 @@ export default async function seedMarketplace({ container }: ExecArgs) {
     }
     catalogCount += rows.length
   }
+
+  // Complète également les fiches démo déjà présentes, sans toucher aux offres réelles.
+  const allCatalog = await catalogService.listCatalogProducts({}, { take: 1000 })
+  const catalogByHandle = new Map(allCatalog.map((item: any) => [item.handle, item]))
+  const productModule: any = container.resolve(Modules.PRODUCT)
+  const inventoryModule: any = container.resolve(Modules.INVENTORY)
+  const { data: demoVariants } = await query.graph({
+    entity: "product_variant",
+    fields: ["id", "product.id", "product.metadata", "inventory_items.inventory_item_id"],
+    pagination: { take: 1000 },
+  })
+  let measuredVariants = 0
+  const markedProducts = new Set<string>()
+  for (const variant of demoVariants as any[]) {
+    const catalogHandle = variant.product?.metadata?.catalog_handle
+    const catalogItem: any = typeof catalogHandle === "string" ? catalogByHandle.get(catalogHandle) : null
+    if (!catalogItem?.attributes?.image_key) continue
+    const imageIndex = Number(catalogItem.attributes.image_key.split("-").at(-1)) - 1
+    const measurements = demoShippingMeasurements(catalogItem.category_handle, imageIndex)
+    await productModule.updateProductVariants(variant.id, measurements)
+    const inventoryItemId = variant.inventory_items?.find((link: any) => typeof link.inventory_item_id === "string" && link.inventory_item_id)?.inventory_item_id
+    if (inventoryItemId) await inventoryModule.updateInventoryItems({ id: inventoryItemId, ...measurements })
+    measuredVariants++
+    const productId = variant.product?.id
+    const metadata = variant.product?.metadata
+    if (productId && !markedProducts.has(productId) && metadata?.demo_shipping_measurements !== true) {
+      await productModule.updateProducts(productId, {
+        metadata: { ...metadata, demo_shipping_measurements: true },
+      })
+      markedProducts.add(productId)
+    }
+  }
+  logger.info(`Mesures fictives ajoutées aux variantes de démonstration : ${measuredVariants}.`)
 
   logger.info(`Terminé : ${catalogCount} fiches catalogue, ${offerCount} offres, ${vendors.length} vendeurs fictifs.`)
   logger.info("----------------------------------------------------------------")

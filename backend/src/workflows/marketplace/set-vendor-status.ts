@@ -18,6 +18,10 @@ import { MARKETPLACE_MODULE } from "../../modules/marketplace"
 import { canTransition, HIDING_STATUSES } from "../../modules/marketplace/lifecycle"
 import { VendorStatus } from "../../modules/marketplace/models/vendor"
 import MarketplaceModuleService from "../../modules/marketplace/service"
+import {
+  CanadianShippingOriginSchema,
+  shippingOriginToStockLocationAddress,
+} from "../../api/vendors/shipping-origin-schema"
 
 export type SetVendorStatusInput = { vendor_id: string; status: VendorStatus }
 
@@ -33,6 +37,8 @@ const planTransitionStep = createStep(
       fields: [
         "id", "handle", "name", "status",
         "stock_location.id",
+        "shipping_origin_address_1", "shipping_origin_city", "shipping_origin_province",
+        "shipping_origin_postal_code", "shipping_origin_phone",
         "products.id", "products.status", "products.metadata",
       ],
       filters: { id: input.vendor_id },
@@ -45,6 +51,17 @@ const planTransitionStep = createStep(
         MedusaError.Types.NOT_ALLOWED,
         `Transition impossible : ${from} → ${input.status}.`
       )
+    }
+
+    let shippingOrigin
+    if (input.status === "active") {
+      shippingOrigin = CanadianShippingOriginSchema.parse({
+        address_1: vendor.shipping_origin_address_1,
+        city: vendor.shipping_origin_city,
+        province: vendor.shipping_origin_province,
+        postal_code: vendor.shipping_origin_postal_code,
+        phone: vendor.shipping_origin_phone,
+      })
     }
 
     const products = (vendor.products ?? []) as any[]
@@ -70,6 +87,7 @@ const planTransitionStep = createStep(
       handle: vendor.handle as string,
       previous_status: from,
       needs_stock_location: input.status === "active" && !vendor.stock_location?.id,
+      shipping_origin: shippingOrigin,
       product_updates: updates,
     })
   }
@@ -107,7 +125,7 @@ const setVendorStatusWorkflow = createWorkflow(
         locations: [
           {
             name: `Vendor ${d.plan.handle}`,
-            address: { country_code: "CA", address_1: "" },
+            address: shippingOriginToStockLocationAddress(d.plan.shipping_origin),
           },
         ],
       }))

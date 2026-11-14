@@ -358,14 +358,15 @@ export async function registerVendor(formData: FormData) {
   const lastName = String(formData.get("last_name") ?? "").trim()
   const email = String(formData.get("email") ?? "").trim().toLowerCase()
   const password = String(formData.get("password") ?? "")
-  if (!name || !firstName || !lastName || !validCustomerForm(email, password)) redirect("/sell?error=register")
+  const shippingOrigin = readCanadianShippingOrigin(formData)
+  if (!name || !firstName || !lastName || !validCustomerForm(email, password) || !shippingOrigin) redirect("/sell?error=register")
   try {
     const { token: registrationToken } = await sdk.client.fetch<{ token: string }>("/auth/vendor/emailpass/register", {
       method: "POST", body: { email, password },
     })
     await sdk.client.fetch("/vendors", {
       method: "POST",
-      body: { name, admin: { email, first_name: firstName, last_name: lastName } },
+      body: { name, shipping_origin: shippingOrigin, admin: { email, first_name: firstName, last_name: lastName } },
       headers: { Authorization: `Bearer ${registrationToken}` },
     })
     const { token } = await sdk.client.fetch<{ token: string }>("/auth/vendor/emailpass", {
@@ -380,6 +381,36 @@ export async function registerVendor(formData: FormData) {
   }
   revalidatePath("/sell")
   redirect("/sell?registered=1")
+}
+
+const CANADIAN_PROVINCES = ["AB", "BC", "MB", "NB", "NL", "NS", "NT", "NU", "ON", "PE", "QC", "SK", "YT"]
+function readCanadianShippingOrigin(formData: FormData) {
+  const address_1 = String(formData.get("shipping_address") ?? "").trim()
+  const city = String(formData.get("shipping_city") ?? "").trim()
+  const province = String(formData.get("shipping_province") ?? "")
+  const postal_code = String(formData.get("shipping_postal_code") ?? "").trim().toUpperCase()
+  const phone = String(formData.get("shipping_phone") ?? "").trim()
+  const phoneDigits = phone.replace(/\D/g, "")
+  if (address_1.length < 3 || address_1.length > 150 || city.length < 2 || city.length > 100 ||
+      !CANADIAN_PROVINCES.includes(province) || !/^[ABCEGHJ-NPRSTVXY]\d[ABCEGHJ-NPRSTV-Z][ -]?\d[ABCEGHJ-NPRSTV-Z]\d$/.test(postal_code) ||
+      !/^[+\d\s().-]+$/.test(phone) || !(phoneDigits.length === 10 || (phoneDigits.length === 11 && phoneDigits.startsWith("1")))) return null
+  return { address_1, city, province, postal_code: postal_code.replace(/\s+/, " "), phone }
+}
+
+export async function updateVendorShippingOrigin(formData: FormData) {
+  const token = (await cookies()).get(VENDOR_TOKEN_COOKIE)?.value
+  const origin = readCanadianShippingOrigin(formData)
+  if (!token || !origin) redirect("/sell?error=shipping-origin")
+  try {
+    await sdk.client.fetch("/vendors/shipping-origin", {
+      method: "PATCH", body: { shipping_origin: origin },
+      headers: { Authorization: `Bearer ${token}` },
+    })
+  } catch {
+    redirect("/sell?error=shipping-origin")
+  }
+  revalidatePath("/sell")
+  redirect("/sell?shipping=updated")
 }
 
 export async function loginVendor(formData: FormData) {

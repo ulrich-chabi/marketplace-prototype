@@ -50,8 +50,9 @@ export const ensureVendor =
 
 // Écriture, catalogue, stock : vendeur actif uniquement.
 export const ensureActiveVendor = ensureVendor(["active"])
-// Lecture des commandes : un vendeur suspendu peut encore voir ce qu'il doit honorer.
-export const ensureReadableVendor = ensureVendor(["active", "suspended"])
+// Les comptes en attente peuvent aussi corriger leur adresse privée; les écritures
+// commerciales restent protégées par ensureActiveVendor sur catalogue et stock.
+export const ensureReadableVendor = ensureVendor(["pending", "active", "suspended"])
 // Le tableau de bord de base permet à un vendeur en attente de consulter son statut.
 export const ensureRegisteredVendor = ensureVendor(["pending", "active", "suspended"])
 

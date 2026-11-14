@@ -52,16 +52,16 @@ export const BRANDS = [
 
 export const COLORS = ["Black", "White", "Sand", "Teal", "Terracotta", "Slate", "Forest", "Navy"]
 
-// Délais de livraison (jours ouvrés) et durée de retour : valeurs FICTIVES de démonstration.
+// Vendeurs, politiques et adresses d'expédition FICTIFS, réservés au seed de démonstration.
 export const VENDORS = [
-  { name: "Marketplace Direct", handle: "marketplace-direct", deliveryMin: 2, deliveryMax: 3, returnDays: 30 }, // ventes directes de la plateforme
-  { name: "Harbor & Pine", handle: "harbor-pine", deliveryMin: 3, deliveryMax: 5, returnDays: 30 },
-  { name: "Lumen Supply Co", handle: "lumen-supply", deliveryMin: 4, deliveryMax: 7, returnDays: 14 },
-  { name: "Northfield Goods", handle: "northfield-goods", deliveryMin: 5, deliveryMax: 8, returnDays: 30 },
-  { name: "Cobalt Market", handle: "cobalt-market", deliveryMin: 2, deliveryMax: 4, returnDays: 15 },
-  { name: "Juniper Lane", handle: "juniper-lane", deliveryMin: 6, deliveryMax: 9, returnDays: 30 },
-  { name: "Saffron Street", handle: "saffron-street", deliveryMin: 3, deliveryMax: 6, returnDays: 7 },
-]
+  { name: "Marketplace Direct", handle: "marketplace-direct", deliveryMin: 2, deliveryMax: 3, returnDays: 30, shippingOrigin: { address_1: "100 Demo Harbour Road", city: "Toronto", province: "ON", postal_code: "M5V 0A1", phone: "+1 416-555-0101" } },
+  { name: "Harbor & Pine", handle: "harbor-pine", deliveryMin: 3, deliveryMax: 5, returnDays: 30, shippingOrigin: { address_1: "200 Fictional Cedar Avenue", city: "Vancouver", province: "BC", postal_code: "V6B 0A2", phone: "+1 604-555-0102" } },
+  { name: "Lumen Supply Co", handle: "lumen-supply", deliveryMin: 4, deliveryMax: 7, returnDays: 14, shippingOrigin: { address_1: "300 Sample Prairie Lane", city: "Calgary", province: "AB", postal_code: "T2P 0A3", phone: "+1 403-555-0103" } },
+  { name: "Northfield Goods", handle: "northfield-goods", deliveryMin: 5, deliveryMax: 8, returnDays: 30, shippingOrigin: { address_1: "400 Demo Exchange Street", city: "Winnipeg", province: "MB", postal_code: "R3C 0A4", phone: "+1 204-555-0104" } },
+  { name: "Cobalt Market", handle: "cobalt-market", deliveryMin: 2, deliveryMax: 4, returnDays: 15, shippingOrigin: { address_1: "500 Example Canal Road", city: "Ottawa", province: "ON", postal_code: "K1P 0A5", phone: "+1 613-555-0105" } },
+  { name: "Juniper Lane", handle: "juniper-lane", deliveryMin: 6, deliveryMax: 9, returnDays: 30, shippingOrigin: { address_1: "600 Demo St-Laurent Avenue", city: "Montréal", province: "QC", postal_code: "H2Y 0A6", phone: "+1 514-555-0106" } },
+  { name: "Saffron Street", handle: "saffron-street", deliveryMin: 3, deliveryMax: 6, returnDays: 7, shippingOrigin: { address_1: "700 Fictional Waterfront Drive", city: "Halifax", province: "NS", postal_code: "B3J 0A7", phone: "+1 902-555-0107" } },
+] as const
 
 // Générateur pseudo-aléatoire déterministe : même graine, mêmes données.
 export function rng(seed: number) {
@@ -73,4 +73,21 @@ export function rng(seed: number) {
     t ^= t + Math.imul(t ^ (t >>> 7), t | 61)
     return ((t ^ (t >>> 14)) >>> 0) / 4294967296
   }
+}
+
+// Mesures fictives estimées : poids en kg, dimensions en cm. Démo de colis uniquement.
+export function demoShippingMeasurements(category: string, index: number) {
+  const base: Record<string, [number, number, number, number]> = {
+    electronics: [0.42, 22, 16, 8], computers: [0.78, 32, 24, 8], "home-kitchen": [1.15, 30, 24, 16],
+    fashion: [0.48, 32, 24, 8], books: [0.62, 24, 18, 5], "toys-games": [0.72, 28, 22, 12],
+    "sports-outdoors": [1.1, 36, 26, 14], "beauty-personal-care": [0.38, 22, 16, 10],
+    "health-household": [0.86, 28, 22, 14], grocery: [0.95, 24, 18, 12], "pet-supplies": [0.82, 30, 22, 14],
+    automotive: [1.25, 32, 24, 14], "tools-home-improvement": [1.45, 32, 24, 12],
+    "office-products": [0.68, 28, 22, 10], "garden-outdoor": [1.4, 36, 28, 16], baby: [0.9, 32, 24, 14],
+    "arts-crafts": [0.55, 28, 22, 8], "musical-instruments": [1.3, 48, 20, 12],
+    "video-games": [0.52, 24, 18, 8], "movies-hobbies": [0.76, 30, 22, 10],
+  }
+  const [weight, length, width, height] = base[category] ?? [0.7, 28, 20, 10]
+  const n = Math.max(0, Math.floor(index))
+  return { weight: Math.round((weight + (n % 5) * 0.11) * 1000) / 1000, length: length + (n % 3) * 2, width: width + (n % 4) * 1.5, height: height + (n % 3) }
 }

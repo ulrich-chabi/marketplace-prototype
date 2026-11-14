@@ -38,7 +38,17 @@ export async function createAdminToken(container: any, call: Call, Modules: any)
 export async function createVendor(call: Call, adminToken: string, key: string, activate = true) {
   const email = `vendor-${key}@test.local`
   const reg = await call("post", "/auth/vendor/emailpass/register", { email, password: PASSWORD })
-  const created = await call("post", "/vendors", { name: `Vendor ${key}`, admin: { email } }, bearer(reg.data.token))
+  const created = await call("post", "/vendors", {
+    name: `Vendor ${key}`,
+    admin: { email },
+    shipping_origin: {
+      address_1: `${key} Test Warehouse`,
+      city: "Toronto",
+      province: "ON",
+      postal_code: "M5V 3A8",
+      phone: "+1 416-555-0101",
+    },
+  }, bearer(reg.data.token))
   if (created.status !== 201) throw new Error("Création vendeur de test impossible")
   const login = await call("post", "/auth/vendor/emailpass", { email, password: PASSWORD })
   const vendor = { id: created.data.vendor.id as string, token: login.data.token as string }

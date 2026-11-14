@@ -8,6 +8,7 @@ import { PostVendorOrderRefundSchema } from "./admin/vendor-orders/[id]/refund/r
 import { loginRateLimit, enforcePasswordPolicy } from "./auth-security"
 import { ensureActiveVendor, ensureReadableVendor, ensureRegisteredVendor } from "./vendors/guard"
 import { PostVendorCreateSchema } from "./vendors/route"
+import { PatchVendorShippingOriginSchema } from "./vendors/shipping-origin/route"
 import { PostVendorProductSchema } from "./vendors/products/route"
 import { PostVendorStockSchema } from "./vendors/stock/route"
 import { PostOrderTrackingSchema } from "./store/order-tracking/route"
@@ -57,6 +58,15 @@ export default defineMiddlewares({
       middlewares: [
         authenticate("vendor", ["session", "bearer"], { allowUnregistered: true }),
         validateAndTransformBody(PostVendorCreateSchema),
+      ],
+    },
+    {
+      matcher: "/vendors/shipping-origin",
+      method: ["PATCH"],
+      middlewares: [
+        authenticate("vendor", ["session", "bearer"]),
+        ensureRegisteredVendor,
+        validateAndTransformBody(PatchVendorShippingOriginSchema),
       ],
     },
     {
