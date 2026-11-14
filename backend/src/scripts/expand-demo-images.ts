@@ -16,8 +16,8 @@ type ImageCredit = {
 
 const manifestPath = resolve(process.cwd(), "../storefront/src/data/demo-images.json")
 const acceptedLicense = /^(CC0|Public domain|Public Domain Mark|No restrictions|CC BY(?:-SA)? [234]\.0(?: [A-Za-z-]+)?)$/i
-const ignoredWords = new Set(["a", "an", "and", "for", "of", "the", "with", "set", "kit", "home", "outdoor", "book", "guide", "pack"])
-const unsuitable = /\b(chart|concept|diagram|girl|boy|woman|man|person|people|painting|museum|tornado|survey|screenshot|logo|icon|library|shelf|trail|park)\b/i
+const ignoredWords = new Set(["a", "an", "and", "for", "of", "the", "with", "set", "kit", "home", "outdoor", "book", "guide", "pack", "e"])
+const unsuitable = /\b(chart|concept|diagram|girl|boy|woman|man|person|people|painting|museum|tornado|survey|screenshot|logo|icon|library|shelf|trail|park|shadow|interior|field|poster|still|sale|customer|shows|staff|sergeant|exhibit)\b/i
 const headers = { "User-Agent": "MarketplacePrototype/1.0 (https://github.com/ulrich-chabi/marketplace-prototype)" }
 
 async function main() {
@@ -64,6 +64,7 @@ async function main() {
 
 async function findLicensedPhoto(productType: string, usedSources: Set<string>, usedTitles: Set<string>) {
   const distinctiveTerms = productType.toLowerCase().split(/[^a-z0-9]+/).filter((word) => !ignoredWords.has(word))
+  const headTerm = distinctiveTerms.at(-1)
   const query = new URLSearchParams({
     action: "query",
     generator: "search",
@@ -84,18 +85,18 @@ async function findLicensedPhoto(productType: string, usedSources: Set<string>, 
     const image = page.imageinfo?.[0]
     const title = String(page.title ?? "").replace(/^File:/, "")
     const normalizedTitle = normalize(title)
-    const titleWords = normalizedTitle.split(" ")
-    const score = distinctiveTerms.filter((term) => titleWords.includes(term)).length
+    const titleWords = normalizedTitle.split(" ").map(canonicalWord)
+    const score = distinctiveTerms.filter((term) => titleWords.includes(canonicalWord(term))).length
     const license = clean(image?.extmetadata?.LicenseShortName?.value ?? "")
     const source = String(image?.descriptionurl ?? "")
-    return { image, title, normalizedTitle, score, license, source }
-  }).filter(({ image, title, normalizedTitle, score, license, source }) => {
+    return { image, title, normalizedTitle, titleWords, score, license, source }
+  }).filter(({ image, title, normalizedTitle, titleWords, score, license, source }) => {
     const requiredMatches = Math.min(distinctiveTerms.length, 2)
     return image && ["image/jpeg", "image/png", "image/webp"].includes(image.mime) &&
       image.width >= 500 && image.height >= 350 && acceptedLicense.test(license) &&
       source.startsWith("https://commons.wikimedia.org/wiki/File:") &&
       !usedSources.has(source) && !usedTitles.has(normalizedTitle) &&
-      !unsuitable.test(title) && score >= requiredMatches
+      !unsuitable.test(title) && (score >= requiredMatches || Boolean(headTerm && titleWords.includes(canonicalWord(headTerm))))
   }).sort((a, b) => b.score - a.score)
 
   const image = ranked[0]
@@ -108,6 +109,12 @@ async function findLicensedPhoto(productType: string, usedSources: Set<string>, 
 
 function normalize(value: string) {
   return value.toLocaleLowerCase("en").replace(/\.[a-z0-9]+$/i, "").replace(/[^a-z0-9]+/g, " ").trim()
+}
+
+function canonicalWord(value: string) {
+  if (value.endsWith("ies") && value.length > 4) return `${value.slice(0, -3)}y`
+  if (value.endsWith("s") && value.length > 3 && !value.endsWith("ss")) return value.slice(0, -1)
+  return value
 }
 
 function clean(value: string) {

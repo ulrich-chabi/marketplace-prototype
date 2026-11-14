@@ -1710,5 +1710,49 @@
     "license": "CC BY 2.0",
     "source": "https://commons.wikimedia.org/wiki/File:Bird_in_bird_bath.jpg",
     "download": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/95/Bird_in_bird_bath.jpg/1280px-Bird_in_bird_bath.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+  },
+  "home-kitchen-10": {
+    "file": "/images/catalog/home-kitchen-10.webp",
+    "category": "Home & Kitchen",
+    "productType": "Air Fryer",
+    "alt": "Illustrative photo of Air Fryer; fictional demo listing",
+    "title": "Clickon Air Fryer.jpg",
+    "author": "Kskhh",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Clickon_Air_Fryer.jpg",
+    "download": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/83/Clickon_Air_Fryer.jpg/1280px-Clickon_Air_Fryer.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+  },
+  "home-kitchen-11": {
+    "file": "/images/catalog/home-kitchen-11.webp",
+    "category": "Home & Kitchen",
+    "productType": "Mixing Bowls",
+    "alt": "Illustrative photo of Mixing Bowls; fictional demo listing",
+    "title": "Masoncash cane mixing bowl.jpg",
+    "author": "RLiverpool2021",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Masoncash_cane_mixing_bowl.jpg",
+    "download": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/00/Masoncash_cane_mixing_bowl.jpg/1280px-Masoncash_cane_mixing_bowl.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+  },
+  "home-kitchen-12": {
+    "file": "/images/catalog/home-kitchen-12.webp",
+    "category": "Home & Kitchen",
+    "productType": "Food Scale",
+    "alt": "Illustrative photo of Food Scale; fictional demo listing",
+    "title": "OXO Food Scale (54816588739).jpg",
+    "author": "Frank O'Grady",
+    "license": "CC BY 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:OXO_Food_Scale_(54816588739).jpg",
+    "download": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ee/OXO_Food_Scale_%2854816588739%29.jpg/1280px-OXO_Food_Scale_%2854816588739%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+  },
+  "fashion-8": {
+    "file": "/images/catalog/fashion-8.webp",
+    "category": "Fashion",
+    "productType": "Canvas Sneakers",
+    "alt": "Illustrative photo of Canvas Sneakers; fictional demo listing",
+    "title": "Oca-low-washed-black-contrast-thread-canvas-sneaker.png",
+    "author": "CARIUMA",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Oca-low-washed-black-contrast-thread-canvas-sneaker.png",
+    "download": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a1/Oca-low-washed-black-contrast-thread-canvas-sneaker.png/1280px-Oca-low-washed-black-contrast-thread-canvas-sneaker.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
   }
 }

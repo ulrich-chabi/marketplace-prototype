@@ -92,7 +92,7 @@ Espaces du prototype :
 
 ### Catalogue fictif pour la démonstration
 
-Le catalogue comprend 20 rayons et jusqu'à 240 types de produits prévus. Il contient actuellement 153 fiches illustrées; chaque fiche a une photo, un crédit et une licence propres. Les vendeurs, marques, modèles, prix et stocks restent fictifs.
+Le catalogue comprend 20 rayons et jusqu'à 240 types de produits prévus. Il contient actuellement 157 fiches illustrées; chaque fiche a une photo, un crédit et une licence propres. Les vendeurs, marques, modèles, prix et stocks restent fictifs.
 
 Pour rechercher d'autres photos correctement assorties et sous licence réutilisable, lancer depuis `backend`, puis télécharger les nouveaux fichiers depuis la racine du dépôt :
 
