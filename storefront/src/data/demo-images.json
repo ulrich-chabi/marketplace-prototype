@@ -2194,5 +2194,49 @@
     "license": "CC BY-SA 4.0",
     "source": "https://commons.wikimedia.org/wiki/File:Diwali_special_dry_fruit_box.png",
     "download": "https://upload.wikimedia.org/wikipedia/commons/a/a3/Diwali_special_dry_fruit_box.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled"
+  },
+  "beauty-personal-care-7": {
+    "file": "/images/catalog/beauty-personal-care-7.webp",
+    "category": "Beauty & Personal Care",
+    "productType": "Nail Care Set",
+    "alt": "Illustrative photo of Nail Care Set; fictional demo listing",
+    "title": "Set, manicure (51360554084).jpg",
+    "author": "Auckland Museum Collections",
+    "license": "CC BY 2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Set,_manicure_(51360554084).jpg",
+    "download": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a4/Set%2C_manicure_%2851360554084%29.jpg/1280px-Set%2C_manicure_%2851360554084%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+  },
+  "tools-home-improvement-11": {
+    "file": "/images/catalog/tools-home-improvement-11.webp",
+    "category": "Tools & Home Improvement",
+    "productType": "Paint Roller Kit",
+    "alt": "Illustrative photo of Paint Roller Kit; fictional demo listing",
+    "title": "Paint roller (4600214187).jpg",
+    "author": "Charles & Hudson",
+    "license": "CC BY-SA 2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Paint_roller_(4600214187).jpg",
+    "download": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e7/Paint_roller_%284600214187%29.jpg/1280px-Paint_roller_%284600214187%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+  },
+  "musical-instruments-9": {
+    "file": "/images/catalog/musical-instruments-9.webp",
+    "category": "Musical Instruments",
+    "productType": "Violin Starter Kit",
+    "alt": "Illustrative photo of Violin Starter Kit; fictional demo listing",
+    "title": "Violin (139307167).jpeg",
+    "author": "Michael Tighe",
+    "license": "CC0",
+    "source": "https://commons.wikimedia.org/wiki/File:Violin_(139307167).jpeg",
+    "download": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a5/Violin_%28139307167%29.jpeg/1280px-Violin_%28139307167%29.jpeg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+  },
+  "pet-supplies-9": {
+    "file": "/images/catalog/pet-supplies-9.webp",
+    "category": "Pet Supplies",
+    "productType": "Cat Scratcher",
+    "alt": "Illustrative photo of Cat Scratcher; fictional demo listing",
+    "title": "Scratching post 2026-07-05 1.jpg",
+    "author": "Yelderberry",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Scratching_post_2026-07-05_1.jpg",
+    "download": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/06/Scratching_post_2026-07-05_1.jpg/1280px-Scratching_post_2026-07-05_1.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
   }
 }
