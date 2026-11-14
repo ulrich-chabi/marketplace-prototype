@@ -17,8 +17,44 @@ type ImageCredit = {
 const manifestPath = resolve(process.cwd(), "../storefront/src/data/demo-images.json")
 const acceptedLicense = /^(CC0|Public domain|Public Domain Mark|No restrictions|CC BY(?:-SA)? [234]\.0(?: [A-Za-z-]+)?)$/i
 const ignoredWords = new Set(["a", "an", "and", "for", "of", "the", "with", "set", "kit", "home", "outdoor", "book", "guide", "pack", "e"])
-const unsuitable = /\b(chart|concept|diagram|girl|boy|woman|man|person|people|painting|museum|tornado|survey|screenshot|logo|icon|library|shelf|park|shadow|interior|field|poster|still|sale|customer|shows|staff|sergeant|exhibit|post[- ]medieval|\d{2}th century|vlt|beam pattern|radio)\b/i
+const unsuitable = /\b(chart|concept|diagram|girl|boy|woman|man|person|people|painting|museum|tornado|survey|screenshot|logo|icon|library|shelf|park|shadow|interior|field|poster|still|sale|customer|shows|staff|sergeant|exhibit|post[- ]medieval|\d{2}th century|vlt|beam pattern|radio|dpla|fema|graffiti|souvenir|victories|armed forces|oil wells?|film frame|riot|red square|planner working)\b/i
 const headers = { "User-Agent": "MarketplacePrototype/1.0 (https://github.com/ulrich-chabi/marketplace-prototype)" }
+// Libellés alternatifs employés dans les catalogues et titres Wikimedia Commons.
+// La sélection reste fondée sur les mots recherchés, les dimensions et la licence.
+const searchAliases: Record<string, string[]> = {
+  "Webcam Cover Set": ["webcam privacy cover", "laptop camera cover"],
+  "Laptop Sleeve": ["laptop case sleeve", "notebook computer sleeve"],
+  "Science Kit": ["chemistry set", "science experiment kit"],
+  "Play Dough Set": ["play dough modelling clay", "modeling clay set"],
+  "Art Easel": ["painting easel", "artist easel"],
+  "Chess Set": ["chess board pieces", "chess set"],
+  Kite: ["flying kite", "kite flying"],
+  "Lip Balm Set": ["lip balm", "lip salve"],
+  "Cleansing Oil": ["facial cleansing oil", "oil cleanser skincare", "facial oil bottle"],
+  "Makeup Bag": ["cosmetic bag", "toiletry makeup pouch"],
+  "Bath Salts": ["bath salt crystals", "bath salts"],
+  "Training Treats Pouch": ["dog training treat pouch", "dog treat bag training"],
+  "Trunk Organizer": ["car cargo organizer", "car trunk storage organizer"],
+  "Microfiber Towels": ["microfiber cleaning cloth", "microfibre cloth"],
+  Sunshade: ["car windshield sun shade", "automobile sunshade"],
+  "Ergonomic Chair Cushion": ["ergonomic seat cushion", "chair cushion"],
+  Stapler: ["office stapler", "desktop stapler"],
+  "File Folders": ["office file folder", "document folders"],
+  Planner: ["paper day planner", "weekly planner notebook", "bound agenda planner"],
+  "Document Scanner": ["desktop document scanner", "portable document scanner"],
+  "Teething Toys": ["silicone baby teether", "baby teething ring toy"],
+  "Nursery Night Light": ["baby night light nursery", "children nightlight"],
+  "Swaddle Set": ["baby swaddle blanket", "infant swaddling cloth"],
+  "Bib Pack": ["baby bib", "infant bibs"],
+  "Thumbstick Covers": ["joystick thumbstick caps", "game controller thumb grips"],
+  "Cable Organizer": ["cable management organizer", "cord organizer"],
+  "Collector Display Case": ["collectible display case", "display cabinet collectibles"],
+  "Star Map": ["star chart map", "astronomical star map"],
+  "Film Poster Frame": ["movie poster frame", "cinema poster frame", "poster in picture frame"],
+  "Hobby Tool Set": ["model making hobby tools", "hobby craft tool set"],
+  "Craft Storage Box": ["craft supplies storage box", "arts crafts organizer"],
+  "Pocket Microscope": ["portable handheld microscope", "pocket microscope"],
+}
 
 async function main() {
   const manifest = JSON.parse(await readFile(manifestPath, "utf8")) as Record<string, ImageCredit>
@@ -32,7 +68,16 @@ async function main() {
 
     for (let index = nextIndex; index < department.maxProducts; index += 1) {
       const productType = department.types[index]
-      const selected = await findLicensedPhoto(productType, usedSources, usedTitles)
+      let selected: Awaited<ReturnType<typeof findLicensedPhoto>> = null
+      const aliases = searchAliases[productType] ?? []
+      const searches = aliases.length && productType.trim().split(/\s+/).length === 1
+        ? aliases
+        : [...aliases, productType]
+      for (const alternative of searches) {
+        await delay(200)
+        selected = await findLicensedPhoto(alternative, usedSources, usedTitles)
+        if (selected) break
+      }
       if (!selected) {
         console.log(`Aucune photo suffisamment pertinente trouvée pour ${department.name} / ${productType}; les prochains produits de ce rayon attendront pour conserver l’ordre des images.`)
         break
@@ -64,7 +109,6 @@ async function main() {
 
 async function findLicensedPhoto(productType: string, usedSources: Set<string>, usedTitles: Set<string>) {
   const distinctiveTerms = productType.toLowerCase().split(/[^a-z0-9]+/).filter((word) => !ignoredWords.has(word))
-  const headTerm = distinctiveTerms.at(-1)
   const query = new URLSearchParams({
     action: "query",
     generator: "search",
@@ -93,12 +137,12 @@ async function findLicensedPhoto(productType: string, usedSources: Set<string>, 
     const source = String(image?.descriptionurl ?? "")
     return { image, title, normalizedTitle, titleWords, score, license, source }
   }).filter(({ image, title, normalizedTitle, titleWords, score, license, source }) => {
-    const requiredMatches = Math.min(distinctiveTerms.length, 2)
+    const requiredMatches = distinctiveTerms.length === 1 ? 1 : 2
     return image && ["image/jpeg", "image/png", "image/webp"].includes(image.mime) &&
       image.width >= 500 && image.height >= 350 && acceptedLicense.test(license) &&
       source.startsWith("https://commons.wikimedia.org/wiki/File:") &&
       !usedSources.has(source) && !usedTitles.has(normalizedTitle) &&
-      !unsuitable.test(title) && (score >= requiredMatches || Boolean(headTerm && titleWords.includes(canonicalWord(headTerm))))
+      !unsuitable.test(title) && score >= requiredMatches
   }).sort((a, b) => b.score - a.score)
 
   const image = ranked[0]
