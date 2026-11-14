@@ -1,4 +1,4 @@
-import { isAvalaraProductionConfigured, isProductionCheckoutReady, isShipStationProductionConfigured, isStoreShippingReady, isStripeProductionConfigured } from "../checkout-readiness"
+import { isAvalaraProductionConfigured, isCanadianCheckout, isProductionCheckoutReady, isShipStationProductionConfigured, isStoreShippingReady, isStripeProductionConfigured } from "../checkout-readiness"
 
 describe("préparation du checkout de production", () => {
   const realProviders = {
@@ -48,6 +48,14 @@ describe("préparation du checkout de production", () => {
     expect(isStripeProductionConfigured({ STRIPE_API_KEY: "sk_test_configured", STRIPE_WEBHOOK_SECRET: "whsec_configured" })).toBe(false)
     expect(isStripeProductionConfigured({ STRIPE_API_KEY: "sk_live_configured", STRIPE_WEBHOOK_SECRET: "test_secret" })).toBe(false)
     expect(isStripeProductionConfigured({ STRIPE_API_KEY: "", STRIPE_WEBHOOK_SECRET: "" })).toBe(false)
+  })
+
+  it("limite le checkout au Canada et au dollar canadien", () => {
+    expect(isCanadianCheckout("ca", "cad")).toBe(true)
+    expect(isCanadianCheckout("CA", "CAD")).toBe(true)
+    expect(isCanadianCheckout("us", "usd")).toBe(false)
+    expect(isCanadianCheckout("ca", "usd")).toBe(false)
+    expect(isCanadianCheckout(undefined, "cad")).toBe(false)
   })
 
   it("n'accepte que des options de livraison calculées par ShipStation", () => {

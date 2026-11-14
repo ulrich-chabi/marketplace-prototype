@@ -2,16 +2,23 @@ import { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
 import { ContainerRegistrationKeys, Modules } from "@medusajs/framework/utils"
 import { createHash, randomBytes } from "node:crypto"
 import createVendorOrdersWorkflow from "../../../../../workflows/marketplace/create-vendor-orders"
-import { isAvalaraProductionConfigured, isProductionCheckoutReady, isStoreShippingReady, isStripeProductionConfigured } from "../../checkout-readiness"
+import { isAvalaraProductionConfigured, isCanadianCheckout, isProductionCheckoutReady, isStoreShippingReady, isStripeProductionConfigured } from "../../checkout-readiness"
 
 export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
-  if (process.env.NODE_ENV === "production") {
-    const query = req.scope.resolve(ContainerRegistrationKeys.QUERY)
-    const { data: [cart] } = await query.graph({
-      entity: "cart",
-      fields: ["shipping_address.country_code", "payment_collection.payment_sessions.provider_id"],
-      filters: { id: req.params.id },
+  const query = req.scope.resolve(ContainerRegistrationKeys.QUERY)
+  const { data: [cart] } = await query.graph({
+    entity: "cart",
+    fields: ["currency_code", "shipping_address.country_code", "payment_collection.payment_sessions.provider_id"],
+    filters: { id: req.params.id },
+  })
+  if (!isCanadianCheckout(cart?.shipping_address?.country_code, cart?.currency_code)) {
+    return res.status(400).json({
+      type: "canadian_market_only",
+      message: "Checkout is available only for Canadian addresses and CAD orders.",
     })
+  }
+
+  if (process.env.NODE_ENV === "production") {
     const providerId = cart?.payment_collection?.payment_sessions?.[0]?.provider_id
     const taxRegions = await req.scope.resolve(Modules.TAX).listTaxRegions({
       country_code: cart?.shipping_address?.country_code ?? "ca",
@@ -40,7 +47,6 @@ export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
     input: { cart_id: req.params.id },
   })
   const orderId = result.order.id
-  const query = req.scope.resolve(ContainerRegistrationKeys.QUERY)
   const { data } = await query.graph({
     entity: "order",
     fields: ["id", "display_id", "total", "metadata"],

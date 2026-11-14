@@ -16,6 +16,10 @@ export function isStripeProductionConfigured(env: NodeJS.ProcessEnv = process.en
   )
 }
 
+export function isCanadianCheckout(countryCode?: string | null, currencyCode?: string | null): boolean {
+  return countryCode?.toLowerCase() === "ca" && currencyCode?.toLowerCase() === "cad"
+}
+
 export function isShipStationProductionConfigured(
   env: NodeJS.ProcessEnv = process.env,
   input: {

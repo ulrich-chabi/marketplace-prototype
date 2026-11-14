@@ -14,10 +14,27 @@ import { PostVendorStockSchema } from "./vendors/stock/route"
 import { PostOrderTrackingSchema } from "./store/order-tracking/route"
 import { PostReturnRequestSchema } from "./store/marketplace-returns/route"
 import { PostReturnDecisionSchema } from "./admin/return-requests/[id]/route"
-import { Modules } from "@medusajs/framework/utils"
-import { isAvalaraProductionConfigured, isProductionCheckoutReady, isStoreShippingReady, isStripeProductionConfigured } from "./store/carts/checkout-readiness"
+import { ContainerRegistrationKeys, Modules } from "@medusajs/framework/utils"
+import { isAvalaraProductionConfigured, isCanadianCheckout, isProductionCheckoutReady, isStoreShippingReady, isStripeProductionConfigured } from "./store/carts/checkout-readiness"
 
 async function protectProductionPaymentSession(req: any, res: any, next: any) {
+  const query = req.scope.resolve(ContainerRegistrationKeys.QUERY)
+  const { data: [link] } = await query.graph({
+    entity: "cart_payment_collection",
+    fields: ["cart_id"],
+    filters: { payment_collection_id: req.params.id },
+  })
+  const { data: [cart] } = link ? await query.graph({
+    entity: "cart",
+    fields: ["currency_code", "shipping_address.country_code"],
+    filters: { id: link.cart_id },
+  }) : { data: [] }
+  if (!isCanadianCheckout(cart?.shipping_address?.country_code, cart?.currency_code)) {
+    return res.status(400).json({
+      type: "canadian_market_only",
+      message: "Checkout is available only for Canadian addresses and CAD orders.",
+    })
+  }
   if (process.env.NODE_ENV !== "production") return next()
 
   const taxRegions = await req.scope.resolve(Modules.TAX).listTaxRegions({ country_code: "ca" })

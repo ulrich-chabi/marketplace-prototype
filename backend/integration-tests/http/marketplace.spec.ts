@@ -394,6 +394,48 @@ medusaIntegrationTestRunner({
     })
 
     describe("Commande multi-vendeurs", () => {
+      it("refuse le paiement et la finalisation si l'adresse n'est pas canadienne", async () => {
+        const created = await call("post", "/store/carts", {
+          region_id: commerce.regionId,
+          email: "foreign-buyer@test.local",
+          shipping_address: {
+            first_name: "Test", last_name: "Buyer", address_1: "1 Test Street",
+            city: "Toronto", province: "ON", country_code: "ca", postal_code: "M5V 3A8",
+          },
+        }, storeHeaders)
+        const cartId = created.data.cart.id as string
+        const line = await call("post", `/store/carts/${cartId}/line-items`, {
+          variant_id: vendors.a.variantId, quantity: 1,
+        }, storeHeaders)
+        expect(line.status).toBe(200)
+
+        const cartModule: any = getContainer().resolve(Modules.CART)
+        await cartModule.updateCarts(cartId, {
+          shipping_address: {
+            first_name: "Test", last_name: "Buyer", address_1: "1 Test Street",
+            city: "Buffalo", province: "NY", country_code: "us", postal_code: "14201",
+          },
+        })
+        const collection = await call("post", "/store/payment-collections", { cart_id: cartId }, storeHeaders)
+        expect(collection.status).toBe(200)
+
+        const session = await call(
+          "post",
+          `/store/payment-collections/${collection.data.payment_collection.id}/payment-sessions`,
+          { provider_id: "pp_system_default" },
+          storeHeaders
+        )
+        expect(session.status).toBe(400)
+        expect(session.data.type).toBe("canadian_market_only")
+
+        const before = await call("get", "/admin/orders", undefined, bearer(adminToken))
+        const completed = await call("post", `/store/carts/${cartId}/complete-vendor`, {}, storeHeaders)
+        expect(completed.status).toBe(400)
+        expect(completed.data.type).toBe("canadian_market_only")
+        const after = await call("get", "/admin/orders", undefined, bearer(adminToken))
+        expect(after.data.count).toBe(before.data.count)
+      })
+
       it("découpe le panier en une commande par vendeur, reliées à la commande client", async () => {
         expect(vendorOrders).toHaveLength(2)
         expect(new Set(vendorOrders.map((o) => o.vendor_id))).toEqual(new Set([vendors.a.id, vendors.b.id]))
