@@ -1,5 +1,6 @@
 import AxeBuilder from "@axe-core/playwright"
 import { expect, Page, test } from "@playwright/test"
+import demoImages from "../src/data/demo-images.json"
 
 const WCAG = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"]
 
@@ -57,14 +58,34 @@ test.describe("Parcourir", () => {
     await expect(page).toHaveURL(/\/$/)
   })
 
+  test("une nouvelle fiche catalogue affiche sa photo spécifique", async ({ page }) => {
+    await page.goto("/categories/electronics")
+    const card = page.locator("article").filter({ hasText: "E-Reader" }).first()
+    await expect(card).toBeVisible()
+    const image = card.getByRole("img", { name: /E-Reader/ })
+    await expect(image).toBeVisible()
+    await expect.poll(
+      () => image.evaluate((element) => (element as HTMLImageElement).complete && (element as HTMLImageElement).naturalWidth > 0),
+      { timeout: 15_000 }
+    ).toBe(true)
+  })
+
   test("la page de crédits référence chaque photo une seule fois", async ({ page }) => {
     await page.goto("/image-credits")
     await expect(page.getByRole("heading", { name: "Photo credits and licences" })).toBeVisible()
     const sourceLinks = await page.locator("a[href*='/wiki/File:']").evaluateAll((links) =>
       links.map((link) => (link as HTMLAnchorElement).href)
     )
-    expect(sourceLinks).toHaveLength(133)
-    expect(new Set(sourceLinks).size).toBe(133)
+    expect(sourceLinks).toHaveLength(Object.keys(demoImages).length)
+    expect(new Set(sourceLinks).size).toBe(sourceLinks.length)
+  })
+
+  test("chaque photo référencée est servie comme image WebP", async ({ page }) => {
+    for (const image of Object.values(demoImages)) {
+      const response = await page.request.get(image.file)
+      expect(response.ok(), image.file).toBe(true)
+      expect(response.headers()["content-type"], image.file).toContain("image/webp")
+    }
   })
 
   test("la recherche trouve un produit et annonce l'absence de résultat", async ({ page }) => {

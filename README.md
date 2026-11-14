@@ -92,7 +92,17 @@ Espaces du prototype :
 
 ### Catalogue fictif pour la démonstration
 
-Pour remplir la base locale avec le catalogue de démonstration (20 rayons, 100 produits fictifs distincts, chacun avec sa propre photo et plusieurs offres de vendeurs), lancer depuis `backend` :
+Le catalogue comprend 20 rayons et jusqu'à 240 types de produits prévus. Il contient actuellement 153 fiches illustrées; chaque fiche a une photo, un crédit et une licence propres. Les vendeurs, marques, modèles, prix et stocks restent fictifs.
+
+Pour rechercher d'autres photos correctement assorties et sous licence réutilisable, lancer depuis `backend`, puis télécharger les nouveaux fichiers depuis la racine du dépôt :
+
+```powershell
+npx ts-node --project tsconfig.json src/scripts/expand-demo-images.ts
+cd ..
+node scripts/download-demo-images.cjs
+```
+
+Le catalogue de démonstration est limité aux photos disponibles pour chaque rayon. Pour le remplir, lancer depuis `backend` :
 
 ```powershell
 npm run seed:demo

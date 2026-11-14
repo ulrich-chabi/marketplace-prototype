@@ -11,9 +11,11 @@ const publicDir = await realpath(path.join(projectDir, "public"))
 const files = new Set()
 const sources = new Set()
 const hashes = new Set()
+const productTypesByCategory = new Map()
 
 for (const [key, image] of Object.entries(manifest)) {
   if (!image.file?.startsWith("/images/catalog/")) throw new Error(`${key}: chemin d'image invalide`)
+  if (image.file !== `/images/catalog/${key}.webp`) throw new Error(`${key}: le nom du fichier ne correspond pas à la fiche`)
   if (!image.source?.startsWith("https://commons.wikimedia.org/wiki/File:")) throw new Error(`${key}: source Commons absente`)
   if (!image.title || !image.author || !image.license || !image.productType || !image.category) {
     throw new Error(`${key}: informations de crédit ou de produit incomplètes`)
@@ -23,6 +25,10 @@ for (const [key, image] of Object.entries(manifest)) {
   }
   if (files.has(image.file)) throw new Error(`${key}: fichier déjà associé à un autre produit`)
   if (sources.has(image.source)) throw new Error(`${key}: source déjà utilisée par une autre fiche`)
+  const productTypes = productTypesByCategory.get(image.category) ?? new Set()
+  if (productTypes.has(image.productType)) throw new Error(`${key}: type de produit déjà utilisé dans ${image.category}`)
+  productTypes.add(image.productType)
+  productTypesByCategory.set(image.category, productTypes)
   files.add(image.file)
   sources.add(image.source)
 
@@ -39,4 +45,4 @@ for (const [key, image] of Object.entries(manifest)) {
   }
 }
 
-console.log(`${files.size} images vérifiées : dimensions 800×600, fichiers et sources distincts, crédits et licences présents.`)
+console.log(`${files.size} images vérifiées pour ${productTypesByCategory.size} rayons : dimensions 800×600, fiches et sources distinctes, crédits et licences présents.`)

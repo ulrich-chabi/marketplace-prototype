@@ -20,21 +20,21 @@ import {
 import { MARKETPLACE_MODULE } from "../modules/marketplace"
 import { CATALOG_MODULE } from "../modules/catalog"
 import setVendorStatusWorkflow from "../workflows/marketplace/set-vendor-status"
-import { BRANDS, COLORS, DEPARTMENTS, rng, VENDORS } from "./seed-data"
+import { BRANDS, COLORS, countAvailableDemoProducts, DEPARTMENTS, rng, VENDORS } from "./seed-data"
 import { configureCanadianDemoTaxes } from "./canadian-demo-tax"
 
 // Remplit une boutique canadienne avec des données fictives pour le prototype.
 // Ne pas exécuter sur une boutique en production ou contenant des données réelles.
 //   npm run seed:demo
-// Variable : SEED_PRODUCTS_PER_CATEGORY (7 par défaut, limité aux photos disponibles).
+// Variable : SEED_PRODUCTS_PER_CATEGORY (12 par défaut, limité aux photos consécutives disponibles).
 export default async function seedMarketplace({ container }: ExecArgs) {
   const logger = container.resolve(ContainerRegistrationKeys.LOGGER)
   const query: any = container.resolve(ContainerRegistrationKeys.QUERY)
   const link = container.resolve(ContainerRegistrationKeys.LINK)
   const catalogService: any = container.resolve(CATALOG_MODULE)
   const marketplace: any = container.resolve(MARKETPLACE_MODULE)
-  const configuredCount = Number(process.env.SEED_PRODUCTS_PER_CATEGORY ?? 7)
-  const perCategory = Number.isFinite(configuredCount) ? Math.max(1, Math.min(12, Math.floor(configuredCount))) : 7
+  const configuredCount = Number(process.env.SEED_PRODUCTS_PER_CATEGORY ?? 12)
+  const perCategory = Number.isFinite(configuredCount) ? Math.max(1, Math.min(12, Math.floor(configuredCount))) : 12
   const imageManifestPath = resolve(process.cwd(), "../storefront/src/data/demo-images.json")
   const demoImages = JSON.parse(readFileSync(imageManifestPath, "utf8")) as Record<string, unknown>
   const existingCatalog = await catalogService.listCatalogProducts({}, { take: 1000 })
@@ -212,7 +212,7 @@ export default async function seedMarketplace({ container }: ExecArgs) {
   )
 
   for (const dept of DEPARTMENTS) {
-    const productCount = Math.min(perCategory, dept.imageCount, dept.types.length)
+    const productCount = countAvailableDemoProducts(dept, demoImages, perCategory)
     logger.info(`Catalogue : ${dept.name} (${productCount} fiches avec photo dédiée)…`)
     const rows: { catalog: any; offers: { vendorIdx: number; price: number; stock: number; condition: string }[] }[] = []
 
@@ -347,6 +347,26 @@ function demoDescription(category: string, type: string, color: string, brand: s
     "movies-hobbies": "A hobby essential designed for hands-on projects, with a compact form that stores neatly between uses.",
   }
   const productDetails: Record<string, string> = {
+    "E-Reader": "A compact electronic reader with a high-contrast screen, page-turn controls and a slim protective shell.",
+    "Fitness Tracker": "A lightweight wrist band with a small activity display, adjustable strap and a clip-in charging cradle.",
+    "Docking Station": "A desk dock that props up a compatible tablet and adds a row of wired connection ports.",
+    "Graphics Tablet": "A pressure-sensitive drawing surface supplied with a cordless stylus and replacement nibs.",
+    Router: "A home network router with multiple wired ports, status lights and removable aerials.",
+    "Dish Rack": "A metal counter rack with a separate cutlery cup, plate slots and a fitted drain tray.",
+    Toaster: "A two-slot countertop toaster with browning controls, a crumb tray and a cool-touch lever.",
+    "Dark Chocolate": "Individually wrapped dark chocolate pieces with a firm shell and a soft citrus-style centre; ingredients are illustrative.",
+    "Wiper Blades": "A pair of replacement wiper blades with curved rubber edges and adapter clips for common arm fittings.",
+    "Emergency Kit": "A compact workplace response kit with a sealed container, clear labels and an illustrated contents card.",
+    "Socket Set": "A chrome-finished socket collection with several drive sizes, a ratchet handle and an indexed storage rail.",
+    "Utility Knife": "A retractable utility knife with a quick-change blade holder and a textured thumb slider.",
+    "Bird Bath": "A shallow garden basin on a low pedestal, designed as a small water feature for outdoor spaces.",
+    "Embroidery Hoops": "A set of round wooden hoops with adjustable screw clasps for keeping fabric taut during stitching.",
+    "Colored Pencils": "A boxed drawing set with a broad colour range, sharpened cores and a reusable paper tray.",
+    "Glue Gun": "A corded craft glue gun with a stand, insulated nozzle guard and a small starter pack of glue sticks.",
+    "Origami Paper": "A pack of lightweight square sheets in assorted colours, sized for folding small paper models.",
+    "Calligraphy Set": "A writing set arranged in a fitted case with a pen holder, interchangeable nibs and an ink well.",
+    Cajon: "A compact box drum with a front striking panel and a rear sound port for seated acoustic playing.",
+    "Mouse Pad": "A low-profile desk mat with a smooth tracking surface, stitched edges and a nonslip rubber backing.",
     Webcam: "A compact camera with a clip-on base and adjustable viewing angle for a home desk.",
     "Action Camera": "A pocket-sized camera body with a sealed housing and a quick-release mounting point.",
     "External SSD": "A portable solid-state drive with a protective shell and a short transfer cable.",
@@ -380,8 +400,10 @@ function demoDescription(category: string, type: string, color: string, brand: s
     "Capture Card": "A compact video capture board with labelled input ports and a low-profile bracket.",
     "Puzzle Mat": "A roll-up surface with a storage tube to keep an in-progress puzzle together.",
   }
-  const detail = productDetails[type] ?? details[category] ?? "A practical everyday item with a compact, easy-to-store design."
-  return `${brand} ${type}, model ${model}, in ${color.toLowerCase()}. ${detail} ${details[category] ?? "Designed for straightforward everyday use."} The brand, model, specifications, price and stock are fictional prototype details; the photograph illustrates this product type.`
+  const productDetail = productDetails[type]
+  const detail = productDetail ?? details[category] ?? "A practical everyday item with a compact, easy-to-store design."
+  const categoryDetail = productDetail ? "" : ` ${details[category] ?? "Designed for straightforward everyday use."}`
+  return `${brand} ${type}, model ${model}, in ${color.toLowerCase()}. ${detail}${categoryDetail} The brand, model, specifications, price and stock are fictional prototype details; the photograph is illustrative.`
 }
 
 function demoProductAttributes(department: (typeof DEPARTMENTS)[number], type: string, index: number, color: string) {
