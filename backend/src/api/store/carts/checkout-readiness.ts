@@ -9,6 +9,13 @@ export function isAvalaraProductionConfigured(env: NodeJS.ProcessEnv = process.e
   )
 }
 
+export function isStripeProductionConfigured(env: NodeJS.ProcessEnv = process.env): boolean {
+  return Boolean(
+    env.STRIPE_API_KEY?.startsWith("sk_live_") &&
+    env.STRIPE_WEBHOOK_SECRET?.startsWith("whsec_")
+  )
+}
+
 export function isShipStationProductionConfigured(
   env: NodeJS.ProcessEnv = process.env,
   input: {

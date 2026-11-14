@@ -2,7 +2,7 @@ import { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
 import { ContainerRegistrationKeys, Modules } from "@medusajs/framework/utils"
 import { createHash, randomBytes } from "node:crypto"
 import createVendorOrdersWorkflow from "../../../../../workflows/marketplace/create-vendor-orders"
-import { isAvalaraProductionConfigured, isProductionCheckoutReady, isStoreShippingReady } from "../../checkout-readiness"
+import { isAvalaraProductionConfigured, isProductionCheckoutReady, isStoreShippingReady, isStripeProductionConfigured } from "../../checkout-readiness"
 
 export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
   if (process.env.NODE_ENV === "production") {
@@ -20,7 +20,7 @@ export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
     if (!isProductionCheckoutReady({
       paymentProviderId: providerId,
       taxProviderId,
-      stripeConfigured: Boolean(process.env.STRIPE_API_KEY && process.env.STRIPE_WEBHOOK_SECRET),
+      stripeConfigured: isStripeProductionConfigured(),
       avalaraProductionConfigured: isAvalaraProductionConfigured(),
       taxCatalogVerified: process.env.AVALARA_TAX_CATALOG_VERIFIED === "true",
       shippingConfigured: await isStoreShippingReady(req.scope.resolve(Modules.FULFILLMENT)),

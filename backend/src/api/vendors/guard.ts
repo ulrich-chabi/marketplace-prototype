@@ -8,6 +8,11 @@ import { VendorStatus } from "../../modules/marketplace/models/vendor"
 
 export type VendorContext = { vendorId: string; vendorAdminId: string; status: VendorStatus }
 
+export function isPendingShippingOriginUpdate(method: string, path: string | undefined) {
+  const normalizedPath = (path ?? "").split("?")[0].replace(/\/+$/, "")
+  return method.toUpperCase() === "PATCH" && normalizedPath.endsWith("/vendors/shipping-origin")
+}
+
 // Contrôle commun aux routes /vendors/* (sauf l'inscription) : l'identité doit
 // correspondre à un administrateur de vendeur, et le statut du vendeur doit
 // faire partie des statuts autorisés. Le vendeur est TOUJOURS déduit de
@@ -58,7 +63,10 @@ export const ensureReadableVendor = async (
   res: MedusaResponse,
   next: MedusaNextFunction
 ) => {
-  const canUpdatePendingShippingOrigin = req.method === "PATCH" && req.path === "/vendors/shipping-origin"
+  const canUpdatePendingShippingOrigin = isPendingShippingOriginUpdate(
+    req.method,
+    req.originalUrl || req.url || req.path
+  )
   const allowed: VendorStatus[] = canUpdatePendingShippingOrigin
     ? ["pending", "active", "suspended"]
     : ["active", "suspended"]

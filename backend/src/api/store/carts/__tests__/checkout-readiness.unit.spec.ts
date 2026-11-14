@@ -1,4 +1,4 @@
-import { isAvalaraProductionConfigured, isProductionCheckoutReady, isShipStationProductionConfigured, isStoreShippingReady } from "../checkout-readiness"
+import { isAvalaraProductionConfigured, isProductionCheckoutReady, isShipStationProductionConfigured, isStoreShippingReady, isStripeProductionConfigured } from "../checkout-readiness"
 
 describe("préparation du checkout de production", () => {
   const realProviders = {
@@ -41,6 +41,13 @@ describe("préparation du checkout de production", () => {
 
   it("refuse si le secret de paiement ou le webhook Stripe manque", () => {
     expect(isProductionCheckoutReady({ ...realProviders, stripeConfigured: false })).toBe(false)
+  })
+
+  it("n'accepte que les secrets Stripe du mode réel pour ouvrir le checkout de production", () => {
+    expect(isStripeProductionConfigured({ STRIPE_API_KEY: "sk_live_configured", STRIPE_WEBHOOK_SECRET: "whsec_configured" })).toBe(true)
+    expect(isStripeProductionConfigured({ STRIPE_API_KEY: "sk_test_configured", STRIPE_WEBHOOK_SECRET: "whsec_configured" })).toBe(false)
+    expect(isStripeProductionConfigured({ STRIPE_API_KEY: "sk_live_configured", STRIPE_WEBHOOK_SECRET: "test_secret" })).toBe(false)
+    expect(isStripeProductionConfigured({ STRIPE_API_KEY: "", STRIPE_WEBHOOK_SECRET: "" })).toBe(false)
   })
 
   it("n'accepte que des options de livraison calculées par ShipStation", () => {
