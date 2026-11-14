@@ -15,19 +15,21 @@ import { PostOrderTrackingSchema } from "./store/order-tracking/route"
 import { PostReturnRequestSchema } from "./store/marketplace-returns/route"
 import { PostReturnDecisionSchema } from "./admin/return-requests/[id]/route"
 import { Modules } from "@medusajs/framework/utils"
-import { isAvalaraProductionConfigured, isProductionCheckoutReady } from "./store/carts/checkout-readiness"
+import { isAvalaraProductionConfigured, isProductionCheckoutReady, isStoreShippingReady } from "./store/carts/checkout-readiness"
 
 async function protectProductionPaymentSession(req: any, res: any, next: any) {
   if (process.env.NODE_ENV !== "production") return next()
 
   const taxRegions = await req.scope.resolve(Modules.TAX).listTaxRegions({ country_code: "ca" })
   const taxProviderId = taxRegions.find((region: any) => !region.province_code)?.provider_id
+  const shippingConfigured = await isStoreShippingReady(req.scope.resolve(Modules.FULFILLMENT))
   const isReady = isProductionCheckoutReady({
     paymentProviderId: req.body?.provider_id,
     taxProviderId,
     stripeConfigured: Boolean(process.env.STRIPE_API_KEY && process.env.STRIPE_WEBHOOK_SECRET),
     avalaraProductionConfigured: isAvalaraProductionConfigured(),
     taxCatalogVerified: process.env.AVALARA_TAX_CATALOG_VERIFIED === "true",
+    shippingConfigured,
     sendgridConfigured: Boolean(
       process.env.SENDGRID_API_KEY && process.env.SENDGRID_FROM &&
       process.env.SENDGRID_ORDER_CONFIRMATION_TEMPLATE_ID && process.env.STOREFRONT_PUBLIC_URL
@@ -36,7 +38,7 @@ async function protectProductionPaymentSession(req: any, res: any, next: any) {
   if (!isReady) {
     return res.status(503).json({
       type: "checkout_unavailable",
-      message: "Checkout is disabled in production until payment, tax and order email providers are configured.",
+      message: "Checkout is disabled in production until payment, Canadian tax, ShipStation shipping and order email providers are configured.",
     })
   }
   return next()
