@@ -6,6 +6,7 @@ import { redirect } from "next/navigation"
 import { fetchProduct } from "./catalog"
 import { CART_COOKIE, getCart, getCartId } from "./cart"
 import { BACKEND_URL, PUBLISHABLE_KEY, sdk } from "./medusa"
+import { isCanadianProvince, normalizeCanadianPostalCode } from "./canadian-address"
 
 const MAX_QTY = 10
 
@@ -76,10 +77,9 @@ function checkoutAddress(formData: FormData) {
   const address = String(formData.get("address_1") ?? "").trim()
   const city = String(formData.get("city") ?? "").trim()
   const state = String(formData.get("province") ?? "").trim()
-  const postal = String(formData.get("postal_code") ?? "").trim()
+  const postal = normalizeCanadianPostalCode(String(formData.get("postal_code") ?? ""))
   const phone = String(formData.get("phone") ?? "").trim()
-  const canadianProvinces = new Set(["ab", "bc", "mb", "nb", "nl", "ns", "nt", "nu", "on", "pe", "qc", "sk", "yt"])
-  if (!/^\S+@\S+\.\S+$/.test(email) || !firstName || !lastName || !address || !city || !canadianProvinces.has(state.toLowerCase()) || !postal) throw new Error("details")
+  if (!/^\S+@\S+\.\S+$/.test(email) || !firstName || !lastName || !address || !city || !isCanadianProvince(state) || !postal) throw new Error("details")
   return { email, firstName, lastName, address, city, state, postal, phone }
 }
 
