@@ -127,6 +127,26 @@ Le navigateur Chromium Playwright doit être installé une fois. Les tests de ca
 
 Pour exécuter les tests navigateur contre un **build local de production** sans clé Stripe, lancer le storefront de test avec `$env:DEMO_CHECKOUT_ENABLED='true'`. Cette option réactive uniquement le paiement fictif utilisé par Playwright; ne jamais la définir sur le déploiement public. En développement (`npm run dev`), les commandes simulées sont déjà disponibles.
 
+Pour vérifier une nouvelle version sans interrompre un storefront déjà lancé sur le port 8000, utiliser un dossier de build et un port séparés :
+
+```powershell
+cd storefront
+$env:STOREFRONT_BUILD_DIR = '.next-e2e'
+npm run build
+$env:DEMO_CHECKOUT_ENABLED = 'true'
+npx next start -p 8001
+```
+
+Dans un autre terminal, lancer Playwright contre cette instance :
+
+```powershell
+cd storefront
+$env:STOREFRONT_URL = 'http://localhost:8001'
+npm run test:e2e
+```
+
+Le dossier `.next-e2e` est ignoré par Git; le build normal du port 8000 n'est pas remplacé.
+
 ## Tests
 
 Après avoir configuré les deux fichiers `.env`, installé Chromium et lancé PostgreSQL, le backend et le storefront, la vérification complète se lance depuis la racine du dépôt :
