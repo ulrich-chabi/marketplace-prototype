@@ -2238,5 +2238,82 @@
     "license": "CC BY-SA 4.0",
     "source": "https://commons.wikimedia.org/wiki/File:Scratching_post_2026-07-05_1.jpg",
     "download": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/06/Scratching_post_2026-07-05_1.jpg/1280px-Scratching_post_2026-07-05_1.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+  },
+  "beauty-personal-care-8": {
+    "file": "/images/catalog/beauty-personal-care-8.webp",
+    "category": "Beauty & Personal Care",
+    "productType": "Sunscreen",
+    "alt": "Illustrative photo of Sunscreen; fictional demo listing",
+    "title": "Sunscreen spray.jpg",
+    "author": "HotlantaVoyeur",
+    "license": "CC BY 2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Sunscreen_spray.jpg",
+    "download": "https://upload.wikimedia.org/wikipedia/commons/6/69/Sunscreen_spray.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled"
+  },
+  "pet-supplies-10": {
+    "file": "/images/catalog/pet-supplies-10.webp",
+    "category": "Pet Supplies",
+    "productType": "Grooming Brush",
+    "alt": "Illustrative photo of Grooming Brush; fictional demo listing",
+    "title": "\"Brush Puppies\" dog grooming, Portland Road, Babbacombe - geograph.org.uk - 7854130.jpg",
+    "author": "David Hawgood",
+    "license": "CC BY-SA 2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:%22Brush_Puppies%22_dog_grooming,_Portland_Road,_Babbacombe_-_geograph.org.uk_-_7854130.jpg",
+    "download": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4a/%22Brush_Puppies%22_dog_grooming%2C_Portland_Road%2C_Babbacombe_-_geograph.org.uk_-_7854130.jpg/1280px-%22Brush_Puppies%22_dog_grooming%2C_Portland_Road%2C_Babbacombe_-_geograph.org.uk_-_7854130.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+  },
+  "pet-supplies-11": {
+    "file": "/images/catalog/pet-supplies-11.webp",
+    "category": "Pet Supplies",
+    "productType": "Water Fountain",
+    "alt": "Illustrative photo of Water Fountain; fictional demo listing",
+    "title": "Fresh water fountain.jpg",
+    "author": "Juhanson",
+    "license": "CC BY-SA 3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Fresh_water_fountain.jpg",
+    "download": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8f/Fresh_water_fountain.jpg/1280px-Fresh_water_fountain.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+  },
+  "tools-home-improvement-12": {
+    "file": "/images/catalog/tools-home-improvement-12.webp",
+    "category": "Tools & Home Improvement",
+    "productType": "Pliers Set",
+    "alt": "Illustrative photo of Pliers Set; fictional demo listing",
+    "title": "Tile pliers.jpg",
+    "author": "Hustvedt",
+    "license": "CC BY-SA 3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Tile_pliers.jpg",
+    "download": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8a/Tile_pliers.jpg/1280px-Tile_pliers.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+  },
+  "musical-instruments-10": {
+    "file": "/images/catalog/musical-instruments-10.webp",
+    "category": "Musical Instruments",
+    "productType": "Microphone",
+    "alt": "Illustrative photo of Microphone; fictional demo listing",
+    "title": "Ea f20 microphone.jpg",
+    "author": "Equationaudio",
+    "license": "CC BY-SA 3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Ea_f20_microphone.jpg",
+    "download": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/17/Ea_f20_microphone.jpg/1280px-Ea_f20_microphone.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+  },
+  "musical-instruments-11": {
+    "file": "/images/catalog/musical-instruments-11.webp",
+    "category": "Musical Instruments",
+    "productType": "Capo",
+    "alt": "Illustrative photo of Capo; fictional demo listing",
+    "title": "Capo (close-up).jpg",
+    "author": "Chepry 💬 ( Andrzej Barabasz ) 📷 🇵🇱",
+    "license": "CC BY-SA 3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Capo_(close-up).jpg",
+    "download": "https://upload.wikimedia.org/wikipedia/commons/1/1d/Capo_%28close-up%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled"
+  },
+  "musical-instruments-12": {
+    "file": "/images/catalog/musical-instruments-12.webp",
+    "category": "Musical Instruments",
+    "productType": "Metronome",
+    "alt": "Illustrative photo of Metronome; fictional demo listing",
+    "title": "Electronic-metronome(scale).jpg",
+    "author": "Author not listed",
+    "license": "CC BY 2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Electronic-metronome(scale).jpg",
+    "download": "https://upload.wikimedia.org/wikipedia/commons/2/29/Electronic-metronome%28scale%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled"
   }
 }
