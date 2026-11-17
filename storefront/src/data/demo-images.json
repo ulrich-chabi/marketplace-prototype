@@ -3162,5 +3162,27 @@
     "license": "CC BY-SA 2.0",
     "source": "https://commons.wikimedia.org/wiki/File:Wireless_indoor-outdoor_thermometer.jpg",
     "download": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7f/Wireless_indoor-outdoor_thermometer.jpg/1280px-Wireless_indoor-outdoor_thermometer.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+  },
+  "computers-18": {
+    "file": "/images/catalog/computers-18.webp",
+    "category": "Computers",
+    "productType": "NAS Enclosure",
+    "alt": "Illustrative photo of NAS Enclosure; fictional demo listing",
+    "title": "Netgear ReadyNAS NV+.jpg",
+    "author": "PJ",
+    "license": "CC BY-SA 3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Netgear_ReadyNAS_NV%2B.jpg",
+    "download": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/cc/Netgear_ReadyNAS_NV%2B.jpg/1280px-Netgear_ReadyNAS_NV%2B.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+  },
+  "books-14": {
+    "file": "/images/catalog/books-14.webp",
+    "category": "Books",
+    "productType": "Bilingual Phrasebook",
+    "alt": "Illustrative photo of Bilingual Phrasebook; fictional demo listing",
+    "title": "Phrase book.jpg",
+    "author": "Victor Korniyenko",
+    "license": "CC BY 3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Phrase_book.jpg",
+    "download": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1a/Phrase_book.jpg/1280px-Phrase_book.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
   }
 }
