@@ -74,6 +74,7 @@ const choices = {
   "grocery-14": "Oatcake.jpg",
   "grocery-15": "Pomodoro S. Marzano dell'Agro Sarnese-Nocerino in a can.jpg",
   "grocery-16": "16 bean soup mix 01.jpg",
+  "grocery-17": "Roasted almonds in a copper pan at a Christmas market stall.jpg",
   "electronics-20": "ASUS PB278Q (PXL 20250914 223256075).jpg",
   "computers-20": "3M Black Privacy Filter - angle.jpg",
   "office-products-14": "Acorn AKF20 A3000 Monitor Stand (front).jpg",
@@ -83,6 +84,7 @@ const newProducts = {
   "computers-20": { category: "Computers", productType: "Laptop Privacy Screen" },
   "office-products-14": { category: "Office Products", productType: "Monitor Riser" },
   "grocery-16": { category: "Grocery", productType: "Lentil Soup Mix" },
+  "grocery-17": { category: "Grocery", productType: "Roasted Almonds" },
   "electronics-20": {
     category: "Electronics",
     productType: "HDMI Switch",

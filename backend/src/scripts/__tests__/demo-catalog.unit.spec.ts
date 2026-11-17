@@ -53,7 +53,7 @@ describe("catalogue de démonstration", () => {
 
   it("ajoute des fiches épicerie distinctes avec une photo propre", () => {
     const grocery = DEPARTMENTS.find((department) => department.handle === "grocery")!
-    expect(countAvailableDemoProducts(grocery, images)).toBe(16)
+    expect(countAvailableDemoProducts(grocery, images)).toBe(17)
     expect(images["grocery-10"]).toBeDefined()
     expect(images["grocery-11"]).toBeDefined()
     expect(images["grocery-12"]).toBeDefined()
@@ -64,6 +64,7 @@ describe("catalogue de démonstration", () => {
     expect(images["grocery-15"]).toBeDefined()
     expect(images["grocery-15"].productType).toBe("Canned Tomato Pack")
     expect(images["grocery-16"].productType).toBe("Lentil Soup Mix")
+    expect(images["grocery-17"].productType).toBe("Roasted Almonds")
   })
 
   it("complète les derniers accessoires informatiques et de bureau avec des photos dédiées", () => {
@@ -74,7 +75,22 @@ describe("catalogue de démonstration", () => {
     expect(images["electronics-20"].productType).toBe("HDMI Switch")
     expect(countAvailableDemoProducts(computers, images)).toBe(20)
     expect(images["computers-20"].productType).toBe("Laptop Privacy Screen")
-    expect(countAvailableDemoProducts(office, images)).toBe(14)
+    expect(countAvailableDemoProducts(office, images)).toBe(20)
     expect(images["office-products-14"].productType).toBe("Monitor Riser")
+    expect([
+      "Binder Clips",
+      "Letter Tray",
+      "Pen Holder",
+      "Wireless Presenter",
+      "Desktop Calculator",
+      "Document Wallet",
+    ].map((product, index) => images[`office-products-${index + 15}`].productType)).toEqual([
+      "Binder Clips",
+      "Letter Tray",
+      "Pen Holder",
+      "Wireless Presenter",
+      "Desktop Calculator",
+      "Document Wallet",
+    ])
   })
 })
