@@ -3520,5 +3520,16 @@
     "license": "CC BY-SA 4.0",
     "source": "https://commons.wikimedia.org/wiki/File:Blue_broom_and_dustpan.jpg",
     "download": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5c/Blue_broom_and_dustpan.jpg/1280px-Blue_broom_and_dustpan.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+  },
+  "fashion-19": {
+    "file": "/images/catalog/fashion-19.webp",
+    "category": "Fashion",
+    "productType": "Leather Gloves",
+    "alt": "Illustrative photo of Leather Gloves; fictional demo listing",
+    "title": "Leather gloves and ear warmers.jpg",
+    "author": "Kristin from Oslo, Norway",
+    "license": "CC BY 2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Leather_gloves_and_ear_warmers.jpg",
+    "download": "https://upload.wikimedia.org/wikipedia/commons/6/69/Leather_gloves_and_ear_warmers.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled"
   }
 }
