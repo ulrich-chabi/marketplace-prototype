@@ -72,6 +72,7 @@ const choices = {
   "books-14": "Phrase book.jpg",
   "books-15": "Op-astro-cover.svg",
   "grocery-14": "Oatcake.jpg",
+  "grocery-15": "Pomodoro S. Marzano dell'Agro Sarnese-Nocerino in a can.jpg",
 }
 
 const accepted = /^(CC0|Public domain|Public Domain Mark|No restrictions|CC BY(?:-SA)? [234]\.0(?: [A-Za-z-]+)?)$/i

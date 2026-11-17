@@ -43,6 +43,7 @@ const searchAliases: Record<string, string[]> = {
   "Digital Bathroom Scale": ["digital bathroom scale", "bathroom scale", "digital weight scale"],
   "Reusable Food Wrap": ["beeswax food wrap", "reusable food wrap", "beeswax wrap"],
   "Oat Crackers": ["oat crackers", "oatcake crackers", "crackers oats"],
+  "Canned Tomato Pack": ["canned tomato pack", "canned tomatoes", "canned tomato tin"],
   "Training Treats Pouch": ["dog training treat pouch", "dog treat pouch", "dog treat bag", "dog treat bag training", "dog treat pouch bag"],
   Planner: ["paper day planner", "daily planner book", "weekly planner notebook", "bound agenda planner", "diary planner book"],
   "Plant Support Stakes": ["garden plant support stakes", "plant support stake", "plant stakes", "tomato plant stakes", "tomato support"],

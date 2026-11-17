@@ -3217,5 +3217,16 @@
     "license": "CC BY-SA 3.0",
     "source": "https://commons.wikimedia.org/wiki/File:Oatcake.jpg",
     "download": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/74/Oatcake.jpg/1280px-Oatcake.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+  },
+  "grocery-15": {
+    "file": "/images/catalog/grocery-15.webp",
+    "category": "Grocery",
+    "productType": "Canned Tomato Pack",
+    "alt": "Illustrative photo of Canned Tomato Pack; fictional demo listing",
+    "title": "Pomodoro S. Marzano dell'Agro Sarnese-Nocerino in a can.jpg",
+    "author": "Oaktree b",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Pomodoro_S._Marzano_dell%27Agro_Sarnese-Nocerino_in_a_can.jpg",
+    "download": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0f/Pomodoro_S._Marzano_dell%27Agro_Sarnese-Nocerino_in_a_can.jpg/1280px-Pomodoro_S._Marzano_dell%27Agro_Sarnese-Nocerino_in_a_can.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
   }
 }
