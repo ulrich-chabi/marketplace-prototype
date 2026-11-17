@@ -51,13 +51,15 @@ describe("catalogue de démonstration", () => {
     expect(countAvailableDemoProducts(department, images, 2)).toBe(2)
   })
 
-  it("ajoute une treizième fiche épicerie avec une photo propre", () => {
+  it("ajoute une quatorzième fiche épicerie avec une photo propre", () => {
     const grocery = DEPARTMENTS.find((department) => department.handle === "grocery")!
-    expect(countAvailableDemoProducts(grocery, images)).toBe(13)
+    expect(countAvailableDemoProducts(grocery, images)).toBe(14)
     expect(images["grocery-10"]).toBeDefined()
     expect(images["grocery-11"]).toBeDefined()
     expect(images["grocery-12"]).toBeDefined()
     expect(images["grocery-13"]).toBeDefined()
     expect(images["grocery-13"].productType).toBe("Maple Syrup")
+    expect(images["grocery-14"]).toBeDefined()
+    expect(images["grocery-14"].productType).toBe("Oat Crackers")
   })
 })
