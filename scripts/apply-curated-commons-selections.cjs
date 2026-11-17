@@ -78,6 +78,8 @@ const choices = {
   "health-household-17": "Vaccum seal bag.jpg",
   "toys-games-13": "Magformers rainbow.jpg",
   "garden-outdoor-18": "Kneeling pad 01.JPG",
+  "grocery-18": "Herbal Tea of various kinds.jpg",
+  "garden-outdoor-19": "Whitesunshade.jpg",
   "electronics-20": "ASUS PB278Q (PXL 20250914 223256075).jpg",
   "computers-20": "3M Black Privacy Filter - angle.jpg",
   "office-products-14": "Acorn AKF20 A3000 Monitor Stand (front).jpg",
@@ -91,6 +93,8 @@ const newProducts = {
   "health-household-17": { category: "Health & Household", productType: "Vacuum Storage Bags" },
   "toys-games-13": { category: "Toys & Games", productType: "Magnetic Tiles" },
   "garden-outdoor-18": { category: "Garden & Outdoor", productType: "Garden Kneeler" },
+  "grocery-18": { category: "Grocery", productType: "Herbal Tea Sampler" },
+  "garden-outdoor-19": { category: "Garden & Outdoor", productType: "Patio Umbrella" },
   "electronics-20": {
     category: "Electronics",
     productType: "HDMI Switch",

@@ -53,7 +53,7 @@ describe("catalogue de démonstration", () => {
 
   it("ajoute des fiches épicerie distinctes avec une photo propre", () => {
     const grocery = DEPARTMENTS.find((department) => department.handle === "grocery")!
-    expect(countAvailableDemoProducts(grocery, images)).toBe(17)
+    expect(countAvailableDemoProducts(grocery, images)).toBe(18)
     expect(images["grocery-10"]).toBeDefined()
     expect(images["grocery-11"]).toBeDefined()
     expect(images["grocery-12"]).toBeDefined()
@@ -65,6 +65,7 @@ describe("catalogue de démonstration", () => {
     expect(images["grocery-15"].productType).toBe("Canned Tomato Pack")
     expect(images["grocery-16"].productType).toBe("Lentil Soup Mix")
     expect(images["grocery-17"].productType).toBe("Roasted Almonds")
+    expect(images["grocery-18"].productType).toBe("Herbal Tea Sampler")
     const household = DEPARTMENTS.find((department) => department.handle === "health-household")!
     const toys = DEPARTMENTS.find((department) => department.handle === "toys-games")!
     const garden = DEPARTMENTS.find((department) => department.handle === "garden-outdoor")!
@@ -72,8 +73,9 @@ describe("catalogue de démonstration", () => {
     expect(images["health-household-17"].productType).toBe("Vacuum Storage Bags")
     expect(countAvailableDemoProducts(toys, images)).toBe(13)
     expect(images["toys-games-13"].productType).toBe("Magnetic Tiles")
-    expect(countAvailableDemoProducts(garden, images)).toBe(18)
+    expect(countAvailableDemoProducts(garden, images)).toBe(19)
     expect(images["garden-outdoor-18"].productType).toBe("Garden Kneeler")
+    expect(images["garden-outdoor-19"].productType).toBe("Patio Umbrella")
   })
 
   it("complète les derniers accessoires informatiques et de bureau avec des photos dédiées", () => {

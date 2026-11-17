@@ -3388,5 +3388,27 @@
     "license": "CC BY-SA 3.0",
     "source": "https://commons.wikimedia.org/wiki/File:Kneeling_pad_01.JPG",
     "download": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ac/Kneeling_pad_01.JPG/1280px-Kneeling_pad_01.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+  },
+  "grocery-18": {
+    "file": "/images/catalog/grocery-18.webp",
+    "category": "Grocery",
+    "productType": "Herbal Tea Sampler",
+    "alt": "Illustrative photo of Herbal Tea Sampler; fictional demo listing",
+    "title": "Herbal Tea of various kinds.jpg",
+    "author": "Map cla1401",
+    "license": "CC BY-SA 3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Herbal_Tea_of_various_kinds.jpg",
+    "download": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e3/Herbal_Tea_of_various_kinds.jpg/1280px-Herbal_Tea_of_various_kinds.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+  },
+  "garden-outdoor-19": {
+    "file": "/images/catalog/garden-outdoor-19.webp",
+    "category": "Garden & Outdoor",
+    "productType": "Patio Umbrella",
+    "alt": "Illustrative photo of Patio Umbrella; fictional demo listing",
+    "title": "Whitesunshade.jpg",
+    "author": "Lokixx",
+    "license": "CC BY 3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Whitesunshade.jpg",
+    "download": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/76/Whitesunshade.jpg/1280px-Whitesunshade.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
   }
 }
