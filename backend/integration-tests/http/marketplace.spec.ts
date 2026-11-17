@@ -474,6 +474,16 @@ medusaIntegrationTestRunner({
       const refund = (key: string, amount: number) =>
         call("post", `/admin/vendor-orders/${vendorOrderOf(key).id}/refund`, { amount, reason: "test" }, bearer(adminToken))
 
+      it("sérialise les remboursements simultanés pour ne pas dépasser le total vendeur", async () => {
+        const results = await Promise.all([refund("a", 15), refund("a", 15)])
+        expect(results.filter((result) => result.status === 200)).toHaveLength(1)
+        expect(results.filter((result) => result.status >= 400)).toHaveLength(1)
+        const service: any = getContainer().resolve("marketplace")
+        const ledger = await service.listVendorRefunds({ vendor_order_id: vendorOrderOf("a").id })
+        expect(ledger).toHaveLength(1)
+        expect(Number(ledger[0].amount)).toBe(15)
+      })
+
       it("rembourse partiellement un vendeur sans toucher à l'autre", async () => {
         const r = await refund("a", 5)
         expect(r.status).toBe(200)

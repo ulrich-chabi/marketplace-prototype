@@ -6,7 +6,7 @@ import {
   transform,
   WorkflowResponse,
 } from "@medusajs/framework/workflows-sdk"
-import { refundPaymentWorkflow } from "@medusajs/medusa/core-flows"
+import { acquireLockStep, refundPaymentWorkflow, releaseLockStep } from "@medusajs/medusa/core-flows"
 import { MARKETPLACE_MODULE } from "../../modules/marketplace"
 import MarketplaceModuleService from "../../modules/marketplace/service"
 
@@ -108,6 +108,14 @@ const prepareRefundStep = createStep(
 const refundVendorOrderWorkflow = createWorkflow(
   "refund-vendor-order",
   (input: RefundVendorOrderInput) => {
+    // Serialise les calculs de solde et appels de remboursement par commande
+    // vendeur afin que deux remboursements simultanés ne dépassent pas son total.
+    const lock = transform(input, (data) => ({
+      key: `vendor-refund:${data.vendor_order_id}`,
+      timeout: 10,
+      ttl: 60,
+    }))
+    acquireLockStep(lock)
     const prepared = prepareRefundStep(input)
 
     const refundInput = transform({ input, prepared }, (d) => ({
@@ -117,6 +125,7 @@ const refundVendorOrderWorkflow = createWorkflow(
       note: d.input.reason,
     }))
     refundPaymentWorkflow.runAsStep({ input: refundInput })
+    releaseLockStep(lock)
 
     return new WorkflowResponse({
       refunded: prepared.amount,
