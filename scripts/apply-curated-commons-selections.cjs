@@ -62,6 +62,9 @@ const choices = {
   "video-games-3": "Gaming chair.jpg",
   "video-games-4": "PlayStation Move - Base.jpg",
   "tools-home-improvement-16": "Silikonpistole (fcm).jpg",
+  "tools-home-improvement-17": "Striper Tool -01.jpg",
+  "tools-home-improvement-18": "Pipe wrench.JPG",
+  "tools-home-improvement-19": "Safety Goggles.jpg",
   "baby-10": "Night light ball.jpg",
 }
 

@@ -74,6 +74,10 @@ test.describe("Parcourir", () => {
   test("les nouvelles annonces maison et bébé affichent chacune leur photo dédiée", async ({ page }) => {
     for (const item of [
       { category: "tools-home-improvement", title: "Caulking Gun", alt: /caulking gun/i },
+      { category: "tools-home-improvement", title: "Wire Stripper", alt: /wire stripper/i },
+      { category: "tools-home-improvement", title: "Pipe Wrench", alt: /pipe wrench/i },
+      { category: "tools-home-improvement", title: "Safety Goggles", alt: /safety goggles/i },
+      { category: "tools-home-improvement", title: "Extension Cord Reel", alt: /extension cord reel/i },
       { category: "baby", title: "Nursery Night Light", alt: /night light/i },
     ]) {
       await page.goto(`/categories/${item.category}`)
