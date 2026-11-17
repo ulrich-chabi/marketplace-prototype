@@ -53,7 +53,7 @@ describe("catalogue de démonstration", () => {
 
   it("ajoute des fiches épicerie distinctes avec une photo propre", () => {
     const grocery = DEPARTMENTS.find((department) => department.handle === "grocery")!
-    expect(countAvailableDemoProducts(grocery, images)).toBe(18)
+    expect(countAvailableDemoProducts(grocery, images)).toBe(19)
     expect(images["grocery-10"]).toBeDefined()
     expect(images["grocery-11"]).toBeDefined()
     expect(images["grocery-12"]).toBeDefined()
@@ -66,16 +66,20 @@ describe("catalogue de démonstration", () => {
     expect(images["grocery-16"].productType).toBe("Lentil Soup Mix")
     expect(images["grocery-17"].productType).toBe("Roasted Almonds")
     expect(images["grocery-18"].productType).toBe("Herbal Tea Sampler")
+    expect(images["grocery-19"].productType).toBe("Fruit Preserve Jar")
     const household = DEPARTMENTS.find((department) => department.handle === "health-household")!
     const toys = DEPARTMENTS.find((department) => department.handle === "toys-games")!
     const garden = DEPARTMENTS.find((department) => department.handle === "garden-outdoor")!
-    expect(countAvailableDemoProducts(household, images)).toBe(17)
+    expect(countAvailableDemoProducts(household, images)).toBe(18)
     expect(images["health-household-17"].productType).toBe("Vacuum Storage Bags")
-    expect(countAvailableDemoProducts(toys, images)).toBe(13)
+    expect(images["health-household-18"].productType).toBe("Toilet Brush")
+    expect(countAvailableDemoProducts(toys, images)).toBe(14)
     expect(images["toys-games-13"].productType).toBe("Magnetic Tiles")
-    expect(countAvailableDemoProducts(garden, images)).toBe(19)
+    expect(images["toys-games-14"].productType).toBe("Marble Run Set")
+    expect(countAvailableDemoProducts(garden, images)).toBe(20)
     expect(images["garden-outdoor-18"].productType).toBe("Garden Kneeler")
     expect(images["garden-outdoor-19"].productType).toBe("Patio Umbrella")
+    expect(images["garden-outdoor-20"].productType).toBe("Birdhouse")
   })
 
   it("complète les derniers accessoires informatiques et de bureau avec des photos dédiées", () => {
