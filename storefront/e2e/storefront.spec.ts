@@ -78,6 +78,8 @@ test.describe("Parcourir", () => {
       { category: "tools-home-improvement", title: "Pipe Wrench", alt: /pipe wrench/i },
       { category: "tools-home-improvement", title: "Safety Goggles", alt: /safety goggles/i },
       { category: "tools-home-improvement", title: "Extension Cord Reel", alt: /extension cord reel/i },
+      { category: "garden-outdoor", title: "Plant Support Stakes", alt: /plant support stakes/i },
+      { category: "garden-outdoor", title: "Outdoor Thermometer", alt: /outdoor thermometer/i },
       { category: "baby", title: "Nursery Night Light", alt: /night light/i },
     ]) {
       await page.goto(`/categories/${item.category}`)

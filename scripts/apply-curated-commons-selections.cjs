@@ -66,6 +66,8 @@ const choices = {
   "tools-home-improvement-18": "Pipe wrench.JPG",
   "tools-home-improvement-19": "Safety Goggles.jpg",
   "baby-10": "Night light ball.jpg",
+  "garden-outdoor-16": "Tomato support (5843173595).jpg",
+  "garden-outdoor-17": "Wireless indoor-outdoor thermometer.jpg",
 }
 
 const accepted = /^(CC0|Public domain|Public Domain Mark|No restrictions|CC BY(?:-SA)? [234]\.0(?: [A-Za-z-]+)?)$/i

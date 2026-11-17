@@ -45,7 +45,7 @@ const searchAliases: Record<string, string[]> = {
   "Oat Crackers": ["oat crackers", "oatcake crackers", "crackers oats"],
   "Training Treats Pouch": ["dog training treat pouch", "dog treat pouch", "dog treat bag", "dog treat bag training", "dog treat pouch bag"],
   Planner: ["paper day planner", "daily planner book", "weekly planner notebook", "bound agenda planner", "diary planner book"],
-  "Plant Support Stakes": ["garden plant support stakes", "plant support stake", "plant stakes", "tomato plant stakes"],
+  "Plant Support Stakes": ["garden plant support stakes", "plant support stake", "plant stakes", "tomato plant stakes", "tomato support"],
   "Teething Toys": ["baby teether", "teething ring", "infant teething toy", "silicone baby teether", "baby teething ring toy"],
   "Beading Kit": ["beading kit", "beading supplies", "bead craft kit"],
   "Thumbstick Covers": ["controller thumbstick caps", "thumbstick covers", "joystick thumb grips", "joystick thumbstick caps", "game controller thumb grips"],

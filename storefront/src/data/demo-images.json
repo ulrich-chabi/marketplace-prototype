@@ -3140,5 +3140,27 @@
     "license": "CC0",
     "source": "https://commons.wikimedia.org/wiki/File:Cable_reel_extension_cord.jpg",
     "download": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a8/Cable_reel_extension_cord.jpg/1280px-Cable_reel_extension_cord.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+  },
+  "garden-outdoor-16": {
+    "file": "/images/catalog/garden-outdoor-16.webp",
+    "category": "Garden & Outdoor",
+    "productType": "Plant Support Stakes",
+    "alt": "Illustrative photo of Plant Support Stakes; fictional demo listing",
+    "title": "Tomato support (5843173595).jpg",
+    "author": "Dwight Sipler from Stow, MA, USA",
+    "license": "CC BY 2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Tomato_support_(5843173595).jpg",
+    "download": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e0/Tomato_support_%285843173595%29.jpg/1280px-Tomato_support_%285843173595%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+  },
+  "garden-outdoor-17": {
+    "file": "/images/catalog/garden-outdoor-17.webp",
+    "category": "Garden & Outdoor",
+    "productType": "Outdoor Thermometer",
+    "alt": "Illustrative photo of Outdoor Thermometer; fictional demo listing",
+    "title": "Wireless indoor-outdoor thermometer.jpg",
+    "author": "Mac Armstrong",
+    "license": "CC BY-SA 2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Wireless_indoor-outdoor_thermometer.jpg",
+    "download": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7f/Wireless_indoor-outdoor_thermometer.jpg/1280px-Wireless_indoor-outdoor_thermometer.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
   }
 }
