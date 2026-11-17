@@ -81,6 +81,8 @@ const choices = {
   "grocery-18": "Herbal Tea of various kinds.jpg",
   "garden-outdoor-19": "Whitesunshade.jpg",
   "toys-games-14": "Marble Run Magnet.jpg",
+  "toys-games-15": "Puppet theater stage 01.jpg",
+  "toys-games-17": "Kitchen playset.jpg",
   "health-household-18": "Bog brush.JPG",
   "grocery-19": "Fruit preserve jars.jpg",
   "garden-outdoor-20": "Garden_Birdhouse.jpg",
@@ -100,6 +102,8 @@ const newProducts = {
   "grocery-18": { category: "Grocery", productType: "Herbal Tea Sampler" },
   "garden-outdoor-19": { category: "Garden & Outdoor", productType: "Patio Umbrella" },
   "toys-games-14": { category: "Toys & Games", productType: "Marble Run Set" },
+  "toys-games-15": { category: "Toys & Games", productType: "Puppet Theatre" },
+  "toys-games-17": { category: "Toys & Games", productType: "Toy Kitchen Set" },
   "health-household-18": { category: "Health & Household", productType: "Toilet Brush" },
   "grocery-19": { category: "Grocery", productType: "Fruit Preserve Jar" },
   "garden-outdoor-20": { category: "Garden & Outdoor", productType: "Birdhouse" },
@@ -110,7 +114,7 @@ const newProducts = {
   },
 }
 
-const accepted = /^(CC0|Public domain|Public Domain Mark|No restrictions|CC BY(?:-SA)? [234]\.0(?: [A-Za-z-]+)?)$/i
+const accepted = /^(CC0|Public domain|Public Domain Mark|No restrictions|CC BY(?:-SA)? [234]\.[0-9](?: [A-Za-z-]+)?)$/i
 const headers = { "User-Agent": "MarketplacePrototype/1.0 (https://github.com/ulrich-chabi/marketplace-prototype)" }
 const used = new Set(Object.entries(catalog).filter(([key]) => !choices[key]).map(([, item]) => item.source))
 
@@ -132,6 +136,7 @@ for (const [key, title] of Object.entries(choices)) {
     alt: `Illustrative photo of ${newProducts[key].productType}; fictional demo listing`,
   }
   Object.assign(item, newProducts[key] ?? {})
+  item.alt = `Illustrative photo of ${item.productType}; fictional demo listing`
   catalog[key] = item
   item.title = title
   item.author = image.extmetadata?.Artist?.value?.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim() || "Author not listed"

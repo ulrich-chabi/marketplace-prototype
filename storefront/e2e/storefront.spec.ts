@@ -96,8 +96,12 @@ test.describe("Parcourir", () => {
       { category: "grocery", title: "Herbal Tea Sampler", alt: /herbal tea sampler/i },
       { category: "garden-outdoor", title: "Patio Umbrella", alt: /patio umbrella/i },
       { category: "toys-games", title: "Marble Run Set", alt: /marble run set/i },
+      { category: "toys-games", title: "Puppet Theatre", alt: /puppet theatre/i },
+      { category: "toys-games", title: "Wooden Building Blocks", alt: /wooden building blocks/i },
+      { category: "toys-games", title: "Toy Kitchen Set", alt: /toy kitchen set/i },
       { category: "health-household", title: "Toilet Brush", alt: /toilet brush/i },
       { category: "grocery", title: "Fruit Preserve Jar", alt: /fruit preserve jar/i },
+      { category: "grocery", title: "Popcorn Kernels", alt: /popcorn kernels/i },
       { category: "garden-outdoor", title: "Birdhouse", alt: /birdhouse/i },
       { category: "books", title: "Bilingual Phrasebook", alt: /phrasebook/i },
       { category: "books", title: "Astronomy Handbook", alt: /astronomy handbook/i },
@@ -288,7 +292,9 @@ test.describe("Panier", () => {
     await expect(cartLink(page)).toHaveAccessibleName("Cart, 3 items")
 
     await page.getByRole("button", { name: /^Remove / }).first().click()
-    await expect(cartLink(page)).toHaveAccessibleName("Cart, 1 item")
+    // La dernière ligne peut contenir 1 ou 2 unités selon l'ordre des vendeurs.
+    await expect(cartLink(page)).toHaveAccessibleName(/^Cart, [12] items?$/)
+    await expect(page.getByRole("heading", { name: /^Sold by / })).toHaveCount(1)
     await page.getByRole("button", { name: /^Remove / }).first().click()
     await expect(page.getByText("Your cart is empty.")).toBeVisible()
     await expect(cartLink(page)).toHaveAccessibleName("Cart, 0 items")

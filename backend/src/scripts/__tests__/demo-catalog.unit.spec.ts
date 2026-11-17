@@ -53,7 +53,7 @@ describe("catalogue de démonstration", () => {
 
   it("ajoute des fiches épicerie distinctes avec une photo propre", () => {
     const grocery = DEPARTMENTS.find((department) => department.handle === "grocery")!
-    expect(countAvailableDemoProducts(grocery, images)).toBe(19)
+    expect(countAvailableDemoProducts(grocery, images)).toBe(20)
     expect(images["grocery-10"]).toBeDefined()
     expect(images["grocery-11"]).toBeDefined()
     expect(images["grocery-12"]).toBeDefined()
@@ -67,15 +67,19 @@ describe("catalogue de démonstration", () => {
     expect(images["grocery-17"].productType).toBe("Roasted Almonds")
     expect(images["grocery-18"].productType).toBe("Herbal Tea Sampler")
     expect(images["grocery-19"].productType).toBe("Fruit Preserve Jar")
+    expect(images["grocery-20"].productType).toBe("Popcorn Kernels")
     const household = DEPARTMENTS.find((department) => department.handle === "health-household")!
     const toys = DEPARTMENTS.find((department) => department.handle === "toys-games")!
     const garden = DEPARTMENTS.find((department) => department.handle === "garden-outdoor")!
     expect(countAvailableDemoProducts(household, images)).toBe(18)
     expect(images["health-household-17"].productType).toBe("Vacuum Storage Bags")
     expect(images["health-household-18"].productType).toBe("Toilet Brush")
-    expect(countAvailableDemoProducts(toys, images)).toBe(14)
+    expect(countAvailableDemoProducts(toys, images)).toBe(17)
     expect(images["toys-games-13"].productType).toBe("Magnetic Tiles")
     expect(images["toys-games-14"].productType).toBe("Marble Run Set")
+    expect(images["toys-games-15"].productType).toBe("Puppet Theatre")
+    expect(images["toys-games-16"].productType).toBe("Wooden Building Blocks")
+    expect(images["toys-games-17"].productType).toBe("Toy Kitchen Set")
     expect(countAvailableDemoProducts(garden, images)).toBe(20)
     expect(images["garden-outdoor-18"].productType).toBe("Garden Kneeler")
     expect(images["garden-outdoor-19"].productType).toBe("Patio Umbrella")

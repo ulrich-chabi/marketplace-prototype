@@ -17,7 +17,7 @@ type ImageCredit = {
 const manifestPath = resolve(process.cwd(), "../storefront/src/data/demo-images.json")
 const acceptedLicense = /^(CC0|Public domain|Public Domain Mark|No restrictions|CC BY(?:-SA)? [234]\.0(?: [A-Za-z-]+)?)$/i
 const ignoredWords = new Set(["a", "an", "and", "for", "of", "the", "with", "set", "kit", "home", "outdoor", "book", "guide", "pack", "e"])
-const unsuitable = /\b(chart|concept|diagram|girl|boy|woman|man|person|people|painting|museum|tornado|survey|screenshot|logo|icon|library|shelf|park|shadow|interior|field|poster|still|sale|customer|shows|staff|sergeant|exhibit|post[- ]medieval|\d{2}th century|vlt|beam pattern|radio|dpla|fema|graffiti|souvenir|victories|armed forces|oil wells?|film frame|riot|red square|planner working|model holding|auto show|car show|mounted as a pendant|when teething|teething patterns|amtrak station display case|touring car|lozier|greenwich)\b/i
+const unsuitable = /\b(chart|concept|diagram|girl|boy|woman|man|person|people|painting|museum|tornado|survey|screenshot|logo|icon|library|shelf|park|shadow|interior|field|poster|still|sale|customer|shows|staff|sergeant|exhibit|post[- ]medieval|\d{2}th century|vlt|beam pattern|radio|dpla|fema|graffiti|souvenir|victories|armed forces|oil wells?|film frame|riot|red square|planner working|model holding|auto show|car show|mounted as a pendant|when teething|teething patterns|amtrak station display case|touring car|lozier|greenwich|baku|kernels popcorn)\b/i
 const headers = { "User-Agent": "MarketplacePrototype/1.0 (https://github.com/ulrich-chabi/marketplace-prototype)" }
 // Libellés alternatifs employés dans les catalogues et titres Wikimedia Commons.
 // La sélection reste fondée sur les mots recherchés, les dimensions et la licence.
