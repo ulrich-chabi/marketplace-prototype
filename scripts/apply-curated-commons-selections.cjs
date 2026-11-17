@@ -61,6 +61,8 @@ const choices = {
   "video-games-2": "Logitech G733 and Twitch Headphone Stand at K7 Entertainment live studio 20251004.jpg",
   "video-games-3": "Gaming chair.jpg",
   "video-games-4": "PlayStation Move - Base.jpg",
+  "tools-home-improvement-16": "Silikonpistole (fcm).jpg",
+  "baby-10": "Night light ball.jpg",
 }
 
 const accepted = /^(CC0|Public domain|Public Domain Mark|No restrictions|CC BY(?:-SA)? [234]\.0(?: [A-Za-z-]+)?)$/i

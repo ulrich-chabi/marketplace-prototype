@@ -71,6 +71,23 @@ test.describe("Parcourir", () => {
     ).toBe(true)
   })
 
+  test("les nouvelles annonces maison et bébé affichent chacune leur photo dédiée", async ({ page }) => {
+    for (const item of [
+      { category: "tools-home-improvement", title: "Caulking Gun", alt: /caulking gun/i },
+      { category: "baby", title: "Nursery Night Light", alt: /night light/i },
+    ]) {
+      await page.goto(`/categories/${item.category}`)
+      const card = page.locator("article").filter({ hasText: item.title }).first()
+      await expect(card, item.title).toBeVisible()
+      const image = card.getByRole("img", { name: item.alt })
+      await expect(image).toBeVisible()
+      await expect.poll(
+        () => image.evaluate((element) => (element as HTMLImageElement).complete && (element as HTMLImageElement).naturalWidth > 0),
+        { timeout: 15_000 }
+      ).toBe(true)
+    }
+  })
+
   test("la page de crédits référence chaque photo une seule fois", async ({ page }) => {
     await page.goto("/image-credits")
     await expect(page.getByRole("heading", { name: "Photo credits and licences" })).toBeVisible()
@@ -316,7 +333,8 @@ test.describe("Comparateur", () => {
     await bar(page).getByRole("link", { name: "Compare" }).click()
     await expect(page).toHaveURL(/\/compare\?/)
     await expect(page.locator("thead th")).toHaveCount(4)
-    await expect(page.getByText("Lowest of these")).toHaveCount(1)
+    // Plusieurs offres peuvent partager le prix minimum, donc plusieurs colonnes peuvent être marquées.
+    await expect(page.getByText("Lowest of these").first()).toBeVisible()
     await expectNoA11yViolations(page)
 
     await page.getByRole("link", { name: "Remove from comparison" }).first().click()

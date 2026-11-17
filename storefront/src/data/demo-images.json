@@ -3074,5 +3074,27 @@
     "license": "CC BY-SA 4.0",
     "source": "https://commons.wikimedia.org/wiki/File:Beeswax_Wrap.jpg",
     "download": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d7/Beeswax_Wrap.jpg/1280px-Beeswax_Wrap.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+  },
+  "tools-home-improvement-16": {
+    "file": "/images/catalog/tools-home-improvement-16.webp",
+    "category": "Tools & Home Improvement",
+    "productType": "Caulking Gun",
+    "alt": "Illustrative photo of a caulking gun; fictional demo listing",
+    "title": "Silikonpistole (fcm).jpg",
+    "author": "Photograph: Frank C. Müller , Baden-Baden",
+    "license": "CC BY-SA 3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Silikonpistole_(fcm).jpg",
+    "download": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/95/Silikonpistole_%28fcm%29.jpg/1280px-Silikonpistole_%28fcm%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+  },
+  "baby-10": {
+    "file": "/images/catalog/baby-10.webp",
+    "category": "Baby",
+    "productType": "Nursery Night Light",
+    "alt": "Illustrative photo of a night light; fictional demo listing",
+    "title": "Night light ball.jpg",
+    "author": "J.Doniyorovich",
+    "license": "CC0",
+    "source": "https://commons.wikimedia.org/wiki/File:Night_light_ball.jpg",
+    "download": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8b/Night_light_ball.jpg/1280px-Night_light_ball.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
   }
 }
