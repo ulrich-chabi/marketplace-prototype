@@ -69,8 +69,20 @@ describe("catalogue de démonstration", () => {
     expect(images["grocery-19"].productType).toBe("Fruit Preserve Jar")
     expect(images["grocery-20"].productType).toBe("Popcorn Kernels")
     const fashion = DEPARTMENTS.find((department) => department.handle === "fashion")!
-    expect(countAvailableDemoProducts(fashion, images)).toBe(18)
+    expect(countAvailableDemoProducts(fashion, images)).toBe(20)
     expect(images["fashion-18"].productType).toBe("Fleece Jacket")
+    expect(images["fashion-19"].productType).toBe("Leather Gloves")
+    expect(images["fashion-20"].productType).toBe("Travel Toiletry Bag")
+    const beauty = DEPARTMENTS.find((department) => department.handle === "beauty-personal-care")!
+    expect(countAvailableDemoProducts(beauty, images)).toBe(16)
+    expect(beauty.types[9]).toBe("Botanical Facial Oil")
+    expect(images["beauty-personal-care-10"].productType).toBe("Botanical Facial Oil")
+    expect(images["beauty-personal-care-11"].productType).toBe("Makeup Bag")
+    expect(images["beauty-personal-care-12"].productType).toBe("Bath Salts")
+    expect(images["beauty-personal-care-13"].productType).toBe("Rose Water Toner")
+    expect(images["beauty-personal-care-14"].productType).toBe("Hair Styling Iron")
+    expect(images["beauty-personal-care-15"].productType).toBe("Hand Cream")
+    expect(images["beauty-personal-care-16"].productType).toBe("Bath Towel Set")
     const household = DEPARTMENTS.find((department) => department.handle === "health-household")!
     const toys = DEPARTMENTS.find((department) => department.handle === "toys-games")!
     const garden = DEPARTMENTS.find((department) => department.handle === "garden-outdoor")!

@@ -15,6 +15,11 @@ const choices = {
   "fashion-14": "Carape 2.jpg",
   "fashion-17": "Seto linen shirt (Saatse Museum).jpg",
   "fashion-18": "Fleecejacke 3.jpg",
+  "fashion-20": "Clear cosmetic bag organized with various beauty products and tools on a soft pink background.jpg",
+  "beauty-personal-care-10": "Essential natural oils and skin care products.jpg",
+  "beauty-personal-care-11": "Bag of makeup.jpg",
+  "beauty-personal-care-13": "Facial Cleansing toners.jpg",
+  "beauty-personal-care-14": "Hair Iron.jpg",
   "garden-outdoor-14": "Melnor Garden Hose Water Nozzle 5 LR.jpg",
   "health-household-13": "Health o meter Bathroom Scale.JPG",
   "health-household-15": "2018-01-30-Fusselrolle.jpg",
@@ -86,6 +91,9 @@ const choices = {
   "toys-games-17": "Kitchen playset.jpg",
   "health-household-18": "Bog brush.JPG",
   "health-household-19": "Blue broom and dustpan.jpg",
+  "beauty-personal-care-12": "Bath salts in mason jar with pink flowers and blue cosmetic bag (26214964983).jpg",
+  "beauty-personal-care-15": "DeadSeaCream.JPG",
+  "beauty-personal-care-16": "Zusammengelegte Handtücher.jpg",
   "grocery-19": "Fruit preserve jars.jpg",
   "garden-outdoor-20": "Garden_Birdhouse.jpg",
   "electronics-20": "ASUS PB278Q (PXL 20250914 223256075).jpg",
@@ -108,6 +116,14 @@ const newProducts = {
   "toys-games-17": { category: "Toys & Games", productType: "Toy Kitchen Set" },
   "health-household-18": { category: "Health & Household", productType: "Toilet Brush" },
   "fashion-18": { category: "Fashion", productType: "Fleece Jacket" },
+  "fashion-20": { category: "Fashion", productType: "Travel Toiletry Bag" },
+  "beauty-personal-care-12": { category: "Beauty & Personal Care", productType: "Bath Salts" },
+  "beauty-personal-care-10": { category: "Beauty & Personal Care", productType: "Botanical Facial Oil" },
+  "beauty-personal-care-11": { category: "Beauty & Personal Care", productType: "Makeup Bag" },
+  "beauty-personal-care-13": { category: "Beauty & Personal Care", productType: "Rose Water Toner" },
+  "beauty-personal-care-14": { category: "Beauty & Personal Care", productType: "Hair Styling Iron" },
+  "beauty-personal-care-15": { category: "Beauty & Personal Care", productType: "Hand Cream" },
+  "beauty-personal-care-16": { category: "Beauty & Personal Care", productType: "Bath Towel Set" },
   "health-household-19": { category: "Health & Household", productType: "Dustpan and Brush Set" },
   "grocery-19": { category: "Grocery", productType: "Fruit Preserve Jar" },
   "garden-outdoor-20": { category: "Garden & Outdoor", productType: "Birdhouse" },
@@ -121,8 +137,9 @@ const newProducts = {
 const accepted = /^(CC0|Public domain|Public Domain Mark|No restrictions|CC BY(?:-SA)? [234]\.[0-9](?: [A-Za-z-]+)?)$/i
 const headers = { "User-Agent": "MarketplacePrototype/1.0 (https://github.com/ulrich-chabi/marketplace-prototype)" }
 const used = new Set(Object.entries(catalog).filter(([key]) => !choices[key]).map(([, item]) => item.source))
+const requestedKeys = new Set(process.argv.slice(2))
 
-for (const [key, title] of Object.entries(choices)) {
+for (const [key, title] of Object.entries(choices).filter(([key]) => !requestedKeys.size || requestedKeys.has(key))) {
   const query = new URLSearchParams({ action: "query", titles: `File:${title}`, prop: "imageinfo", iiprop: "url|extmetadata", iiurlwidth: "1200", format: "json" })
   const response = await fetch(`https://commons.wikimedia.org/w/api.php?${query}`, { headers })
   if (!response.ok) throw new Error(`Commons lookup failed (${response.status}) for ${title}`)

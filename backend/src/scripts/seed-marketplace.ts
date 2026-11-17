@@ -158,6 +158,7 @@ export default async function seedMarketplace({ container }: ExecArgs) {
       const color = String(product.attributes?.color ?? "Slate")
       await catalogService.updateCatalogProducts({
         id: product.id,
+        title: [product.brand, type, product.attributes?.model].filter(Boolean).join(" "),
         description: demoDescription(department.handle, type, color, String(product.brand ?? ""), String(product.attributes?.model ?? "")),
         attributes: { ...(product.attributes ?? {}), ...demoProductAttributes(department, type, imageIndex, color), demo_listing: true },
       })

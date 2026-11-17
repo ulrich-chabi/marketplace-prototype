@@ -8,12 +8,13 @@ const sharp = storefrontRequire("sharp")
 const sourceFile = path.join(root, "storefront", "src", "data", "demo-images.json")
 const outputDir = path.join(root, "storefront", "public", "images", "catalog")
 const force = process.argv.includes("--force")
+const requestedKeys = new Set(process.argv.filter((argument) => argument !== "--force"))
 
 async function main() {
   const assets = JSON.parse(await readFile(sourceFile, "utf8"))
   await mkdir(outputDir, { recursive: true })
 
-  for (const [category, asset] of Object.entries(assets)) {
+  for (const [category, asset] of Object.entries(assets).filter(([key]) => !requestedKeys.size || requestedKeys.has(key))) {
     const outputPath = path.join(outputDir, `${category}.webp`)
     try {
       await access(outputPath)
