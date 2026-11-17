@@ -67,8 +67,11 @@ describe("catalogue de démonstration", () => {
   })
 
   it("complète les derniers accessoires informatiques et de bureau avec des photos dédiées", () => {
+    const electronics = DEPARTMENTS.find((department) => department.handle === "electronics")!
     const computers = DEPARTMENTS.find((department) => department.handle === "computers")!
     const office = DEPARTMENTS.find((department) => department.handle === "office-products")!
+    expect(countAvailableDemoProducts(electronics, images)).toBe(20)
+    expect(images["electronics-20"].productType).toBe("HDMI Switch")
     expect(countAvailableDemoProducts(computers, images)).toBe(20)
     expect(images["computers-20"].productType).toBe("Laptop Privacy Screen")
     expect(countAvailableDemoProducts(office, images)).toBe(14)

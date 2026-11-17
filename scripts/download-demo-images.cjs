@@ -24,8 +24,9 @@ async function main() {
     })
     if (!response.ok) throw new Error(`Image download failed for ${category}: HTTP ${response.status}`)
     const input = Buffer.from(await response.arrayBuffer())
-    await sharp(input, { limitInputPixels: 40_000_000 })
-      .rotate()
+    let pipeline = sharp(input, { limitInputPixels: 40_000_000 }).rotate()
+    if (asset.crop) pipeline = pipeline.extract(asset.crop)
+    await pipeline
       .resize(800, 600, { fit: "cover", position: "attention" })
       .webp({ quality: 84, effort: 5 })
       .toFile(outputPath)

@@ -73,6 +73,7 @@ test.describe("Parcourir", () => {
 
   test("les nouvelles annonces maison et bébé affichent chacune leur photo dédiée", async ({ page }) => {
     for (const item of [
+      { category: "electronics", title: "HDMI Switch", alt: /HDMI Switch/i },
       { category: "tools-home-improvement", title: "Caulking Gun", alt: /caulking gun/i },
       { category: "tools-home-improvement", title: "Wire Stripper", alt: /wire stripper/i },
       { category: "tools-home-improvement", title: "Pipe Wrench", alt: /pipe wrench/i },

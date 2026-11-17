@@ -3261,5 +3261,22 @@
     "license": "CC0",
     "source": "https://commons.wikimedia.org/wiki/File:16_bean_soup_mix_01.jpg",
     "download": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/49/16_bean_soup_mix_01.jpg/1280px-16_bean_soup_mix_01.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+  },
+  "electronics-20": {
+    "file": "/images/catalog/electronics-20.webp",
+    "category": "Electronics",
+    "productType": "HDMI Switch",
+    "alt": "Illustrative photo of HDMI Switch; fictional demo listing",
+    "title": "ASUS PB278Q (PXL 20250914 223256075).jpg",
+    "author": "Hayden Schiff",
+    "license": "CC BY 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:ASUS_PB278Q_(PXL_20250914_223256075).jpg",
+    "download": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ea/ASUS_PB278Q_%28PXL_20250914_223256075%29.jpg/1280px-ASUS_PB278Q_%28PXL_20250914_223256075%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "crop": {
+      "left": 535,
+      "top": 665,
+      "width": 400,
+      "height": 299
+    }
   }
 }
