@@ -86,6 +86,7 @@ test.describe("Parcourir", () => {
       { category: "books", title: "Astronomy Handbook", alt: /astronomy handbook/i },
       { category: "grocery", title: "Oat Crackers", alt: /oat crackers/i },
       { category: "grocery", title: "Canned Tomato Pack", alt: /canned tomato pack/i },
+      { category: "grocery", title: "Lentil Soup Mix", alt: /lentil soup mix/i },
       { category: "garden-outdoor", title: "Plant Support Stakes", alt: /plant support stakes/i },
       { category: "garden-outdoor", title: "Outdoor Thermometer", alt: /outdoor thermometer/i },
       { category: "baby", title: "Nursery Night Light", alt: /night light/i },

@@ -3250,5 +3250,16 @@
     "license": "CC BY-SA 3.0",
     "source": "https://commons.wikimedia.org/wiki/File:Acorn_AKF20_A3000_Monitor_Stand_(front).jpg",
     "download": "https://upload.wikimedia.org/wikipedia/commons/2/25/Acorn_AKF20_A3000_Monitor_Stand_%28front%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled"
+  },
+  "grocery-16": {
+    "file": "/images/catalog/grocery-16.webp",
+    "category": "Grocery",
+    "productType": "Lentil Soup Mix",
+    "alt": "Illustrative photo of Lentil Soup Mix; fictional demo listing",
+    "title": "16 bean soup mix 01.jpg",
+    "author": "Bean appreciator",
+    "license": "CC0",
+    "source": "https://commons.wikimedia.org/wiki/File:16_bean_soup_mix_01.jpg",
+    "download": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/49/16_bean_soup_mix_01.jpg/1280px-16_bean_soup_mix_01.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
   }
 }
