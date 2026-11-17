@@ -68,12 +68,16 @@ describe("catalogue de démonstration", () => {
     expect(images["grocery-18"].productType).toBe("Herbal Tea Sampler")
     expect(images["grocery-19"].productType).toBe("Fruit Preserve Jar")
     expect(images["grocery-20"].productType).toBe("Popcorn Kernels")
+    const fashion = DEPARTMENTS.find((department) => department.handle === "fashion")!
+    expect(countAvailableDemoProducts(fashion, images)).toBe(18)
+    expect(images["fashion-18"].productType).toBe("Fleece Jacket")
     const household = DEPARTMENTS.find((department) => department.handle === "health-household")!
     const toys = DEPARTMENTS.find((department) => department.handle === "toys-games")!
     const garden = DEPARTMENTS.find((department) => department.handle === "garden-outdoor")!
-    expect(countAvailableDemoProducts(household, images)).toBe(18)
+    expect(countAvailableDemoProducts(household, images)).toBe(19)
     expect(images["health-household-17"].productType).toBe("Vacuum Storage Bags")
     expect(images["health-household-18"].productType).toBe("Toilet Brush")
+    expect(images["health-household-19"].productType).toBe("Dustpan and Brush Set")
     expect(countAvailableDemoProducts(toys, images)).toBe(17)
     expect(images["toys-games-13"].productType).toBe("Magnetic Tiles")
     expect(images["toys-games-14"].productType).toBe("Marble Run Set")

@@ -3498,5 +3498,27 @@
     "license": "CC BY-SA 2.0",
     "source": "https://commons.wikimedia.org/wiki/File:Popcorn_Kernels_(353368886).jpg",
     "download": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5c/Popcorn_Kernels_%28353368886%29.jpg/1280px-Popcorn_Kernels_%28353368886%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+  },
+  "fashion-18": {
+    "file": "/images/catalog/fashion-18.webp",
+    "category": "Fashion",
+    "productType": "Fleece Jacket",
+    "alt": "Illustrative photo of Fleece Jacket; fictional demo listing",
+    "title": "Fleecejacke 3.jpg",
+    "author": "Ryj",
+    "license": "Public domain",
+    "source": "https://commons.wikimedia.org/wiki/File:Fleecejacke_3.jpg",
+    "download": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e6/Fleecejacke_3.jpg/1280px-Fleecejacke_3.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+  },
+  "health-household-19": {
+    "file": "/images/catalog/health-household-19.webp",
+    "category": "Health & Household",
+    "productType": "Dustpan and Brush Set",
+    "alt": "Illustrative photo of Dustpan and Brush Set; fictional demo listing",
+    "title": "Blue broom and dustpan.jpg",
+    "author": "Santeri Viinamäki",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Blue_broom_and_dustpan.jpg",
+    "download": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5c/Blue_broom_and_dustpan.jpg/1280px-Blue_broom_and_dustpan.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
   }
 }

@@ -35,7 +35,7 @@ const searchAliases: Record<string, string[]> = {
   "Hand-Knit Wool Socks": ["hand knit wool socks", "wool socks", "knitted socks"],
   "Smart LED Strip": ["smart LED strip lights", "LED strip lights", "LED strip"],
   "Reusable Coffee Filter": ["reusable coffee filter", "pour over coffee filter", "coffee filter"],
-  "Fleece Vest": ["fleece vest jacket", "sleeveless fleece vest", "fleece waistcoat", "fleece vest"],
+  "Fleece Jacket": ["fleece jacket", "fleece zip jacket", "fleece outerwear"],
   "Nature Field Guide": ["nature field guide", "wildlife field guide", "nature guide book", "field guide book"],
   "Play Dough Set": ["play dough set", "play dough", "modeling dough", "play dough modelling clay", "plasticine modelling clay"],
   "Fishing Basket": ["fishing basket", "traditional fishing basket"],
