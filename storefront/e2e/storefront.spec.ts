@@ -80,6 +80,8 @@ test.describe("Parcourir", () => {
       { category: "tools-home-improvement", title: "Extension Cord Reel", alt: /extension cord reel/i },
       { category: "computers", title: "NAS Enclosure", alt: /NAS enclosure/i },
       { category: "computers", title: "Graphics Card", alt: /graphics card/i },
+      { category: "computers", title: "Laptop Privacy Screen", alt: /laptop privacy screen/i },
+      { category: "office-products", title: "Monitor Riser", alt: /monitor riser/i },
       { category: "books", title: "Bilingual Phrasebook", alt: /phrasebook/i },
       { category: "books", title: "Astronomy Handbook", alt: /astronomy handbook/i },
       { category: "grocery", title: "Oat Crackers", alt: /oat crackers/i },

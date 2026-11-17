@@ -64,4 +64,13 @@ describe("catalogue de démonstration", () => {
     expect(images["grocery-15"]).toBeDefined()
     expect(images["grocery-15"].productType).toBe("Canned Tomato Pack")
   })
+
+  it("complète les derniers accessoires informatiques et de bureau avec des photos dédiées", () => {
+    const computers = DEPARTMENTS.find((department) => department.handle === "computers")!
+    const office = DEPARTMENTS.find((department) => department.handle === "office-products")!
+    expect(countAvailableDemoProducts(computers, images)).toBe(20)
+    expect(images["computers-20"].productType).toBe("Laptop Privacy Screen")
+    expect(countAvailableDemoProducts(office, images)).toBe(14)
+    expect(images["office-products-14"].productType).toBe("Monitor Riser")
+  })
 })

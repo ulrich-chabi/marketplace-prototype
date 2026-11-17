@@ -3228,5 +3228,27 @@
     "license": "CC BY-SA 4.0",
     "source": "https://commons.wikimedia.org/wiki/File:Pomodoro_S._Marzano_dell%27Agro_Sarnese-Nocerino_in_a_can.jpg",
     "download": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0f/Pomodoro_S._Marzano_dell%27Agro_Sarnese-Nocerino_in_a_can.jpg/1280px-Pomodoro_S._Marzano_dell%27Agro_Sarnese-Nocerino_in_a_can.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+  },
+  "computers-20": {
+    "file": "/images/catalog/computers-20.webp",
+    "category": "Computers",
+    "productType": "Laptop Privacy Screen",
+    "alt": "Illustrative photo of Laptop Privacy Screen; fictional demo listing",
+    "title": "3M Black Privacy Filter - angle.jpg",
+    "author": "Andy: Life In Video",
+    "license": "CC BY 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:3M_Black_Privacy_Filter_-_angle.jpg",
+    "download": "https://upload.wikimedia.org/wikipedia/commons/2/20/3M_Black_Privacy_Filter_-_angle.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled"
+  },
+  "office-products-14": {
+    "file": "/images/catalog/office-products-14.webp",
+    "category": "Office Products",
+    "productType": "Monitor Riser",
+    "alt": "Illustrative photo of Monitor Riser; fictional demo listing",
+    "title": "Acorn AKF20 A3000 Monitor Stand (front).jpg",
+    "author": "Chris Whytehead",
+    "license": "CC BY-SA 3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Acorn_AKF20_A3000_Monitor_Stand_(front).jpg",
+    "download": "https://upload.wikimedia.org/wikipedia/commons/2/25/Acorn_AKF20_A3000_Monitor_Stand_%28front%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled"
   }
 }

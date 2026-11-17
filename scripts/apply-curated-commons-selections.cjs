@@ -73,6 +73,13 @@ const choices = {
   "books-15": "Op-astro-cover.svg",
   "grocery-14": "Oatcake.jpg",
   "grocery-15": "Pomodoro S. Marzano dell'Agro Sarnese-Nocerino in a can.jpg",
+  "computers-20": "3M Black Privacy Filter - angle.jpg",
+  "office-products-14": "Acorn AKF20 A3000 Monitor Stand (front).jpg",
+}
+
+const newProducts = {
+  "computers-20": { category: "Computers", productType: "Laptop Privacy Screen" },
+  "office-products-14": { category: "Office Products", productType: "Monitor Riser" },
 }
 
 const accepted = /^(CC0|Public domain|Public Domain Mark|No restrictions|CC BY(?:-SA)? [234]\.0(?: [A-Za-z-]+)?)$/i
@@ -90,7 +97,12 @@ for (const [key, title] of Object.entries(choices)) {
   const license = image.extmetadata?.LicenseShortName?.value?.replace(/<[^>]*>/g, "").trim()
   if (!accepted.test(license ?? "")) throw new Error(`Unsupported license for ${title}: ${license}`)
   if (used.has(image.descriptionurl)) throw new Error(`Duplicate image source for ${title}`)
-  const item = catalog[key]
+  const item = catalog[key] ?? {
+    file: `/images/catalog/${key}.webp`,
+    ...newProducts[key],
+    alt: `Illustrative photo of ${newProducts[key].productType}; fictional demo listing`,
+  }
+  catalog[key] = item
   item.title = title
   item.author = image.extmetadata?.Artist?.value?.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim() || "Author not listed"
   item.license = license
