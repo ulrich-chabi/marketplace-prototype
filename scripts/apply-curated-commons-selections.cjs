@@ -70,6 +70,7 @@ const choices = {
   "garden-outdoor-17": "Wireless indoor-outdoor thermometer.jpg",
   "computers-18": "Netgear ReadyNAS NV+.jpg",
   "books-14": "Phrase book.jpg",
+  "books-15": "Op-astro-cover.svg",
 }
 
 const accepted = /^(CC0|Public domain|Public Domain Mark|No restrictions|CC BY(?:-SA)? [234]\.0(?: [A-Za-z-]+)?)$/i

@@ -3184,5 +3184,27 @@
     "license": "CC BY 3.0",
     "source": "https://commons.wikimedia.org/wiki/File:Phrase_book.jpg",
     "download": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1a/Phrase_book.jpg/1280px-Phrase_book.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+  },
+  "computers-19": {
+    "file": "/images/catalog/computers-19.webp",
+    "category": "Computers",
+    "productType": "Graphics Card",
+    "alt": "Illustrative photo of Graphics Card; fictional demo listing",
+    "title": "VIA eH1 DX10 Graphics Card - Top.jpg",
+    "author": "VIA Gallery from Hsintien, Taiwan",
+    "license": "CC BY 2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:VIA_eH1_DX10_Graphics_Card_-_Top.jpg",
+    "download": "https://upload.wikimedia.org/wikipedia/commons/b/b2/VIA_eH1_DX10_Graphics_Card_-_Top.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled"
+  },
+  "books-15": {
+    "file": "/images/catalog/books-15.webp",
+    "category": "Books",
+    "productType": "Astronomy Handbook",
+    "alt": "Illustrative photo of Astronomy Handbook; fictional demo listing",
+    "title": "Op-astro-cover.svg",
+    "author": "Senior Contributing Authors Andrew Fraknoi, Foothill College David Morrison, NASA Ames Research Center Sidney C. Wolff, National Optical Astronomy Observatory Contributing Authors John Beck, Stanford University Susan D. Benecchi, Planetary Science Institute John Bochanski, Rider University Howard Bond, Pennsylvania State University, Emeritus, Space Telescope Science Institute Jennifer Carson, Occidental College Bryan Dunne, University of Illinois at Urbana-Champaign Martin Elvis, Harvard-Smithsonian Center for Astrophysics Debra Fischer, Yale University Heidi Hammel, Association of Universities for Research in Astronomy Tori Hoehler, NASA Ames Research Center Douglas Ingram, Texas Christian University Steven Kawaler, Iowa State University Lloyd Knox, University of California, Davis Todd Young, Wayne State College Mark Krumholz, Australian National University James Lowenthal, Smith College Siobahn Morgan, University of Northern Iowa Daniel Perley, California Institute of Technology Claire Raftery, National Solar Observatory Deborah Scherrer, retired, Stanford University Phillip Scherrer, Stanford University Sanjoy Som, Blue Marble Space Institute of Science, NASA Ames Research Center Wes Tobin, Indiana University East William H. Waller, retired, Tufts University, Rockport (MA) Public Schools",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Op-astro-cover.svg",
+    "download": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/70/Op-astro-cover.svg/1280px-Op-astro-cover.svg.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
   }
 }
