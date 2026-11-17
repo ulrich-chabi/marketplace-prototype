@@ -65,6 +65,15 @@ describe("catalogue de démonstration", () => {
     expect(images["grocery-15"].productType).toBe("Canned Tomato Pack")
     expect(images["grocery-16"].productType).toBe("Lentil Soup Mix")
     expect(images["grocery-17"].productType).toBe("Roasted Almonds")
+    const household = DEPARTMENTS.find((department) => department.handle === "health-household")!
+    const toys = DEPARTMENTS.find((department) => department.handle === "toys-games")!
+    const garden = DEPARTMENTS.find((department) => department.handle === "garden-outdoor")!
+    expect(countAvailableDemoProducts(household, images)).toBe(17)
+    expect(images["health-household-17"].productType).toBe("Vacuum Storage Bags")
+    expect(countAvailableDemoProducts(toys, images)).toBe(13)
+    expect(images["toys-games-13"].productType).toBe("Magnetic Tiles")
+    expect(countAvailableDemoProducts(garden, images)).toBe(18)
+    expect(images["garden-outdoor-18"].productType).toBe("Garden Kneeler")
   })
 
   it("complète les derniers accessoires informatiques et de bureau avec des photos dédiées", () => {
